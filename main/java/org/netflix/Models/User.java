@@ -4,13 +4,12 @@ public class User {
     private int id;
     private String username;
     private String email;
-    private String profilePicture;
 
-    public User(int id, String username, String email, String profilePicture) {
+
+    public User(int id, String username, String email) {
         this.id = id;
         this.username = username;
         this.email = email;
-        this.profilePicture = profilePicture;
     }
 
     public int getId() {
@@ -37,11 +36,8 @@ public class User {
         this.email = email;
     }
 
-    public String getProfilePicture() {
-        return profilePicture;
-    }
-
-    public void setProfilePicture(String profilePicture) {
-        this.profilePicture = profilePicture;
+    @Override
+    public String toString() {
+        return "User{" + "id=" + id + ", username=" + username + ", email=" + email + '}';
     }
 }
