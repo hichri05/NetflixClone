@@ -1,6 +1,7 @@
 module org.netflix {
     requires javafx.controls;
     requires javafx.fxml;
+    requires java.sql;
 
     opens org.Views to javafx.fxml;
     exports org.netflix.Main;
