@@ -1,7 +1,7 @@
-module org.example {
+module org.netflix {
     requires javafx.controls;
     requires javafx.fxml;
 
-    opens org.example to javafx.fxml;
-    exports org.example;
+    opens org.netflix to javafx.fxml;
+    exports org.netflix;
 }
