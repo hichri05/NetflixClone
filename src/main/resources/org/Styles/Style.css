@@ -1,21 +1,68 @@
 .text-field {
     -fx-background-color: #333333;
     -fx-text-fill: white;
-    /* This makes the 'highlight' box invisible */
     -fx-highlight-fill: transparent;
-    /* This ensures the text stays white even if 'selected' */
     -fx-highlight-text-fill: white;
 }
 
 .text-field:focused {
     -fx-background-color: #333333;
-    /* Removes the default blue/white focus border */
     -fx-background-insets: 0;
     -fx-border-color: #e87c03;
     -fx-border-width: 0 0 2 0;
 }
 
-/* This is the final nail in the coffin for the highlight box */
+
 .text-field .selection {
     -fx-fill: transparent;
+}
+
+.root {
+    -fx-text-fill: white;
+    -fx-font-family: "Inter", "Montserrat", "Helvetica", "Arial", sans-serif;
+}
+
+.label {
+    -fx-text-fill: white;
+}
+
+.button {
+    -fx-text-fill: white;
+}
+
+.text-field {
+    -fx-text-fill: white;
+}
+
+.check-box {
+    -fx-text-fill: white;
+}
+
+.radio-button {
+    -fx-text-fill: white;
+}
+.movie-poster {
+
+    -fx-fit-width: 180px;
+    -fx-fit-height: 250px;
+    -fx-preserve-ratio: false;
+    -fx-smooth: true;
+}
+.movie-poster:hover {
+    -fx-scale-x: 1.1;
+    -fx-scale-y: 1.1;
+    -fx-effect: dropshadow(three-pass-box, black, 20, 0, 0, 0);
+    -fx-cursor: hand;
+}
+.movie-row {
+    -fx-hbar-policy: always;
+    -fx-vbar-policy: never;
+    -fx-fit-to-height: true;
+}
+.logo{
+    -fx-text-fill:  #E50914;
+}
+.navbar{
+    -fx-font-size: 14px;
+    -fx-font-weight: bold;
 }
