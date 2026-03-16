@@ -40,3 +40,4 @@ build/
 
 # Database passwords (NEVER upload this)
 src/main/resources/db_config.properties
+src/main/resources/config.properties

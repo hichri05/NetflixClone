@@ -6,7 +6,9 @@ import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.image.Image;
 import javafx.stage.Stage;
+import org.netflix.DAO.MovieDAO;
 import org.netflix.DAO.UserDAO;
+import org.netflix.Models.Movie;
 import org.netflix.Models.User;
 
 import java.io.IOException;
@@ -38,8 +40,9 @@ public class App extends Application {
     }
 
     public static void main(String[] args) {
-        for (User u: UserDAO.getAllUsers()) {
-            System.out.println(u);
+        //test
+        for (Movie m: MovieDAO.getAllMovies()) {
+            System.out.println(m);
         }
         launch();
     }

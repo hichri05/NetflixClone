@@ -53,11 +53,11 @@
             <Label text="Genre 1" />
             <ScrollPane fitToHeight="true" fitToWidth="true" style="-fx-background-color: #141414;" styleClass="movie-row" VBox.vgrow="ALWAYS">
                <content>
-                  <HBox fx:id="movieRow" alignment="CENTER" spacing="5.0" style="-fx-background-color: #212121;">
+                  <HBox fx:id="movieRow1" alignment="CENTER" spacing="5.0" style="-fx-background-color: #212121;">
                      <children>
                         <ImageView fitHeight="150.0" fitWidth="200.0" pickOnBounds="true" preserveRatio="true" styleClass="movie-poster">
                            <image>
-                              <Image url="@../Images/Narcos%20Movie%20poster%20Design%20🎥.jpg" />
+                              <Image url="@../Images/Narcos%20Movie%20poster%20Design%20.jpg" />
                            </image>
                         </ImageView>
                         <ImageView fitHeight="150.0" fitWidth="200.0" pickOnBounds="true" preserveRatio="true" styleClass="movie-poster">
@@ -90,11 +90,11 @@
             <Label prefHeight="18.0" prefWidth="538.0" text="Genre 2" />
             <ScrollPane fitToHeight="true" fitToWidth="true" style="-fx-background-color: #141414;" styleClass="movie-row">
                <content>
-                  <HBox fx:id="movieRow" alignment="CENTER" spacing="5.0" style="-fx-background-color: #212121;">
+                  <HBox fx:id="movieRow2" alignment="CENTER" spacing="5.0" style="-fx-background-color: #212121;">
                      <children>
                         <ImageView fitHeight="150.0" fitWidth="200.0" pickOnBounds="true" preserveRatio="true" styleClass="movie-poster">
                            <image>
-                              <Image url="@../Images/Narcos%20Movie%20poster%20Design%20🎥.jpg" />
+                              <Image url="@../Images/Narcos%20Movie%20poster%20Design%20.jpg" />
                            </image>
                         </ImageView>
                         <ImageView fitHeight="150.0" fitWidth="200.0" pickOnBounds="true" preserveRatio="true" styleClass="movie-poster">

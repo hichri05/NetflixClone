@@ -3,12 +3,15 @@ package org.netflix.Utils;
 import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.SQLException;
+import java.util.Properties;
+import java.io.InputStream;
 
 public class ConxDB {
     private static Connection connexion;
-    private final String DB_URL = "jdbc:mysql://localhost:3306/netflix";
+    Properties prop = new Properties();
+    /*private final String DB_URL = "jdbc:mysql://localhost:3306/bingepanda";
     private final String USER = "root";
-    private final String PASS = "";
+    private final String PASS = "";*/
 
     private ConxDB() throws SQLException{
         try {
@@ -16,8 +19,21 @@ public class ConxDB {
         }catch(ClassNotFoundException e) {
             e.printStackTrace();
         }
-        connexion = DriverManager.getConnection(DB_URL, USER, PASS);
-    }
+        try (InputStream input = ConxDB.class.getClassLoader().getResourceAsStream("config.properties")) {
+
+            if (input == null) {
+                System.out.println("Sorry, unable to find config.properties");
+            }
+            prop.load(input);
+            String port = prop.getProperty("db.port");
+            String url = "jdbc:mysql://localhost:" + port + "/bingepanda";
+
+            connexion =  DriverManager.getConnection(url, prop.getProperty("db.user"), prop.getProperty("db.pass"));
+
+        } catch (Exception ex) {
+            ex.printStackTrace();
+        }
+     }
     public static Connection getInstance() {
         if(connexion == null)
             try {
