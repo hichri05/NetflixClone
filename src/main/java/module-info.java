@@ -4,6 +4,7 @@ module org.netflix {
     requires java.sql;
     requires java.desktop;
     requires javafx.media;
+    requires mysql.connector.j;
 
 
     opens org.Views to javafx.fxml;

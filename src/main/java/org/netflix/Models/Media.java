@@ -8,9 +8,10 @@ public class Media {
     private double averageRating;
     private String coverImageUrl;
     private String director;
+    private String type;
 
     public Media(int idMedia, String title, String description, int releaseYear,
-                 double averageRating, String coverImageUrl, String director) {
+                 double averageRating, String coverImageUrl, String director,String type) {
         this.idMedia = idMedia;
         this.title = title;
         this.description = description;
@@ -18,6 +19,7 @@ public class Media {
         this.averageRating = averageRating;
         this.coverImageUrl = coverImageUrl;
         this.director = director;
+        this.type=type;
     }
 
     public int getIdMedia() { return idMedia; }

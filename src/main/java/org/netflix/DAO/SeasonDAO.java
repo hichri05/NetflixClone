@@ -1,0 +1,33 @@
+package org.netflix.DAO;
+import org.netflix.Models.Season;
+import org.netflix.Utils.ConxDB;
+import java.sql.*;
+import java.util.ArrayList;
+import java.util.List;
+public class SeasonDAO {
+    private static Connection conn = ConxDB.getInstance();
+
+    public List<Season> getSeasonsBySerie(int idSerie) {
+        List<Season> seasons = new ArrayList<>();
+        String sql = "SELECT * FROM saison WHERE id_Serie = ? ORDER BY saisonNumber ASC";
+
+        try (PreparedStatement pstmt = conn.prepareStatement(sql)) {
+            pstmt.setInt(1, idSerie);
+
+            try (ResultSet rs = pstmt.executeQuery()) {
+                while (rs.next()) {
+                    seasons.add(new Season(
+                            rs.getInt("id_Saison"),
+                            rs.getInt("id_Serie"),
+                            rs.getInt("saisonNumber"),
+                            rs.getString("title"),
+                            rs.getString("description")
+                    ));
+                }
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return seasons;
+    }
+}
