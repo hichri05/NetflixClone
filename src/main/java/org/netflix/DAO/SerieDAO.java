@@ -28,7 +28,8 @@ public class SerieDAO {
                         rs.getDouble("averageRating"),
                         rs.getString("coverImageUrl"),
                         rs.getString("director"),
-                        rs.getInt("nbrSaison")
+                        rs.getInt("nbrSaison"),
+                        rs.getString("type")
                                 ));
             }
         } catch (SQLException e) {
