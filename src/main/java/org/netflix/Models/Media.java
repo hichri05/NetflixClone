@@ -26,4 +26,8 @@ public class Media {
     public String getTitle() { return title; }
     public String getCoverImageUrl() { return coverImageUrl; }
     public String getDescription() { return description; }
+    public int getReleaseYear(){ return releaseYear;}
+    public double getAverageRating(){ return averageRating;}
+    public String getDirector() {return director;}
+    public String getType() {return type;}
 }
