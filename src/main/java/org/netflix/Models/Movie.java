@@ -1,15 +1,17 @@
 package org.netflix.Models;
 
+import java.util.List;
+
 public class Movie extends Media {
     private String videoUrl;
     private int durationMinutes;
 
     public Movie(int idMedia, String title, String description, int releaseYear,
                  double averageRating, String coverImageUrl, String director,
-                 String videoUrl, int durationMinutes,String type) {
+                 String videoUrl, int durationMinutes, List<Genre> genres) {
 
         super( idMedia, title, description,releaseYear,
-        averageRating,  coverImageUrl, director, type);
+        averageRating,  coverImageUrl, director, genres);
         this.videoUrl = videoUrl;
         this.durationMinutes = durationMinutes;
     }
