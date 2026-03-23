@@ -1,4 +1,5 @@
 package org.netflix.DAO;
+import org.netflix.Models.Genre;
 import org.netflix.Models.Serie;
 import org.netflix.Utils.ConxDB;
 
@@ -21,6 +22,7 @@ public class SerieDAO {
         try(Statement stmt=con.createStatement(); ResultSet rs =stmt.executeQuery(sql))
         {
             while(rs.next()){
+                List<Genre> genresList = MediaDAO.getGenresByMediaId(rs.getInt("id_Media"));
                 series.add(new Serie(rs.getInt("id_Media"),
                         rs.getString("title"),
                         rs.getString("description"),
@@ -29,7 +31,7 @@ public class SerieDAO {
                         rs.getString("coverImageUrl"),
                         rs.getString("director"),
                         rs.getInt("nbrSaison"),
-                        rs.getString("type")
+                        genresList
                                 ));
             }
         } catch (SQLException e) {
