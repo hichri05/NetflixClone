@@ -1,13 +1,13 @@
 package org.netflix.Models;
 
 public class Media {
-    private int idMedia;
-    private String title;
-    private String description;
-    private int releaseYear;
-    private double averageRating;
-    private String coverImageUrl;
-    private String director;
+    protected int idMedia;
+    protected String title;
+    protected String description;
+    protected int releaseYear;
+    protected double averageRating;
+    protected String coverImageUrl;
+    protected String director;
     private String type;
 
     public Media(int idMedia, String title, String description, int releaseYear,
@@ -21,7 +21,7 @@ public class Media {
         this.director = director;
         this.type=type;
     }
-
+    public  Media() {}
     public int getIdMedia() { return idMedia; }
     public String getTitle() { return title; }
     public String getCoverImageUrl() { return coverImageUrl; }

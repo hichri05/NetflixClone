@@ -42,7 +42,6 @@
     -fx-text-fill: white;
 }
 .movie-poster {
-
     -fx-fit-width: 180px;
     -fx-fit-height: 250px;
     -fx-preserve-ratio: false;

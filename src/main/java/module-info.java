@@ -5,7 +5,8 @@ module org.netflix {
     requires java.desktop;
     requires javafx.media;
     requires mysql.connector.j;
-
+    requires org.kordamp.ikonli.javafx;
+    requires org.kordamp.ikonli.fontawesome6;
 
     opens org.Views to javafx.fxml;
     exports org.netflix.Main;
