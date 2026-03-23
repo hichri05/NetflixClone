@@ -1,5 +1,7 @@
 package org.netflix.Models;
 
+import java.util.List;
+
 public class Media {
     protected int idMedia;
     protected String title;
@@ -8,10 +10,10 @@ public class Media {
     protected double averageRating;
     protected String coverImageUrl;
     protected String director;
-    private String type;
+    protected List<Genre> genres;
 
     public Media(int idMedia, String title, String description, int releaseYear,
-                 double averageRating, String coverImageUrl, String director,String type) {
+                 double averageRating, String coverImageUrl, String director,List<Genre> genres) {
         this.idMedia = idMedia;
         this.title = title;
         this.description = description;
@@ -19,7 +21,7 @@ public class Media {
         this.averageRating = averageRating;
         this.coverImageUrl = coverImageUrl;
         this.director = director;
-        this.type=type;
+        this.genres = genres;
     }
     public  Media() {}
     public int getIdMedia() { return idMedia; }
@@ -29,5 +31,5 @@ public class Media {
     public int getReleaseYear(){ return releaseYear;}
     public double getAverageRating(){ return averageRating;}
     public String getDirector() {return director;}
-    public String getType() {return type;}
+    public List<Genre> getGenres() { return genres; }
 }
