@@ -1,7 +1,9 @@
+// package org.netflix.Services;
+
 package org.netflix.Services;
 
-import com.jstream.dao.UserDAO;
-import com.jstream.model.User;
+import org.netflix.DAO.UserDAO;
+import org.netflix.Models.User;
 import org.mindrot.jbcrypt.BCrypt;
 
 import java.util.Optional;
@@ -23,14 +25,14 @@ public class AuthService {
 
     /**
      * Inscription d'un nouvel utilisateur
-     * @param nom Nom complet
+     * @param username Nom d'utilisateur
      * @param email Adresse email
      * @param motDePasse Mot de passe en clair
      * @return Optional contenant l'utilisateur créé ou vide si erreur
      */
-    public Optional<User> register(String nom, String email, String motDePasse) {
+    public Optional<User> register(String username, String email, String motDePasse) {
         // 1. Validation des entrées
-        ValidationResult validation = validateRegistration(nom, email, motDePasse);
+        ValidationResult validation = validateRegistration(username, email, motDePasse);
         if (!validation.isValid()) {
             System.err.println("Erreur validation: " + validation.getMessage());
             return Optional.empty();
@@ -42,24 +44,26 @@ public class AuthService {
             return Optional.empty();
         }
 
-        // 3. Hacher le mot de passe (NE JAMAIS stocker en clair)
-        String hashedPassword = BCrypt.hashpw(motDePasse, BCrypt.gensalt(12));
-
-        // 4. Créer l'utilisateur
-        User newUser = new User(nom, email, hashedPassword);
-
-        // 5. Le premier utilisateur inscrit devient automatiquement ADMIN
-        if (isFirstUser()) {
-            newUser.setRole("ADMIN");
-            System.out.println("Premier utilisateur créé avec rôle ADMIN");
+        // 3. Vérifier si le username existe déjà
+        if (userDAO.usernameExists(username)) {
+            System.err.println("Nom d'utilisateur déjà utilisé: " + username);
+            return Optional.empty();
         }
 
-        // 6. Sauvegarder en base de données
-        boolean saved = userDAO.insert(newUser);
+        // 4. Hacher le mot de passe (NE JAMAIS stocker en clair)
+        String hashedPassword = BCrypt.hashpw(motDePasse, BCrypt.gensalt(12));
 
-        if (saved) {
-            return Optional.of(newUser);
+        // 5. Créer l'utilisateur (id = 0 car sera généré par la BDD)
+        User newUser = new User(0, username, email);
+
+        // 6. Sauvegarder en base de données
+        Optional<User> savedUser = userDAO.insert(newUser, hashedPassword);
+
+        if (savedUser.isPresent()) {
+            System.out.println("Inscription réussie: " + savedUser.get().getUsername());
+            return savedUser;
         } else {
+            System.err.println("Échec de l'inscription en base de données");
             return Optional.empty();
         }
     }
@@ -88,38 +92,44 @@ public class AuthService {
 
         User user = userOpt.get();
 
-        // 3. Vérifier le mot de passe (comparaison avec le hash)
-        if (!BCrypt.checkpw(motDePasse, user.getMotDePasseHash())) {
+        // 3. Récupérer le hash du mot de passe depuis la BDD
+        Optional<String> passwordHashOpt = userDAO.getPasswordHash(user.getId());
+
+        if (passwordHashOpt.isEmpty()) {
+            System.err.println("Hash du mot de passe introuvable");
+            return Optional.empty();
+        }
+
+        // 4. Vérifier le mot de passe (comparaison avec le hash)
+        if (!BCrypt.checkpw(motDePasse, passwordHashOpt.get())) {
             System.err.println("Mot de passe incorrect pour: " + email);
             return Optional.empty();
         }
 
-        // 4. Vérifier que le compte est actif
-        if (!user.isActif()) {
-            System.err.println("Compte désactivé: " + email);
-            return Optional.empty();
-        }
-
         // 5. Connexion réussie
-        System.out.println("Connexion réussie: " + user.getNom() + " (" + user.getRole() + ")");
+        System.out.println("Connexion réussie: " + user.getUsername() + " (" + email + ")");
         return Optional.of(user);
     }
 
     /**
      * Validation complète des données d'inscription
      */
-    private ValidationResult validateRegistration(String nom, String email, String motDePasse) {
-        // Validation du nom
-        if (nom == null || nom.trim().isEmpty()) {
-            return ValidationResult.invalid("Le nom ne peut pas être vide");
+    private ValidationResult validateRegistration(String username, String email, String motDePasse) {
+        // Validation du username
+        if (username == null || username.trim().isEmpty()) {
+            return ValidationResult.invalid("Le nom d'utilisateur ne peut pas être vide");
         }
 
-        if (nom.length() < 2) {
-            return ValidationResult.invalid("Le nom doit contenir au moins 2 caractères");
+        if (username.length() < 3) {
+            return ValidationResult.invalid("Le nom d'utilisateur doit contenir au moins 3 caractères");
         }
 
-        if (nom.length() > 100) {
-            return ValidationResult.invalid("Le nom ne peut pas dépasser 100 caractères");
+        if (username.length() > 50) {
+            return ValidationResult.invalid("Le nom d'utilisateur ne peut pas dépasser 50 caractères");
+        }
+
+        if (!username.matches("^[a-zA-Z0-9_]+$")) {
+            return ValidationResult.invalid("Le nom d'utilisateur ne peut contenir que des lettres, chiffres et underscores");
         }
 
         // Validation de l'email
@@ -159,25 +169,22 @@ public class AuthService {
     }
 
     /**
-     * Vérifie si c'est le premier utilisateur (aucun compte existant)
-     */
-    private boolean isFirstUser() {
-        // Pour simplifier, on peut compter les utilisateurs
-        // Implémentation simplifiée - à améliorer selon besoins
-        try {
-            return !userDAO.emailExists("admin@jstream.com") &&
-                    !userDAO.emailExists("user@jstream.com");
-        } catch (Exception e) {
-            return true; // En cas d'erreur, on considère que c'est le premier
-        }
-    }
-
-    /**
      * Change le mot de passe d'un utilisateur
+     * @param user Utilisateur
+     * @param ancienMotDePasse Ancien mot de passe en clair
+     * @param nouveauMotDePasse Nouveau mot de passe en clair
+     * @return true si changement réussi, false sinon
      */
     public boolean changePassword(User user, String ancienMotDePasse, String nouveauMotDePasse) {
         // 1. Vérifier l'ancien mot de passe
-        if (!BCrypt.checkpw(ancienMotDePasse, user.getMotDePasseHash())) {
+        Optional<String> currentHashOpt = userDAO.getPasswordHash(user.getId());
+
+        if (currentHashOpt.isEmpty()) {
+            System.err.println("Utilisateur non trouvé");
+            return false;
+        }
+
+        if (!BCrypt.checkpw(ancienMotDePasse, currentHashOpt.get())) {
             System.err.println("Ancien mot de passe incorrect");
             return false;
         }
@@ -193,26 +200,15 @@ public class AuthService {
         String newHashedPassword = BCrypt.hashpw(nouveauMotDePasse, BCrypt.gensalt(12));
 
         // 4. Mettre à jour en base
-        String sql = "UPDATE utilisateurs SET mot_de_passe_hash = ? WHERE id = ?";
+        boolean updated = userDAO.updatePassword(user.getId(), newHashedPassword);
 
-        try (Connection conn = DatabaseConnection.getConnection();
-             PreparedStatement pstmt = conn.prepareStatement(sql)) {
-
-            pstmt.setString(1, newHashedPassword);
-            pstmt.setInt(2, user.getId());
-
-            int updated = pstmt.executeUpdate();
-
-            if (updated > 0) {
-                user.setMotDePasseHash(newHashedPassword);
-                return true;
-            }
-            return false;
-
-        } catch (SQLException e) {
-            e.printStackTrace();
-            return false;
+        if (updated) {
+            System.out.println("Mot de passe changé avec succès pour: " + user.getUsername());
+        } else {
+            System.err.println("Échec du changement de mot de passe");
         }
+
+        return updated;
     }
 
     /**
@@ -232,6 +228,33 @@ public class AuthService {
         }
 
         return ValidationResult.valid();
+    }
+
+    /**
+     * Vérifie si l'utilisateur est administrateur
+     * @param userId ID de l'utilisateur
+     * @return true si administrateur, false sinon
+     */
+    public boolean isAdmin(int userId) {
+        return userDAO.isAdmin(userId);
+    }
+
+    /**
+     * Récupère le rôle de l'utilisateur
+     * @param userId ID de l'utilisateur
+     * @return "ADMIN" ou "USER"
+     */
+    public String getUserRole(int userId) {
+        return userDAO.getUserRole(userId);
+    }
+
+    /**
+     * Déconnecte l'utilisateur (logique métier simple)
+     * @param user Utilisateur à déconnecter
+     */
+    public void logout(User user) {
+        System.out.println("Déconnexion de: " + user.getUsername());
+        // Ici on peut ajouter des logs ou nettoyer des sessions
     }
 
     /**
