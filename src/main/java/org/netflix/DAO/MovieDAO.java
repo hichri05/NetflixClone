@@ -79,4 +79,9 @@ public class MovieDAO {
         }
         return movie;
     }
+
+    public static List<Movie> findbyGenre(String genre) {
+        //todo
+        return null;
+    }
 }

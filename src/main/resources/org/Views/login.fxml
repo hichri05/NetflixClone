@@ -27,7 +27,7 @@
                   <Font name="System Bold" size="32.0" />
                </font>
             </Label>
-            <TextField promptText="Email" style="-fx-background-color: none; -fx-border-color: #fff; -fx-border-radius: 3px; -fx-border-width: 0.5px; -fx-text-fill: white; -fx-prompt-text-fill: #8c8c8c;" stylesheets="@../Styles/Style.css">
+            <TextField promptText="Email" style="-fx-background-color: none; -fx-border-color: #fff; -fx-border-radius: 3px; -fx-border-width: 0.5px; -fx-text-fill: white; -fx-prompt-text-fill: #8c8c8c;" stylesheets="@../Styles/style.css">
                <opaqueInsets>
                   <Insets />
                </opaqueInsets>

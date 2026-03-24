@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import java.lang.*?>
+<?import java.util.*?>
+<?import javafx.scene.*?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+
+<?import javafx.scene.image.ImageView?>
+<?import javafx.scene.layout.StackPane?>
+<?import javafx.geometry.Insets?>
+
+<StackPane fx:id="rootPane"
+           maxHeight="-Infinity" maxWidth="-Infinity"
+           minHeight="-Infinity" minWidth="-Infinity"
+           prefHeight="240.0" prefWidth="160.0"
+           styleClass="movie-poster-container"
+           stylesheets="@../Styles/style.css"
+           xmlns="http://javafx.com/javafx/21"
+           xmlns:fx="http://javafx.com/fxml/1"
+           fx:controller="org.netflix.Controllers.MoviePosterController">
+    <children>
+        <ImageView fx:id="posterImageView"
+                   fitHeight="240.0"
+                   fitWidth="160.0"
+                   pickOnBounds="true"
+                   preserveRatio="true"
+                   styleClass="movie-poster-image" />
+    </children>
+    <padding>
+        <Insets bottom="5.0" left="5.0" right="5.0" top="5.0" />
+    </padding>
+</StackPane>

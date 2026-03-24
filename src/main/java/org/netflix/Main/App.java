@@ -7,11 +7,10 @@ import javafx.scene.Scene;
 import javafx.scene.image.Image;
 import javafx.stage.Stage;
 import org.netflix.DAO.MovieDAO;
-import org.netflix.DAO.UserDAO;
 import org.netflix.Models.Movie;
-import org.netflix.Models.User;
 
 import java.io.IOException;
+import java.net.URL;
 
 /**
  * JavaFX App
@@ -23,6 +22,15 @@ public class App extends Application {
     @Override
     public void start(Stage stage) throws IOException {
         scene = new Scene(loadFXML("main"), 640, 480);
+        String cssPath = getClass().getResource("/org/Styles/style.css").toExternalForm();
+        scene.getStylesheets().add(cssPath);
+        URL cssUrl = getClass().getResource("/org/Styles/style.css");
+        if (cssUrl == null) {
+            System.out.println("❌ ERROR: CSS file not found at /org/Styles/style.css");
+        } else {
+            System.out.println("✅ SUCCESS: CSS found at: " + cssUrl.toExternalForm());
+            scene.getStylesheets().add(cssUrl.toExternalForm());
+        }
         stage.setTitle("Netflix - Sign In");
         stage.getIcons().add(new Image(getClass().getResourceAsStream("/org/Images/icon.png")));
         stage.setFullScreen(true);
