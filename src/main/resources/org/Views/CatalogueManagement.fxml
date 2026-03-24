@@ -1,0 +1,116 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.control.Button?>
+<?import javafx.scene.control.ComboBox?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.control.ScrollPane?>
+<?import javafx.scene.control.Separator?>
+<?import javafx.scene.control.SplitPane?>
+<?import javafx.scene.control.TableColumn?>
+<?import javafx.scene.control.TableView?>
+<?import javafx.scene.control.TextArea?>
+<?import javafx.scene.control.TextField?>
+<?import javafx.scene.layout.ColumnConstraints?>
+<?import javafx.scene.layout.FlowPane?>
+<?import javafx.scene.layout.GridPane?>
+<?import javafx.scene.layout.HBox?>
+<?import javafx.scene.layout.Region?>
+<?import javafx.scene.layout.RowConstraints?>
+<?import javafx.scene.layout.VBox?>
+<?import javafx.scene.text.Text?>
+
+<VBox spacing="20" style="-fx-background-color: #141414;" xmlns="http://javafx.com/javafx/25" xmlns:fx="http://javafx.com/fxml/1" fx:controller="org.netflix.Controllers.CatalogueController">
+    <padding>
+        <Insets bottom="20" left="20" right="20" top="20" />
+    </padding>
+
+    <HBox alignment="CENTER_LEFT" spacing="20">
+        <VBox>
+            <Text style="-fx-fill: white; -fx-font-size: 24; -fx-font-weight: bold;" text="Catalogue Management" />
+            <Text style="-fx-fill: #888; -fx-font-size: 13;" text="Manage movies, series, and their metadata" />
+        </VBox>
+        <Region HBox.hgrow="ALWAYS" />
+        <Button onAction="#handlePrepareNew" style="-fx-background-color: #e50914; -fx-text-fill: white; -fx-font-weight: bold; -fx-cursor: hand;" text="+ ADD NEW MEDIA" />
+    </HBox>
+
+    <HBox alignment="CENTER_LEFT" spacing="15" style="-fx-background-color: #1b1b1b; -fx-padding: 10; -fx-background-radius: 5; -fx-border-color: #333;">
+        <Label style="-fx-text-fill: #aaa;" text="Quick Search:" />
+        <TextField fx:id="searchField" promptText="Enter title..." style="-fx-background-color: #333; -fx-text-fill: white; -fx-border-color: #444;" HBox.hgrow="ALWAYS" />
+
+        <Separator orientation="VERTICAL" style="-fx-opacity: 0.2;" />
+
+        <Label style="-fx-text-fill: #aaa;" text="Filter By:" />
+        <ComboBox fx:id="filterTypeCombo" prefWidth="130" promptText="All Media" style="-fx-background-color: #333;" />
+    </HBox>
+
+    <SplitPane dividerPositions="0.4" style="-fx-background-color: transparent;" VBox.vgrow="ALWAYS">
+
+        <VBox spacing="10" style="-fx-background-color: #1b1b1b; -fx-padding: 10;">
+            <TableView fx:id="mediaTable" VBox.vgrow="ALWAYS" style="-fx-background-color: #1b1b1b;">
+                <columns>
+                    <TableColumn fx:id="colTitle" prefWidth="180" text="Title" />
+                    <TableColumn fx:id="colType" prefWidth="90" text="Type" />
+                </columns>
+            </TableView>
+        </VBox>
+
+        <ScrollPane fitToWidth="true" style="-fx-background-color: transparent; -fx-background: #141414;">
+            <VBox spacing="20" style="-fx-padding: 20;">
+                <VBox spacing="15.0" style="-fx-padding: 20; -fx-background-color: #1f1f1f; -fx-background-radius: 10;" VBox.vgrow="ALWAYS">
+                    <Label style="-fx-text-fill: white; -fx-font-size: 18; -fx-font-weight: bold;" text="Media Information" />
+
+                    <GridPane hgap="15.0" vgap="20.0" VBox.vgrow="ALWAYS">
+                        <columnConstraints>
+                            <ColumnConstraints maxWidth="150" minWidth="100" prefWidth="130" />
+                            <ColumnConstraints hgrow="ALWAYS" />
+                        </columnConstraints>
+
+                        <Label style="-fx-text-fill: #aaa;" text="Title" GridPane.columnIndex="0" GridPane.rowIndex="0" />
+                        <TextField fx:id="titleField" style="-fx-background-color: #333; -fx-text-fill: white;" GridPane.columnIndex="1" GridPane.rowIndex="0" />
+
+                        <Label style="-fx-text-fill: #aaa;" text="Type / Year" GridPane.columnIndex="0" GridPane.rowIndex="1" />
+                        <HBox spacing="10" GridPane.columnIndex="1" GridPane.rowIndex="1">
+                            <ComboBox fx:id="typeCombo" prefWidth="120" style="-fx-background-color: #333;" />
+                            <TextField fx:id="yearField" prefWidth="80" promptText="2024" style="-fx-background-color: #333; -fx-text-fill: white;" />
+                            <Label style="-fx-text-fill: #aaa; -fx-padding: 5 0 0 0;" text="Duration" />
+                            <TextField fx:id="durationField" prefWidth="80" promptText="min" style="-fx-background-color: #333; -fx-text-fill: white;" />
+                        </HBox>
+
+                        <Label style="-fx-text-fill: #aaa;" text="Video URL (Movies)" GridPane.rowIndex="2" />
+                        <TextField fx:id="videoUrlField" promptText="http://..." style="-fx-background-color: #333; -fx-text-fill: white;" GridPane.columnIndex="1" GridPane.rowIndex="2" />
+
+                        <Label style="-fx-text-fill: #aaa;" text="Poster URL" GridPane.rowIndex="3" />
+                        <TextField fx:id="posterUrlField" promptText="Image link..." style="-fx-background-color: #333; -fx-text-fill: white;" GridPane.columnIndex="1" GridPane.rowIndex="3" />
+
+                        <Label style="-fx-text-fill: #aaa;" text="Description" GridPane.rowIndex="4" GridPane.valignment="TOP" />
+                        <TextArea fx:id="descArea" prefHeight="80" style="-fx-control-inner-background: #333; -fx-text-fill: white;" wrapText="true" GridPane.columnIndex="1" GridPane.rowIndex="4" />
+
+                        <Label style="-fx-text-fill: #aaa;" text="Main Cast" GridPane.rowIndex="5" GridPane.valignment="TOP" />
+                        <TextArea fx:id="actorsArea" prefHeight="60" promptText="Actors..." style="-fx-control-inner-background: #333; -fx-text-fill: white;" GridPane.columnIndex="1" GridPane.rowIndex="5" />
+                        <rowConstraints>
+                            <RowConstraints />
+                            <RowConstraints />
+                            <RowConstraints />
+                            <RowConstraints />
+                            <RowConstraints />
+                            <RowConstraints />
+                        </rowConstraints>
+                    </GridPane>
+
+                    <Label style="-fx-text-fill: #aaa; -fx-font-weight: bold;" text="Genres" />
+                    <FlowPane fx:id="genreFlowPane" hgap="10" style="-fx-padding: 10; -fx-border-color: #444; -fx-border-radius: 5;" vgap="8" />
+
+                    <Separator style="-fx-opacity: 0.1;" />
+
+                    <HBox alignment="CENTER_RIGHT" spacing="10">
+                        <Button fx:id="manageEpisodesBtn" onAction="#handleOpenEpisodeManager" style="-fx-background-color: #333; -fx-text-fill: white; -fx-border-color: #555; -fx-cursor: hand;" text="⚙ Manage Episodes" />
+                        <Region HBox.hgrow="ALWAYS" />
+                        <Button onAction="#handleDelete" style="-fx-background-color: transparent; -fx-text-fill: #ff4444; -fx-border-color: #ff4444; -fx-cursor: hand;" text="Delete" />
+                        <Button onAction="#handleSave" prefWidth="150" style="-fx-background-color: #e50914; -fx-text-fill: white; -fx-font-weight: bold; -fx-cursor: hand;" text="SAVE CHANGES" />
+                    </HBox>
+                </VBox>
+            </VBox>
+        </ScrollPane>
+    </SplitPane>
+</VBox>

@@ -1,0 +1,49 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.text.Text?>
+
+<VBox spacing="20" style="-fx-background-color: #141414;" xmlns="http://javafx.com/javafx/17" xmlns:fx="http://javafx.com/fxml/1" fx:controller="org.netflix.Controllers.CategoryController">
+    <padding>
+        <Insets bottom="30" left="30" right="30" top="30" />
+    </padding>
+
+    <VBox spacing="5">
+        <Text style="-fx-fill: white; -fx-font-size: 24; -fx-font-weight: bold;" text="Category Management" />
+        <Text style="-fx-fill: #888; -fx-font-size: 14;" text="Manage the genres used in your catalog." />
+    </VBox>
+
+    <HBox spacing="30" VBox.vgrow="ALWAYS">
+
+        <VBox spacing="10" HBox.hgrow="ALWAYS">
+            <Label style="-fx-text-fill: #e50914; -fx-font-weight: bold;" text="EXISTING GENRES" />
+            <ListView fx:id="categoryListView" style="-fx-background-color: #1b1b1b; -fx-control-inner-background: #1b1b1b; -fx-text-fill: white;" VBox.vgrow="ALWAYS" />
+        </VBox>
+
+        <VBox prefWidth="320" spacing="20" style="-fx-background-color: #1f1f1f; -fx-padding: 25; -fx-background-radius: 10;">
+            <Text style="-fx-fill: white; -fx-font-size: 18; -fx-font-weight: bold;" text="Editor" />
+
+            <VBox spacing="15">
+                <VBox spacing="5">
+                    <Label style="-fx-text-fill: #aaa;" text="Technical Name" />
+                    <TextField fx:id="genreNameField" promptText="e.g. ACTION" style="-fx-background-color: #333; -fx-text-fill: white;" />
+                </VBox>
+
+                <VBox spacing="5">
+                    <Label style="-fx-text-fill: #aaa;" text="Display Name" />
+                    <TextField fx:id="displayField" promptText="e.g. Action" style="-fx-background-color: #333; -fx-text-fill: white;" />
+                </VBox>
+            </VBox>
+
+            <Region VBox.vgrow="ALWAYS" />
+
+            <VBox spacing="10">
+                <Button maxWidth="Infinity" onAction="#handleSave" prefHeight="35" style="-fx-background-color: #e50914; -fx-text-fill: white; -fx-font-weight: bold;" text="SAVE" />
+                <Button maxWidth="Infinity" onAction="#handleDelete" prefHeight="35" style="-fx-background-color: transparent; -fx-text-fill: #ff4444; -fx-border-color: #ff4444;" text="DELETE" />
+            </VBox>
+        </VBox>
+
+    </HBox>
+</VBox>

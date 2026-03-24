@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.text.Text?>
+
+<VBox spacing="20" style="-fx-background-color: #141414;" xmlns="http://javafx.com/javafx/17" xmlns:fx="http://javafx.com/fxml/1" fx:controller="org.netflix.Controllers.UserManagementController">
+    <padding>
+        <Insets top="30" right="30" bottom="30" left="30"/>
+    </padding>
+
+    <HBox alignment="CENTER_LEFT" spacing="20">
+        <Text text="User Moderation" style="-fx-fill: white; -fx-font-size: 24; -fx-font-weight: bold;"/>
+        <Region HBox.hgrow="ALWAYS" />
+        <TextField fx:id="userSearch" promptText="Search users..." style="-fx-background-color: #333; -fx-text-fill: white; -fx-pref-width: 250;"/>
+    </HBox>
+
+    <TableView fx:id="userTable" VBox.vgrow="ALWAYS" style="-fx-background-color: #1b1b1b;">
+        <columns>
+            <TableColumn fx:id="colUserEmail" text="Email / Username" prefWidth="300" />
+            <TableColumn fx:id="colUserRole" text="Role (Admin/User)" prefWidth="150" />
+            <TableColumn fx:id="colUserStatus" text="Status" prefWidth="150" />
+            <TableColumn fx:id="colActions" text="Quick Actions" prefWidth="200" />
+        </columns>
+    </TableView>
+
+    <HBox spacing="15" alignment="CENTER_RIGHT">
+        <Button text="Ban User" style="-fx-background-color: transparent; -fx-text-fill: #ff4444; -fx-border-color: #ff4444;"/>
+        <Button text="Promote to Admin" style="-fx-background-color: #333; -fx-text-fill: white;"/>
+    </HBox>
+</VBox>

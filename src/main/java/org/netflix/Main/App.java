@@ -21,7 +21,7 @@ public class App extends Application {
 
     @Override
     public void start(Stage stage) throws IOException {
-        scene = new Scene(loadFXML("main"), 640, 480);
+        scene = new Scene(loadFXML("MainDashboard"), 640, 480);
         String cssPath = getClass().getResource("/org/Styles/style.css").toExternalForm();
         scene.getStylesheets().add(cssPath);
         URL cssUrl = getClass().getResource("/org/Styles/style.css");

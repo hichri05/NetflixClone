@@ -133,6 +133,18 @@
 .scroll-pane .scroll-bar:horizontal {
     -fx-background-color: transparent;
 }
+.scroll-bar:vertical {
+    -fx-background-color: transparent;
+    visibility: hidden;
+    -fx-pref-width: 0;
+    -fx-opacity: 0;
+}
+.list-view .scroll-bar:vertical,
+.table-view .scroll-bar:vertical {
+    -fx-pref-width: 0;
+    -fx-opacity: 0;
+}
+
 
 .scroll-pane .scroll-bar:horizontal .thumb {
     -fx-background-color: rgba(255, 255, 255, 0.2);

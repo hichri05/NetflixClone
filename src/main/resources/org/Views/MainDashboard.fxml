@@ -1,0 +1,40 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+<?import javafx.scene.text.Text?>
+<?import javafx.geometry.Insets?>
+
+<BorderPane prefHeight="800.0" prefWidth="1200.0" style="-fx-background-color: #141414;" xmlns="http://javafx.com/javafx/17" xmlns:fx="http://javafx.com/fxml/1" fx:controller="org.netflix.Controllers.AdminMainController">
+
+    <left>
+        <VBox spacing="15" prefWidth="240" style="-fx-background-color: #000; -fx-padding: 30 15 15 15;">
+            <Text text="NETFLIX" style="-fx-fill: #e50914; -fx-font-size: 26; -fx-font-weight: bold;">
+                <VBox.margin><Insets bottom="30"/></VBox.margin>
+            </Text>
+
+            <Button fx:id="btnCatalogue" onAction="#showCatalogue" prefWidth="210" alignment="BASELINE_LEFT"
+                    text="🎬  Catalogue" style="-fx-background-color: transparent; -fx-text-fill: white; -fx-font-size: 15; -fx-cursor: hand;"/>
+
+            <Button fx:id="btnCategories" onAction="#showCategories" prefWidth="210" alignment="BASELINE_LEFT"
+                    text="🏷️  Categories" style="-fx-background-color: transparent; -fx-text-fill: #aaa; -fx-font-size: 15; -fx-cursor: hand;"/>
+
+            <Button fx:id="btnUsers" onAction="#showUsers" prefWidth="210" alignment="BASELINE_LEFT"
+                    text="👥  Users" style="-fx-background-color: transparent; -fx-text-fill: #aaa; -fx-font-size: 15; -fx-cursor: hand;"/>
+
+            <Region VBox.vgrow="ALWAYS" />
+
+            <Button onAction="#handleLogout" prefWidth="210" text="Logout"
+                    style="-fx-background-color: transparent; -fx-text-fill: #e50914; -fx-border-color: #e50914; -fx-border-radius: 5;"/>
+        </VBox>
+    </left>
+
+    <center>
+        <StackPane fx:id="contentArea" style="-fx-background-color: #141414;">
+            <children>
+                <Text text="Welcome, Admin. Select a category to begin." style="-fx-fill: #444; -fx-font-size: 18;"/>
+            </children>
+        </StackPane>
+    </center>
+
+</BorderPane>
