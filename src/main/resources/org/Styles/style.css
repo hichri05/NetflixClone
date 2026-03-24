@@ -173,3 +173,17 @@
     -fx-font-weight: bold;
 }
 
+.main-scroll-pane, .genre-scroll-pane {
+    -fx-background-color: transparent;
+    -fx-background-insets: 0;
+}
+
+.main-scroll-pane > .viewport, .genre-scroll-pane > .viewport {
+    -fx-background-color: transparent;
+}
+
+/* Hide the horizontal scrollbar for genres */
+.genre-scroll-pane .scroll-bar:horizontal {
+    -fx-opacity: 0;
+    -fx-padding: -5;
+}

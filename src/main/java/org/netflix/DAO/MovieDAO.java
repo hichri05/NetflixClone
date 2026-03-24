@@ -3,7 +3,6 @@ package org.netflix.DAO;
 import org.netflix.Models.Genre;
 import org.netflix.Models.Movie;
 import org.netflix.Utils.ConxDB;
-
 import java.sql.Connection;
 import java.sql.ResultSet;
 import java.sql.SQLException;
