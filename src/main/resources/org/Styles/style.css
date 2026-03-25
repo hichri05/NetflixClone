@@ -130,22 +130,22 @@
 }
 
 
-.scroll-pane .scroll-bar:horizontal {
+.scroll-bar:horizontal {
     -fx-background-color: transparent;
 }
-.scroll-bar:vertical {
+.scroll-pane, .movie-row, .main-scroll-pane {
     -fx-background-color: transparent;
-    visibility: hidden;
-    -fx-pref-width: 0;
-    -fx-opacity: 0;
-}
-.list-view .scroll-bar:vertical,
-.table-view .scroll-bar:vertical {
-    -fx-pref-width: 0;
-    -fx-opacity: 0;
+    -fx-background: transparent;
+    -fx-border-color: transparent;
+    -fx-vbar-policy: never;
 }
 
-
+.scroll-pane > .viewport {
+    -fx-background-color: transparent;
+}
+.scroll-pane .corner {
+    -fx-background-color: transparent;
+}
 .scroll-pane .scroll-bar:horizontal .thumb {
     -fx-background-color: rgba(255, 255, 255, 0.2);
     -fx-background-radius: 10;
