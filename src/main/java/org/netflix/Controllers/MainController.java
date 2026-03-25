@@ -7,11 +7,13 @@ import javafx.scene.control.Label;
 import javafx.scene.control.ScrollPane;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
+import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.StackPane;
 import org.netflix.DAO.MovieDAO;
 import org.netflix.Models.Movie;
 import org.netflix.Services.MovieService;
+import org.netflix.Utils.SceneSwitcher;
 
 import java.io.IOException;
 import java.net.URL;
@@ -47,8 +49,6 @@ public class MainController implements Initializable {
 
     }
 
-
-
     public void fillRow(HBox row) throws IOException {
         List<Movie> movies = MovieDAO.getAllMovies();
         for(Movie movie : movies){
@@ -56,7 +56,6 @@ public class MainController implements Initializable {
             StackPane poster = loader.load();
             MoviePosterController controller = loader.getController();
             controller.setData(movie);
-            StackPane poster2 = poster;
             row.getChildren().add(poster);
         }
     }
@@ -75,5 +74,9 @@ public class MainController implements Initializable {
         Image img = new Image(highResUrl, true);
         mvTrendImg.setImage(img);
 
+    }
+    @FXML
+    private void handleMyListClick(MouseEvent event) {
+        SceneSwitcher.goTo(event, "/org/Views/MyList.fxml");
     }
 }

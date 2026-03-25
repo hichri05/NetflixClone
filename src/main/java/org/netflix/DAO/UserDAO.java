@@ -1,5 +1,6 @@
 package org.netflix.DAO;
 
+import org.netflix.Models.Media;
 import org.netflix.Models.User;
 import org.netflix.Utils.ConxDB;
 
@@ -43,5 +44,10 @@ public class UserDAO {
             }
         }
         return users;
+    }
+
+    public static List<Media> getUserFavorites() {
+        //todo
+        return null;
     }
 }
