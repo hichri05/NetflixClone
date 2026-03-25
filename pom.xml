@@ -48,7 +48,8 @@
         </dependency>
 
     </dependencies>
-
+<dependencies>
+    <project>
     <build>
         <plugins>
             <plugin>
@@ -67,3 +68,14 @@
         </plugins>
     </build>
 </project>
+<dependencies>
+
+<!-- BCrypt pour le hachage des mots de passe -->
+<dependencies>
+<dependency>
+    <groupId>org.mindrot</groupId>
+    <artifactId>jbcrypt</artifactId>
+    <version>0.4</version>
+</dependency>
+</dependencies>
+
