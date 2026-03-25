@@ -1,5 +1,6 @@
 package org.netflix.DAO;
 
+import org.netflix.Models.Acteur;
 import org.netflix.Models.Genre;
 import org.netflix.Models.Movie;
 import org.netflix.Utils.ConxDB;
@@ -15,6 +16,7 @@ public class MovieDAO {
 
     public static List<Movie> getAllMovies(){
         List<Movie> movies = new ArrayList<Movie>();
+        List<Acteur> casting=new ArrayList<Acteur>();
         String sql = "SELECT m.*, v.videoUrl, v.duration_minutes " +
                 "FROM media m " +
                 "INNER JOIN movie v ON m.id_Media = v.id_Media";
@@ -23,6 +25,7 @@ public class MovieDAO {
             try {
                 while (rs.next()) {
                     List<Genre> genresList = MediaDAO.getGenresByMediaId(rs.getInt("id_Media"));
+
                     movies.add(new Movie(
                             rs.getInt("id_Media"),
                             rs.getString("title"),
@@ -33,7 +36,8 @@ public class MovieDAO {
                             rs.getString("director"),
                             rs.getString("videoUrl"),
                             rs.getInt("duration_minutes"),
-                            genresList
+                            genresList,
+                            casting
                     ));
                 }
             } catch (SQLException e) {
@@ -46,6 +50,7 @@ public class MovieDAO {
     }
     public static Movie getTrendMovie() {
         Movie movie = null;
+        List<Acteur> casting=new ArrayList<Acteur>();
         String sql = "SELECT m.*, v.videoUrl, v.duration_minutes " +
                 "FROM Media m " +
                 "INNER JOIN Movie v ON m.id_Media = v.id_Media " +
@@ -70,7 +75,8 @@ public class MovieDAO {
                         rs.getString("director"),
                         rs.getString("videoUrl"),
                         rs.getInt("duration_minutes"),
-                        genreList
+                        genreList,
+                        casting
                 );
             }
         } catch (SQLException e) {
