@@ -12,7 +12,8 @@
 <?import javafx.scene.layout.VBox?>
 <?import javafx.scene.text.Font?>
 
-<StackPane fx:id="root" xmlns="http://javafx.com/javafx/25" xmlns:fx="http://javafx.com/fxml/1" fx:controller="org.netflix.Controllers.LoginController">
+<?import javafx.scene.layout.HBox?>
+<StackPane fx:id="root" xmlns="http://javafx.com/javafx/25" xmlns:fx="http://javafx.com/fxml/1" fx:controller="org.netflix.Controllers.SignInController">
    <children>
       <ImageView fx:id="background" fitHeight="328.0" fitWidth="572.0" pickOnBounds="true" preserveRatio="true">
          <image>
@@ -27,26 +28,34 @@
                   <Font name="System Bold" size="32.0" />
                </font>
             </Label>
-            <TextField promptText="Email" style="-fx-background-color: none; -fx-border-color: #fff; -fx-border-radius: 3px; -fx-border-width: 0.5px; -fx-text-fill: white; -fx-prompt-text-fill: #8c8c8c;" stylesheets="@../Styles/Style.css">
+            <TextField fx:id="emailField" promptText="Email" style="-fx-background-color: none; -fx-border-color: #fff; -fx-border-radius: 3px; -fx-border-width: 0.5px; -fx-text-fill: white; -fx-prompt-text-fill: #8c8c8c;" stylesheets="@../Styles/style.css">
                <opaqueInsets>
                   <Insets />
                </opaqueInsets>
                <padding>
                   <Insets bottom="7.0" left="7.0" right="7.0" top="7.0" />
                </padding></TextField>
-            <PasswordField promptText="Password" style="-fx-background-color: none; -fx-border-color: #fff; -fx-border-radius: 3px; -fx-border-width: 0.5px; -fx-prompt-text-fill: #8c8c8c; -fx-text-fill: white;">
+            <PasswordField fx:id="passwordField" onAction="#handleLogin" promptText="Password" style="-fx-background-color: none; -fx-border-color: #fff; -fx-border-radius: 3px; -fx-border-width: 0.5px; -fx-prompt-text-fill: #8c8c8c; -fx-text-fill: white;">
                <padding>
                   <Insets bottom="7.0" left="7.0" right="7.0" top="7.0" />
                </padding></PasswordField>
-            <PasswordField layoutX="40.0" layoutY="177.0" promptText="Repeat Password" style="-fx-background-color: none; -fx-border-color: #fff; -fx-border-radius: 3px; -fx-border-width: 0.5px; -fx-prompt-text-fill: #8c8c8c; -fx-text-fill: white;">
-               <padding>
-                  <Insets bottom="7.0" left="7.0" right="7.0" top="7.0" />
-               </padding>
-            </PasswordField>
-            <Button maxWidth="1.7976931348623157E308" mnemonicParsing="false" style="-fx-background-color: #E50914;" text="Sign In" textFill="WHITE">
+            <Button fx:id="loginButton" onAction="#handleLogin" maxWidth="1.7976931348623157E308" mnemonicParsing="false" style="-fx-background-color: #E50914;" text="Sign In" textFill="WHITE">
                <font>
                   <Font name="System Bold" size="12.0" />
                </font></Button>
+             <HBox spacing="5.0">
+                 <children>
+                     <Label text="New to Netflix?" textFill="#8c8c8c" />
+                     <Label onMouseClicked="#goToSignUp" style="-fx-cursor: hand;" text="Sign up now." textFill="WHITE">
+                         <font>
+                             <Font name="System Bold" size="12.0" />
+                         </font>
+                     </Label>
+                 </children>
+                 <padding>
+                     <Insets top="10.0" />
+                 </padding>
+             </HBox>
          </children>
          <StackPane.margin>
             <Insets bottom="10.0" left="10.0" right="10.0" top="10.0" />
