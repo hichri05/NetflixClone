@@ -1,16 +1,14 @@
 package org.netflix.Controllers;
 
-import java.io.IOException;
-
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.scene.image.ImageView;
 import javafx.scene.layout.StackPane;
-import org.netflix.Main.App;
 import org.netflix.Utils.SceneSwitcher;
 
-public class LoginController {
-    @FXML private ImageView background;
+public class SignUpController {
+    @FXML
+    private ImageView background;
     @FXML private StackPane root;
     @FXML
     public void initialize() {

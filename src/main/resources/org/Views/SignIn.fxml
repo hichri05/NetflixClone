@@ -12,7 +12,8 @@
 <?import javafx.scene.layout.VBox?>
 <?import javafx.scene.text.Font?>
 
-<StackPane fx:id="root" xmlns="http://javafx.com/javafx/25" xmlns:fx="http://javafx.com/fxml/1" fx:controller="org.netflix.Controllers.LoginController">
+<?import javafx.scene.layout.HBox?>
+<StackPane fx:id="root" xmlns="http://javafx.com/javafx/25" xmlns:fx="http://javafx.com/fxml/1" fx:controller="org.netflix.Controllers.SignInController">
    <children>
       <ImageView fx:id="background" fitHeight="328.0" fitWidth="572.0" pickOnBounds="true" preserveRatio="true">
          <image>
@@ -42,6 +43,19 @@
                <font>
                   <Font name="System Bold" size="12.0" />
                </font></Button>
+             <HBox spacing="5.0">
+                 <children>
+                     <Label text="New to Netflix?" textFill="#8c8c8c" />
+                     <Label onMouseClicked="#goToSignUp" style="-fx-cursor: hand;" text="Sign up now." textFill="WHITE">
+                         <font>
+                             <Font name="System Bold" size="12.0" />
+                         </font>
+                     </Label>
+                 </children>
+                 <padding>
+                     <Insets top="10.0" />
+                 </padding>
+             </HBox>
          </children>
          <StackPane.margin>
             <Insets bottom="10.0" left="10.0" right="10.0" top="10.0" />
