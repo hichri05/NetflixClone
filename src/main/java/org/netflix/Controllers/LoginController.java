@@ -1,10 +1,13 @@
 package org.netflix.Controllers;
 
 import java.io.IOException;
+
+import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.scene.image.ImageView;
 import javafx.scene.layout.StackPane;
 import org.netflix.Main.App;
+import org.netflix.Utils.SceneSwitcher;
 
 public class LoginController {
     @FXML private ImageView background;
@@ -15,5 +18,9 @@ public class LoginController {
         background.fitWidthProperty().bind(root.widthProperty());
         background.fitHeightProperty().bind(root.heightProperty());
         background.setPreserveRatio(false);
+    }
+
+    public void handleLogin(ActionEvent event) {
+        SceneSwitcher.goTo(event, "/org/Views/main.fxml");
     }
 }
