@@ -6,9 +6,9 @@ public class Serie extends Media{
     private int nbrSaison;
     public Serie(int idMedia, String title, String description, int releaseYear,
                  double averageRating, String coverImageUrl, String director,
-                 int nbrSaison, List<Genre> genres) {
+                 int nbrSaison, List<Genre> genres,List<Acteur> casting) {
         super( idMedia, title, description,releaseYear,
-                averageRating,  coverImageUrl, director, genres);
+                averageRating,  coverImageUrl, director, genres,casting);
         this.nbrSaison = nbrSaison;
     }
     public int getNbrSaison() { return nbrSaison; }

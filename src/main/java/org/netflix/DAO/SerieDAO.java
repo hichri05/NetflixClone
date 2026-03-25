@@ -1,4 +1,5 @@
 package org.netflix.DAO;
+import org.netflix.Models.Acteur;
 import org.netflix.Models.Genre;
 import org.netflix.Models.Serie;
 import org.netflix.Utils.ConxDB;
@@ -15,6 +16,7 @@ public class SerieDAO {
     private static Connection  con=ConxDB.getInstance();
     public List <Serie> getAllSeries(){
         List<Serie> series =new ArrayList<>();
+        List<Acteur> casting=new ArrayList<>();
         //ha4i l requettee
         String sql="SELECT m.*, s.nbrSaison"+
                 "FROM media m"+
@@ -31,7 +33,8 @@ public class SerieDAO {
                         rs.getString("coverImageUrl"),
                         rs.getString("director"),
                         rs.getInt("nbrSaison"),
-                        genresList
+                        genresList,
+                        casting
                                 ));
             }
         } catch (SQLException e) {
