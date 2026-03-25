@@ -7,6 +7,7 @@ import org.netflix.Utils.ConxDB;
 import java.sql.Connection;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.sql.PreparedStatement;
 import java.sql.Statement;
 import java.util.ArrayList;
 import java.util.List;
@@ -46,8 +47,28 @@ public class UserDAO {
         return users;
     }
 
-    public static List<Media> getUserFavorites() {
-        //todo
-        return null;
+    public static List<Media> getUserFavorites(int userId) {
+        List<Media> favorites = new ArrayList<>();
+        String sql = "SELECT m.* FROM media m " +
+                "JOIN favorite f ON m.id_Media = f.id_Media " +
+                "WHERE f.id_User = ?";
+
+        try (PreparedStatement pstmt = conn.prepareStatement(sql)) {
+            pstmt.setInt(1, userId);
+            try (ResultSet rs = pstmt.executeQuery()) {
+                while (rs.next()) {
+                    int idMedia = rs.getInt("id_Media");
+                    String title = rs.getString("title");
+                    String description = rs.getString("description");
+                    int releaseYear = rs.getInt("releaseYear");
+                    double averageRating = rs.getDouble("averageRating");
+                    String coverImageUrl = rs.getString("coverImageUrl");
+                    String director = rs.getString("director");
+                }
+            }
+        } catch (SQLException e) {
+            System.err.println("Erreur lors de la récupération des favoris : " + e.getMessage());
+        }
+        return favorites;
     }
 }
