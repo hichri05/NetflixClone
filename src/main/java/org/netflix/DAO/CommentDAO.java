@@ -65,6 +65,7 @@ public class CommentDAO {
                 reportedComments.add(new Comment(
                         rs.getInt("id_Comment"),
                         rs.getInt("id_User"),
+
                         rs.getInt("id_Media"),
                         rs.getString("content"),
                         rs.getDate("created_at").toLocalDate(),
