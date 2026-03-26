@@ -2,23 +2,19 @@ package org.netflix.Models;
 
 public class Season  {
     private int idSeason;
-    private int isSerie;
+    private int idSerie;
     private int seasonNumber;
     private String title;
     private String description;
     public Season(int idSeason, int idSerie, int saisonNumber, String title, String description) {
         this.idSeason = idSeason;
-        this.isSerie = idSerie;
+        this.idSerie = idSerie;
         this.seasonNumber = saisonNumber;
         this.title = title;
         this.description = description;
     }
     public int getIdSeason() {
         return idSeason;
-    }
-
-    public int getIsSerie() {
-        return isSerie;
     }
 
     public int getSeasonNumber() {
@@ -37,7 +33,7 @@ public class Season  {
     }
 
     public void setIsSerie(int isSerie) {
-        this.isSerie = isSerie;
+        this.idSerie = idSerie;
     }
 
     public void setSeasonNumber(int seasonNumber) {
@@ -51,4 +47,9 @@ public class Season  {
     public void setDescription(String description) {
         this.description = description;
     }
+
+    public int getIdSerie() {
+        return idSerie;
+    }
+
 }

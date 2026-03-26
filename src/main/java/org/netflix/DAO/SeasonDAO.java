@@ -30,4 +30,33 @@ public class SeasonDAO {
         }
         return seasons;
     }
+    public static boolean deleteSeason(int idSaison) {
+        String sql = "DELETE FROM saison WHERE id_Saison = ?";
+
+        try (PreparedStatement pstmt = conn.prepareStatement(sql)) {
+            pstmt.setInt(1, idSaison);
+
+            int rowsAffected = pstmt.executeUpdate();
+            return rowsAffected > 0;
+        } catch (SQLException e) {
+            System.err.println("Erreur lors de la suppression de la saison : " + e.getMessage());
+            return false;
+        }
+    }
+    public static boolean addSeason(Season season) {
+        String sql = "INSERT INTO saison (id_Serie, saisonNumber, title, description) VALUES (?, ?, ?, ?)";
+
+        try (PreparedStatement pstmt = conn.prepareStatement(sql)) {
+            pstmt.setInt(1, season.getIdSerie());
+            pstmt.setInt(2, season.getSeasonNumber());
+            pstmt.setString(3, season.getTitle());
+            pstmt.setString(4, season.getDescription());
+
+            int rowsAffected = pstmt.executeUpdate();
+            return rowsAffected > 0;
+        } catch (SQLException e) {
+            System.err.println("Erreur lors de l'ajout de la saison : " + e.getMessage());
+            return false;
+        }
+    }
 }
