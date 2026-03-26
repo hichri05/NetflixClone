@@ -1,6 +1,8 @@
 package org.netflix.DAO;
 
 import org.netflix.Models.Media;
+import org.netflix.Models.Movie;
+import org.netflix.Models.Serie;
 import org.netflix.Models.User;
 import org.netflix.Utils.ConxDB;
 
@@ -64,6 +66,21 @@ public class UserDAO {
                     double averageRating = rs.getDouble("averageRating");
                     String coverImageUrl = rs.getString("coverImageUrl");
                     String director = rs.getString("director");
+                    String type = rs.getString("type");
+
+                    if ("movie".equalsIgnoreCase(type)) {
+
+                        favorites.add(new Movie(
+                                idMedia, title, description, releaseYear, averageRating,
+                                coverImageUrl, director, null, 0, new ArrayList<>(), new ArrayList<>()
+                        ));
+                    } else if ("serie".equalsIgnoreCase(type)) {
+                        int nbrSaison = rs.getInt("nbrSaison");
+                        favorites.add(new Serie(
+                                idMedia, title, description, releaseYear, averageRating,
+                                coverImageUrl, director, nbrSaison, new ArrayList<>(), new ArrayList<>()
+                        ));
+                    }
                 }
             }
         } catch (SQLException e) {
