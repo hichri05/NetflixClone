@@ -9,11 +9,10 @@ import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.StackPane;
 import javafx.scene.shape.Rectangle;
 import org.netflix.Models.Media;
-import org.netflix.Models.Movie;
 import org.netflix.Utils.SceneSwitcher;
 import org.netflix.Utils.TransferData;
 
-public class MoviePosterController {
+public class MediaPosterController {
     @FXML private StackPane rootPane;
     @FXML private ImageView posterImageView;
     @FXML private Button removeBtn;

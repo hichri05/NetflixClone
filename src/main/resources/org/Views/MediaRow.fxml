@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.control.ScrollPane?>
+<?import javafx.scene.layout.HBox?>
+<?import javafx.scene.layout.VBox?>
+
+<VBox spacing="10.0" styleClass="movie-row" stylesheets="@../Styles/style.css" xmlns:fx="http://javafx.com/fxml/1" xmlns="http://javafx.com/javafx/25" fx:controller="org.netflix.Controllers.MediaRowController">
+    <children>
+        <Label fx:id="rowTitle" styleClass="genre-title" text="Category Name" />
+
+        <ScrollPane fitToHeight="true" hbarPolicy="NEVER" style="-fx-background-color: transparent;" vbarPolicy="NEVER">
+            <content>
+                <HBox fx:id="movieContainer" spacing="15.0" style="-fx-background-color: #141414;">
+                    <padding>
+                        <Insets left="50.0" right="50.0" />
+                    </padding>
+                </HBox>
+            </content>
+        </ScrollPane>
+    </children>
+</VBox>
