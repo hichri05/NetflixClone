@@ -65,6 +65,7 @@ public class UserDAO {
                     int releaseYear = rs.getInt("releaseYear");
                     double averageRating = rs.getDouble("averageRating");
                     String coverImageUrl = rs.getString("coverImageUrl");
+                    String backdropImageUrl =  rs.getString("backdrop_path");
                     String director = rs.getString("director");
                     String type = rs.getString("type");
 
@@ -72,13 +73,13 @@ public class UserDAO {
 
                         favorites.add(new Movie(
                                 idMedia, title, description, releaseYear, averageRating,
-                                coverImageUrl, director, null, 0, new ArrayList<>(), new ArrayList<>()
+                                coverImageUrl,backdropImageUrl, director, null, 0, new ArrayList<>(), new ArrayList<>()
                         ));
                     } else if ("serie".equalsIgnoreCase(type)) {
                         int nbrSaison = rs.getInt("nbrSaison");
                         favorites.add(new Serie(
                                 idMedia, title, description, releaseYear, averageRating,
-                                coverImageUrl, director, nbrSaison, new ArrayList<>(), new ArrayList<>()
+                                coverImageUrl,backdropImageUrl, director, nbrSaison, new ArrayList<>(), new ArrayList<>()
                         ));
                     }
                 }

@@ -16,8 +16,7 @@ public class Media {
     private List<Acteur> casting = new ArrayList<>();
 
     public Media(int idMedia, String title, String description, int releaseYear,
-                 double averageRating, String coverImageUrl, String director,List<Genre> genres,List<Acteur> casting) {
-                String backdropImageUrl) {
+                 double averageRating, String coverImageUrl, String backdropImageUrl,String director,List<Genre> genres,List<Acteur> casting) {
         this.idMedia = idMedia;
         this.title = title;
         this.description = description;

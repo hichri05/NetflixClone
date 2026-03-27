@@ -40,7 +40,6 @@ public class App extends Application {
     }
 
     public static void main(String[] args) {
-        //test
         for (Movie m: MovieDAO.getAllMovies()) {
             System.out.println(m);
         }
