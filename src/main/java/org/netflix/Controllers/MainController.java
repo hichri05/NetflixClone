@@ -25,13 +25,11 @@ public class MainController implements Initializable {
     @FXML private HBox dramaRow;
     @FXML private Label mvTrendName;
     @FXML private Label mvTrendDesc;
-    @FXML private ImageView mvTrendImg;
     @FXML private ScrollPane mainScroll;
     @FXML private StackPane heroStack;
     @Override
     public void initialize(URL url, ResourceBundle resourceBundle) {
-        mvTrendImg.fitWidthProperty().bind(heroStack.widthProperty());
-        mvTrendImg.fitHeightProperty().bind(heroStack.heightProperty());
+
 
         List<Movie> actionMovies = MovieService.getMoviesByGenre("Action");
         List<Movie> DramaMovies = MovieService.getMoviesByGenre("Drama");
@@ -62,18 +60,17 @@ public class MainController implements Initializable {
     public void getTrendMovie(){
 
         Movie movie = MovieDAO.getTrendMovie();
-        if (movie != null) {
-            String highResUrl = movie.getCoverImageUrl().replace("/w500/", "/original/");
 
-            heroStack.setStyle(heroStack.getStyle() + "-fx-background-image: url('" + highResUrl + "');");
-        }
         mvTrendName.setText(movie.getTitle());
         mvTrendDesc.setText(movie.getDescription());
-        String imgurl = movie.getCoverImageUrl();
-        String highResUrl = imgurl.replace("/w500/", "/original/");
-        Image img = new Image(highResUrl, true);
-        mvTrendImg.setImage(img);
-
+        String imgurl = movie.getBackdropImageUrl();
+        heroStack.setStyle(
+                        "-fx-background-image: url('" + imgurl + "'); " +
+                        "-fx-background-size: cover; " +
+                        "-fx-background-position: center center; " +
+                        "-fx-background-repeat: no-repeat;" +
+                                "-fx-background-color: linear-gradient(to bottom, rgba(0,0,0,0.7) 0%, transparent 20%);"
+        );
     }
     @FXML
     private void handleMyListClick(MouseEvent event) {

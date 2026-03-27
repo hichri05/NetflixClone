@@ -31,6 +31,7 @@ public class SerieDAO {
                         rs.getInt("releaseYear"),
                         rs.getDouble("averageRating"),
                         rs.getString("coverImageUrl"),
+                        rs.getString("backdrop_path"),
                         rs.getString("director"),
                         rs.getInt("nbrSaison"),
                         genresList,

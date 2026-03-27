@@ -10,18 +10,21 @@ public class Media {
     protected int releaseYear;
     protected double averageRating;
     protected String coverImageUrl;
+    protected String backdropImageUrl;
     protected String director;
     protected List<Genre> genres;
     private List<Acteur> casting = new ArrayList<>();
 
     public Media(int idMedia, String title, String description, int releaseYear,
                  double averageRating, String coverImageUrl, String director,List<Genre> genres,List<Acteur> casting) {
+                String backdropImageUrl) {
         this.idMedia = idMedia;
         this.title = title;
         this.description = description;
         this.releaseYear = releaseYear;
         this.averageRating = averageRating;
         this.coverImageUrl = coverImageUrl;
+        this.backdropImageUrl = backdropImageUrl;
         this.director = director;
         this.genres = genres;
         this.casting=casting;
@@ -30,6 +33,7 @@ public class Media {
     public int getIdMedia() { return idMedia; }
     public String getTitle() { return title; }
     public String getCoverImageUrl() { return coverImageUrl; }
+    public String getBackdropImageUrl() {return backdropImageUrl;}
     public String getDescription() { return description; }
     public int getReleaseYear(){ return releaseYear;}
     public double getAverageRating(){ return averageRating;}
