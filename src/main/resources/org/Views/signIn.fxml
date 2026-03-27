@@ -23,7 +23,6 @@
       <Pane prefHeight="200.0" prefWidth="200.0" style="-fx-background-color: rgba(0,0,0,0.5);" />
       <VBox alignment="CENTER_LEFT" maxHeight="500.0" maxWidth="400.0" minHeight="300.0" minWidth="275.0" spacing="10.0" style="-fx-background-color: rgba(0,0,0,0.75); -fx-background-radius: 3px;" StackPane.alignment="CENTER">
          <children>
-            <Label fx:id="errorLabel" styleClass="error-label" />
             <Label text="SIGN IN" textFill="WHITE">
                <font>
                   <Font name="System Bold" size="32.0" />
