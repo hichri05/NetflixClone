@@ -3,16 +3,18 @@ package org.netflix.Controllers;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.fxml.Initializable;
+import javafx.scene.Parent;
 import javafx.scene.control.Label;
 import javafx.scene.control.ScrollPane;
-import javafx.scene.image.Image;
-import javafx.scene.image.ImageView;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.StackPane;
+import javafx.scene.layout.VBox;
+import org.netflix.DAO.MediaDAO;
 import org.netflix.DAO.MovieDAO;
+import org.netflix.Models.Media;
 import org.netflix.Models.Movie;
-import org.netflix.Services.MovieService;
+
 import org.netflix.Utils.SceneSwitcher;
 
 import java.io.IOException;
@@ -27,19 +29,38 @@ public class MainController implements Initializable {
     @FXML private Label mvTrendDesc;
     @FXML private ScrollPane mainScroll;
     @FXML private StackPane heroStack;
+    @FXML private VBox mediaRows;
     @Override
     public void initialize(URL url, ResourceBundle resourceBundle) {
 
-
-        List<Movie> actionMovies = MovieService.getMoviesByGenre("Action");
-        List<Movie> DramaMovies = MovieService.getMoviesByGenre("Drama");
+        List<Media> trendingMedias = MediaDAO.getTrendingMedias();
+        List<Media> actionMedias = MediaDAO.getMediasByGenre("Action");
+        List<Media> dramaMedias = MediaDAO.getMediasByGenre("Drama");
+        //List<Media> horrorMedias = MediaDAO.getMediasByGenre("Horror");
+        List<Media> comedyMedias = MediaDAO.getMediasByGenre("Comedy");
+        List<Media> scifiMedias = MediaDAO.getMediasByGenre("Scifi");
         try {
-            fillRow(actionRow);
+            fillRow("Action", actionMedias);
         } catch (IOException e) {
             throw new RuntimeException(e);
         }
         try {
-            fillRow(dramaRow);
+            fillRow("Drama", dramaMedias);
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
+       /* try {
+            fillRow("Horror", horrorMedias);
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }*/
+        try {
+            fillRow("Comedy", comedyMedias);
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
+        try {
+            fillRow("Sci-Fi", scifiMedias);
         } catch (IOException e) {
             throw new RuntimeException(e);
         }
@@ -47,15 +68,14 @@ public class MainController implements Initializable {
 
     }
 
-    public void fillRow(HBox row) throws IOException {
-        List<Movie> movies = MovieDAO.getAllMovies();
-        for(Movie movie : movies){
-            FXMLLoader loader = new FXMLLoader(getClass().getResource("/org/Views/moviePoster.fxml"));
-            StackPane poster = loader.load();
-            MoviePosterController controller = loader.getController();
-            controller.setData(movie);
-            row.getChildren().add(poster);
-        }
+    public void fillRow(String Title, List<Media> medias) throws IOException {
+        if(medias.isEmpty()) {return;}
+        FXMLLoader loader = new FXMLLoader(getClass().getResource("/org/Views/MediaRow.fxml"));
+        Parent row = loader.load();
+        MediaRowController controller = loader.getController();
+        controller.setData(Title, medias);
+        mediaRows.getChildren().add(row);
+
     }
     public void getTrendMovie(){
 

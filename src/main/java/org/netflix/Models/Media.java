@@ -28,6 +28,17 @@ public class Media {
         this.genres = genres;
         this.casting=casting;
     }
+    public Media(int idMedia, String title, String description, int releaseYear,
+                 double averageRating, String coverImageUrl, String backdropImageUrl,String director) {
+        this.idMedia = idMedia;
+        this.title = title;
+        this.description = description;
+        this.releaseYear = releaseYear;
+        this.averageRating = averageRating;
+        this.coverImageUrl = coverImageUrl;
+        this.backdropImageUrl = backdropImageUrl;
+        this.director = director;
+    }
     public  Media() {}
     public int getIdMedia() { return idMedia; }
     public String getTitle() { return title; }

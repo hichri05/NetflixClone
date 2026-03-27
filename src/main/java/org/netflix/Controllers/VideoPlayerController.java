@@ -52,6 +52,7 @@ public class VideoPlayerController implements Initializable {
             timeSlider.setMax(mediaPlayer.getTotalDuration().toSeconds());
             mediaPlayer.volumeProperty().bind(volumeSlider.valueProperty().divide(100));
             mediaPlayer.play();
+            playBtn.setText("⏸");
         });
 
 

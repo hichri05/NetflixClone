@@ -2,12 +2,9 @@ package org.netflix.Controllers;
 
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
-import javafx.scene.Parent;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.FlowPane;
 import javafx.scene.layout.StackPane;
-import javafx.scene.layout.VBox;
-import org.netflix.DAO.UserDAO;
 import org.netflix.Models.Media;
 import org.netflix.Utils.SceneSwitcher;
 
@@ -30,7 +27,7 @@ public class MyListController {
                 FXMLLoader loader = new FXMLLoader(getClass().getResource("org/netflix/Views/moviePoster.fxml"));
                 StackPane posterNode = loader.load();
 
-                MoviePosterController controller = loader.getController();
+                MediaPosterController controller = loader.getController();
                 controller.showRemoveButton(true);
                 controller.setData(media);
 
