@@ -87,5 +87,22 @@ public class CommentDAO {
             return false;
         }
     }
+    // Dans CommentDAO.java - Ajouter cette méthode
+
+    public int countAll() {
+        String sql = "SELECT COUNT(*) FROM comments";
+
+        try (Statement stmt = conn.createStatement();
+             ResultSet rs = stmt.executeQuery(sql)) {
+
+            if (rs.next()) {
+                return rs.getInt(1);
+            }
+
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return 0;
+    }
 }
 

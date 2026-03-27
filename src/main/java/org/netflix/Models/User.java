@@ -71,4 +71,12 @@ public class User {
     public String toString() {
         return "User{" + "id=" + id + ", username=" + username + ", email=" + email + '}';
     }
+
+    public String getPassword() {
+        return password;
+    }
+
+    public String getUserName() {
+        return username;
+    }
 }

@@ -11,9 +11,7 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.PreparedStatement;
 import java.sql.Statement;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Optional;
+import java.util.*;
 
 public class UserDAO {
     private static Connection conn = ConxDB.getInstance();
@@ -92,8 +90,28 @@ public class UserDAO {
     }
 
     public static User findByEmail(String email) {
-        //todo
+        String sql = "SELECT * FROM user WHERE email = ?";
 
+        try (PreparedStatement pstmt = conn.prepareStatement(sql)) {
+            pstmt.setString(1, email);
+
+            try (ResultSet rs = pstmt.executeQuery()) {
+                if (rs.next()) {
+
+                    User user = new User(
+                            rs.getInt("id_User"),    // Nom de la colonne dans votre BDD
+                            rs.getString("userName"),
+                            rs.getString("email")
+                    );
+
+
+
+                    return user;
+                }
+            }
+        } catch (SQLException e) {
+            System.err.println("Erreur dans findByEmail : " + e.getMessage());
+        }
         return null;
     }
 
@@ -114,8 +132,50 @@ public class UserDAO {
         return null;
     }
 
+    /**
+     * Insère un nouvel utilisateur dans la base de données (Inscription)
+     *
+     */
     public static boolean AddUser(User newUser) {
-        //todo
-        return false;
+
+        String sql = "INSERT INTO user (userName, email, password, role) VALUES (?, ?, ?, ?)";
+
+        try (PreparedStatement pstmt = conn.prepareStatement(sql)) {
+
+            pstmt.setString(1, newUser.getUserName());
+            pstmt.setString(2, newUser.getEmail());
+            pstmt.setString(3, newUser.getPassword());
+
+
+            pstmt.setString(4, "user");
+
+
+            int rowsInserted = pstmt.executeUpdate();
+            return rowsInserted > 0;
+
+        } catch (SQLException e) {
+            System.err.println("Erreur lors de l'inscription de l'utilisateur : " + e.getMessage());
+            return false;
+        }
+    }
+    /**
+     nbr des inscriptions par jour
+     */
+    public static Map<String, Integer> getRegistrationStats() {
+        Map<String, Integer> stats = new LinkedHashMap<>();
+        String sql = "SELECT DATE(registerDate) as reg_date, COUNT(*) as total " +
+                "FROM user " +
+                "GROUP BY DATE(registerDate) " +
+                "ORDER BY reg_date ASC LIMIT 7"; // 7 derniers jours
+
+        try (Statement stmt = conn.createStatement();
+             ResultSet rs = stmt.executeQuery(sql)) {
+            while (rs.next()) {
+                stats.put(rs.getString("reg_date"), rs.getInt("total"));
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return stats;
     }
 }
