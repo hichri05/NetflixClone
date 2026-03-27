@@ -9,10 +9,14 @@ import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.scene.control.Slider;
 import javafx.scene.media.Media;
+
 import javafx.scene.media.MediaPlayer;
 import javafx.scene.media.MediaView;
 import javafx.util.Duration;
+import org.netflix.Models.Movie;
 import org.netflix.Utils.SceneSwitcher;
+import org.netflix.Utils.TransferData;
+
 
 import java.io.File;
 import java.net.URL;
@@ -28,7 +32,8 @@ public class VideoPlayerController implements Initializable {
 
     @Override
     public void initialize(URL url, ResourceBundle resourceBundle) {
-        String vd = "http://commondatastorage.googleapis.com/gtv-videos-bucket/sample/BigBuckBunny.mp4";
+
+        String vd = getClass().getResource("/org/Videos/WAR_MACHINE.mp4").toExternalForm();
         Media media = new Media(vd);
         mediaPlayer = new MediaPlayer(media);
         mediaView.setMediaPlayer(mediaPlayer);
@@ -45,9 +50,11 @@ public class VideoPlayerController implements Initializable {
         });
         mediaPlayer.setOnReady(() -> {
             timeSlider.setMax(mediaPlayer.getTotalDuration().toSeconds());
+            mediaPlayer.volumeProperty().bind(volumeSlider.valueProperty().divide(100));
+            mediaPlayer.play();
         });
-        mediaPlayer.volumeProperty().bind(volumeSlider.valueProperty().divide(100));
-        mediaPlayer.play();
+
+
     }
 
     @FXML

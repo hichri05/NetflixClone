@@ -7,11 +7,11 @@ public class Movie extends Media {
     private int durationMinutes;
 
     public Movie(int idMedia, String title, String description, int releaseYear,
-                 double averageRating, String coverImageUrl, String director,
+                 double averageRating, String coverImageUrl, String backdropImageUrl, String director,
                  String videoUrl, int durationMinutes, List<Genre> genres) {
 
         super( idMedia, title, description,releaseYear,
-        averageRating,  coverImageUrl, director, genres);
+        averageRating,  coverImageUrl, backdropImageUrl, director, genres);
         this.videoUrl = videoUrl;
         this.durationMinutes = durationMinutes;
     }

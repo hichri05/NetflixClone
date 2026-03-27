@@ -31,5 +31,4 @@ public class Rating {
     public void setId_Media(int id_Media) { this.id_Media = id_Media; }
     public void setScore(float score) { this.score = score; }
     public void setRatingDate(LocalDate ratingDate) { this.ratingDate = ratingDate; }
-
 }

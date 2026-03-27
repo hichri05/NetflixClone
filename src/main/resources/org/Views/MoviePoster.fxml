@@ -1,35 +1,14 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
-<?import java.lang.*?>
-<?import java.util.*?>
-<?import javafx.scene.*?>
+<?import javafx.geometry.*?>
 <?import javafx.scene.control.*?>
+<?import javafx.scene.image.*?>
 <?import javafx.scene.layout.*?>
 
-<?import javafx.scene.image.ImageView?>
-<?import javafx.scene.layout.StackPane?>
-<?import javafx.geometry.Insets?>
-
-<StackPane fx:id="rootPane"
-           maxHeight="-Infinity" maxWidth="-Infinity"
-           minHeight="-Infinity" minWidth="-Infinity"
-           prefHeight="240.0" prefWidth="160.0"
-           styleClass="movie-poster-container"
-           stylesheets="@../Styles/style.css"
-           xmlns="http://javafx.com/javafx/21"
-           xmlns:fx="http://javafx.com/fxml/1"
-           fx:controller="org.netflix.Controllers.MoviePosterController">
+<StackPane fx:id="rootPane" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" onMouseClicked="#handlePosterClick" prefHeight="240.0" prefWidth="160.0" styleClass="movie-poster-container" stylesheets="@../Styles/style.css" xmlns="http://javafx.com/javafx/17.0.12" xmlns:fx="http://javafx.com/fxml/1" fx:controller="org.netflix.Controllers.MoviePosterController">
     <children>
-        <ImageView fx:id="posterImageView"
-                   fitHeight="240.0"
-                   fitWidth="160.0"
-                   pickOnBounds="true"
-                   preserveRatio="true"
-                   styleClass="movie-poster-image" />
-        <Button fx:id="removeBtn" text="X" visible="false" managed="false"
-                onAction="#handleRemoveFromList"
-                StackPane.alignment="TOP_RIGHT"
-                style="-fx-background-color: rgba(0,0,0,0.7); -fx-text-fill: white; -fx-shape: 'M 0 0 L 10 10 M 10 0 L 0 10'; -fx-padding: 5;"/>
+        <ImageView fx:id="posterImageView" fitHeight="240.0" fitWidth="160.0" pickOnBounds="true" preserveRatio="true" styleClass="movie-poster-image" />
+        <Button fx:id="removeBtn" managed="false" onAction="#handleRemoveFromList" style="-fx-background-color: rgba(0,0,0,0.7); -fx-text-fill: white; -fx-shape: 'M 0 0 L 10 10 M 10 0 L 0 10'; -fx-padding: 5;" text="X" visible="false" StackPane.alignment="TOP_RIGHT" />
     </children>
     <padding>
         <Insets bottom="5.0" left="5.0" right="5.0" top="5.0" />

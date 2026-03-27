@@ -55,11 +55,11 @@
     -fx-font-weight: bold;
 }
 
-.mvTrendImg{
+.heroStack{
     -fx-background-repeat: no-repeat;
     -fx-background-size: cover;
     -fx-background-position: center center;
-    -fx-background-color: linear-gradient(to bottom, rgba(0,0,0,0.7) 0%, transparent 100%);
+    -fx-background-color: linear-gradient(to bottom, rgba(0,0,0,0.7) 0%, transparent 20%);
 }
 
 .hero-title {
