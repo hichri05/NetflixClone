@@ -15,7 +15,9 @@ import org.netflix.DAO.UserDAO;
 import org.netflix.Models.Media;
 import org.netflix.Models.Movie;
 
+import org.netflix.Models.User;
 import org.netflix.Utils.SceneSwitcher;
+import org.netflix.Utils.Session;
 
 import java.io.IOException;
 import java.net.URL;
@@ -36,6 +38,7 @@ public class MainController implements Initializable {
     @FXML private StackPane heroStack;
     @FXML private VBox mediaRows;
     @FXML private BorderPane navbar;
+    @FXML private Label userinf;
     @Override
     public void initialize(URL url, ResourceBundle resourceBundle) {
 
@@ -87,6 +90,8 @@ public class MainController implements Initializable {
                 mainScrollList.setVisible(false);
             }
         });
+        User user = Session.getUser();
+        userinf.setText(user.getUsername());
 
     }
 

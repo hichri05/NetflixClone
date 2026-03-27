@@ -92,8 +92,27 @@ public class UserDAO {
     }
 
     public static User findByEmail(String email) {
-        //todo
+        String sql = "SELECT * FROM user WHERE email = ?";
 
+        try (PreparedStatement pstmt = conn.prepareStatement(sql)) {
+
+            pstmt.setString(1, email);
+            ResultSet rs = pstmt.executeQuery();
+
+            if (rs.next()) {
+
+                User user = new User();
+                user.setId(rs.getInt("id_User"));
+                user.setUsername(rs.getString("userName"));
+                user.setEmail(rs.getString("email"));
+                user.setPassword(rs.getString("password"));
+
+                return user;
+            }
+        } catch (SQLException e) {
+            System.err.println("Error finding user by email: " + e.getMessage());
+            e.printStackTrace();
+        }
         return null;
     }
 
@@ -118,4 +137,5 @@ public class UserDAO {
         //todo
         return false;
     }
+
 }

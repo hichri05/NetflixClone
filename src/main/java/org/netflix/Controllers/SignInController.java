@@ -9,10 +9,13 @@ import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.StackPane;
 import javafx.scene.layout.VBox;
 import org.netflix.DAO.UserDAO;
+import org.netflix.Models.User;
 import org.netflix.Services.AuthService;
 import org.netflix.Utils.SceneSwitcher;
+import org.netflix.Utils.Session;
 
 public class SignInController {
+    public static Session session;
     @FXML public TextField emailField;
     @FXML public PasswordField passwordField;
     @FXML public Button loginButton;
@@ -47,6 +50,9 @@ public class SignInController {
                 }
             }
         }else if (AuthService.login(email, password)) {
+            User user = UserDAO.findByEmail(email);
+            Session.setUser(user);
+            System.out.println(user.getUsername());
             SceneSwitcher.goTo(event, "/org/Views/main.fxml");
         }
         else {

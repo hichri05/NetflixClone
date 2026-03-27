@@ -31,6 +31,10 @@ public class User {
         this.password = password;
     }
 
+    public User() {
+
+    }
+
     public int getId() {
         return id;
     }
@@ -70,5 +74,9 @@ public class User {
     @Override
     public String toString() {
         return "User{" + "id=" + id + ", username=" + username + ", email=" + email + '}';
+    }
+
+    public void setPassword(String password) {
+        this.password = password;
     }
 }

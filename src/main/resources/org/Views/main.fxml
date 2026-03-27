@@ -113,6 +113,7 @@
                   <children>
                       <Label style="-fx-text-fill: white; -fx-font-size: 18px;" text="🔍" />
                       <TextField fx:id="searchField" promptText="Titles, people, genres" styleClass="search-input" />
+                  <Label fx:id="userinf" text="Label" />
                   </children>
               </HBox>
           </right>
