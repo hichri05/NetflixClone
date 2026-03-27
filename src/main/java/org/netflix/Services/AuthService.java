@@ -22,39 +22,14 @@ public class AuthService {
         this.userDAO = new UserDAO();
     }
 
-    /*public Optional<User> register(String nom, String email, String motDePasse) {
-        ValidationResult validation = validateRegistration(nom, email, motDePasse);
-        if (!validation.isValid()) {
-            System.err.println("Erreur validation: " + validation.getMessage());
-            return Optional.empty();
+    public static Boolean register(String nom, String email, String motDePasse) {
+        if (!validateRegistration(nom, email, motDePasse).isValid() || UserDAO.findByEmail(email) != null) {
+            return false;
         }
-
-        if (userDAO.findByEmail(email) != null) {
-            System.err.println("Email déjà utilisé: " + email);
-            return Optional.empty();
-        }
-
-        // 3. Hacher le mot de passe (NE JAMAIS stocker en clair)
         String hashedPassword = BCrypt.hashpw(motDePasse, BCrypt.gensalt(12));
-
-        // 4. Créer l'utilisateur
         User newUser = new User(nom, email, hashedPassword);
-
-        // 5. Le premier utilisateur inscrit devient automatiquement ADMIN
-        /*if (isFirstUser()) {
-            newUser.setRole("ADMIN");
-            System.out.println("Premier utilisateur créé avec rôle ADMIN");
-        }
-
-        // 6. Sauvegarder en base de données
-        boolean saved = userDAO.insert(newUser);
-
-        if (saved) {
-            return Optional.of(newUser);
-        } else {
-            return Optional.empty();
-        }
-    }*/
+        return UserDAO.AddUser(newUser);
+    }
 
 
     public static Boolean login(String email, String password) {
@@ -72,7 +47,7 @@ public class AuthService {
     /**
      * Validation complète des données d'inscription
      */
-    private ValidationResult validateRegistration(String nom, String email, String motDePasse) {
+    private static ValidationResult validateRegistration(String nom, String email, String motDePasse) {
         // Validation du nom
         if (nom == null || nom.trim().isEmpty()) {
             return ValidationResult.invalid("Le nom ne peut pas être vide");

@@ -13,7 +13,7 @@
 <?import javafx.scene.layout.VBox?>
 <?import javafx.scene.text.Font?>
 
-<StackPane fx:id="root" xmlns="http://javafx.com/javafx/25" xmlns:fx="http://javafx.com/fxml/1" fx:controller="org.netflix.Controllers.SignUpController">
+<StackPane fx:id="root" stylesheets="@../Styles/style.css" xmlns="http://javafx.com/javafx/25" xmlns:fx="http://javafx.com/fxml/1" fx:controller="org.netflix.Controllers.SignUpController">
     <children>
         <ImageView fx:id="background" fitHeight="328.0" fitWidth="572.0" pickOnBounds="true" preserveRatio="true">
             <image>
@@ -28,30 +28,37 @@
                         <Font name="System Bold" size="32.0" />
                     </font>
                 </Label>
-                <TextField fx:id="emailField" promptText="Email" style="-fx-background-color: none; -fx-border-color: #fff; -fx-border-radius: 3px; -fx-border-width: 0.5px; -fx-text-fill: white; -fx-prompt-text-fill: #8c8c8c;" stylesheets="@../Styles/style.css">
-                    <opaqueInsets>
+            <Label fx:id="errorLabel" styleClass="error-label" />
+            <VBox fx:id="container" prefHeight="200.0" prefWidth="100.0" spacing="10.0">
+               <children>
+                      <TextField fx:id="emailField" promptText="Email" style="-fx-background-color: none; -fx-border-color: #fff; -fx-border-radius: 3px; -fx-border-width: 0.5px; -fx-text-fill: white; -fx-prompt-text-fill: #8c8c8c;" stylesheets="@../Styles/style.css">
+                          <opaqueInsets>
+                              <Insets />
+                          </opaqueInsets>
+                          <padding>
+                              <Insets bottom="7.0" left="7.0" right="7.0" top="7.0" />
+                          </padding>
+                  </TextField>
+                  <TextField fx:id="username" promptText="Username" style="-fx-background-color: none; -fx-border-color: #fff; -fx-border-radius: 3px; -fx-border-width: 0.5px; -fx-text-fill: white; -fx-prompt-text-fill: #8c8c8c;" stylesheets="@../Styles/style.css">
+                     <opaqueInsets>
                         <Insets />
-                    </opaqueInsets>
-                    <padding>
+                     </opaqueInsets>
+                     <padding>
                         <Insets bottom="7.0" left="7.0" right="7.0" top="7.0" />
-                    </padding></TextField>
-            <TextField fx:id="emailField1" promptText="Username" style="-fx-background-color: none; -fx-border-color: #fff; -fx-border-radius: 3px; -fx-border-width: 0.5px; -fx-text-fill: white; -fx-prompt-text-fill: #8c8c8c;" stylesheets="@../Styles/style.css">
-               <opaqueInsets>
-                  <Insets />
-               </opaqueInsets>
-               <padding>
-                  <Insets bottom="7.0" left="7.0" right="7.0" top="7.0" />
-               </padding>
-            </TextField>
-                <PasswordField fx:id="passwordField" onAction="#handleLogin" promptText="Password" style="-fx-background-color: none; -fx-border-color: #fff; -fx-border-radius: 3px; -fx-border-width: 0.5px; -fx-prompt-text-fill: #8c8c8c; -fx-text-fill: white;">
-                    <padding>
+                     </padding>
+                  </TextField>
+                      <PasswordField fx:id="passwordField" onAction="#handleLogin" promptText="Password" style="-fx-background-color: none; -fx-border-color: #fff; -fx-border-radius: 3px; -fx-border-width: 0.5px; -fx-prompt-text-fill: #8c8c8c; -fx-text-fill: white;">
+                          <padding>
+                              <Insets bottom="7.0" left="7.0" right="7.0" top="7.0" />
+                          </padding>
+                  </PasswordField>
+                  <PasswordField fx:id="passwordFieldConfirm" onAction="#handleLogin" promptText="Confirm Password" style="-fx-background-color: none; -fx-border-color: #fff; -fx-border-radius: 3px; -fx-border-width: 0.5px; -fx-prompt-text-fill: #8c8c8c; -fx-text-fill: white;">
+                     <padding>
                         <Insets bottom="7.0" left="7.0" right="7.0" top="7.0" />
-                    </padding></PasswordField>
-            <PasswordField fx:id="passwordField1" onAction="#handleLogin" promptText="Confirm Password" style="-fx-background-color: none; -fx-border-color: #fff; -fx-border-radius: 3px; -fx-border-width: 0.5px; -fx-prompt-text-fill: #8c8c8c; -fx-text-fill: white;">
-               <padding>
-                  <Insets bottom="7.0" left="7.0" right="7.0" top="7.0" />
-               </padding>
-            </PasswordField>
+                     </padding>
+                  </PasswordField>
+               </children>
+            </VBox>
                 <Button fx:id="loginButton" maxWidth="1.7976931348623157E308" mnemonicParsing="false" onAction="#handleLogin" style="-fx-background-color: #E50914;" text="Sign Up" textFill="WHITE">
                     <font>
                         <Font name="System Bold" size="12.0" />

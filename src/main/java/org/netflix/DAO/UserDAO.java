@@ -113,4 +113,9 @@ public class UserDAO {
         }
         return null;
     }
+
+    public static boolean AddUser(User newUser) {
+        //todo
+        return false;
+    }
 }

@@ -2,13 +2,12 @@ package org.netflix.Controllers;
 
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
-import javafx.scene.control.Button;
-import javafx.scene.control.Label;
-import javafx.scene.control.PasswordField;
-import javafx.scene.control.TextField;
+import javafx.scene.Node;
+import javafx.scene.control.*;
 import javafx.scene.image.ImageView;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.StackPane;
+import javafx.scene.layout.VBox;
 import org.netflix.DAO.UserDAO;
 import org.netflix.Services.AuthService;
 import org.netflix.Utils.SceneSwitcher;
@@ -21,6 +20,7 @@ public class SignInController {
     @FXML public Label errorLabel;
     @FXML private ImageView background;
     @FXML private StackPane root;
+    @FXML public VBox container;
 
     @FXML
     public void initialize() {
@@ -37,12 +37,15 @@ public class SignInController {
             errorLabel.setText("Please enter a valid email or phone number.");
             errorLabel.setVisible(true);
 
-            emailField.setStyle("-fx-border-color: #e87c03;-fx-border-width: 0 0 2 0;");
-            emailField.textProperty().addListener((observable, oldValue, newValue) -> {
-                errorLabel.setVisible(false);
-                emailField.setStyle("-fx-border-color: transparent;");
-            });
-            passwordField.setStyle("-fx-border-color: #e87c03;-fx-border-width: 0 0 2 0;");
+            for (Node n: container.getChildren()) {
+                if (n instanceof TextInputControl ti){
+                    if (ti.getText().isEmpty()) ti.setStyle("-fx-border-color: #e87c03;-fx-border-width: 0 0 2 0;");
+                    ti.textProperty().addListener((observable, oldValue, newValue) -> {
+                        errorLabel.setVisible(false);
+                        ti.setStyle("-fx-border-color: transparent;");
+                    });
+                }
+            }
         }else if (AuthService.login(email, password)) {
             SceneSwitcher.goTo(event, "/org/Views/main.fxml");
         }
