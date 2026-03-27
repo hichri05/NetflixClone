@@ -13,6 +13,7 @@ import java.sql.PreparedStatement;
 import java.sql.Statement;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 
 public class UserDAO {
     private static Connection conn = ConxDB.getInstance();
@@ -88,5 +89,28 @@ public class UserDAO {
             System.err.println("Erreur lors de la récupération des favoris : " + e.getMessage());
         }
         return favorites;
+    }
+
+    public static User findByEmail(String email) {
+        //todo
+
+        return null;
+    }
+
+    public static String getHashedPass(String email) {
+        String sql = "SELECT password FROM user WHERE email = ?";
+        try (PreparedStatement pstmt = conn.prepareStatement(sql)) {
+
+            pstmt.setString(1, email);
+            ResultSet rs = pstmt.executeQuery();
+
+
+            if (rs.next()) {
+                return rs.getString("password");
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return null;
     }
 }

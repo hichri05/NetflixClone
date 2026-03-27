@@ -194,8 +194,14 @@
     -fx-background-color: transparent;
 }
 
-/* Hide the horizontal scrollbar for genres */
+
 .genre-scroll-pane .scroll-bar:horizontal {
     -fx-opacity: 0;
     -fx-padding: -5;
+}
+
+.error-label {
+    -fx-text-fill: #e87c03;
+    -fx-font-size: 13px;
+    -fx-visibility: false;
 }
