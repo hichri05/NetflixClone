@@ -39,16 +39,7 @@ public class MediaDAO {
             pstmt.setInt(1, genreId);
             try (ResultSet rs = pstmt.executeQuery()){
                 while (rs.next()) {
-                    medias.add(new Media(
-                            rs.getInt("id_Media"),
-                            rs.getString("title"),
-                            rs.getString("description"),
-                            rs.getInt("releaseYear"),
-                            rs.getDouble("averageRating"),
-                            rs.getString("coverImageUrl"),
-                            rs.getString("backdrop_path"),
-                            rs.getString("director")
-                    ));
+                    medias.add(ResultToMedia(rs));
                 }
             }
 
@@ -77,5 +68,35 @@ public class MediaDAO {
             System.out.println("Error fetching genres" + genreName);
         }
         return genreId;
+    }
+    public static List<Media> searchMedia(String search) {
+        List<Media> results = new ArrayList<>();
+
+        String sql = "SELECT * FROM media WHERE LOWER(title) LIKE LOWER(?)";
+
+        try (PreparedStatement pstmt = conn.prepareStatement(sql)) {
+
+            pstmt.setString(1, "%" + search + "%");
+            ResultSet rs = pstmt.executeQuery();
+            while (rs.next()) {
+                results.add(ResultToMedia(rs));
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return results;
+    }
+
+    private static Media ResultToMedia(ResultSet rs) throws SQLException {
+        return new Media(
+                rs.getInt("id_Media"),
+                rs.getString("title"),
+                rs.getString("description"),
+                rs.getInt("releaseYear"),
+                rs.getDouble("averageRating"),
+                rs.getString("coverImageUrl"),
+                rs.getString("backdrop_path"),
+                rs.getString("director")
+        );
     }
 }

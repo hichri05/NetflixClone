@@ -32,7 +32,6 @@ public class VideoPlayerController implements Initializable {
 
     @Override
     public void initialize(URL url, ResourceBundle resourceBundle) {
-
         String vd = getClass().getResource("/org/Videos/WAR_MACHINE.mp4").toExternalForm();
         Media media = new Media(vd);
         mediaPlayer = new MediaPlayer(media);
