@@ -92,8 +92,22 @@ public class UserDAO {
     }
 
     public static User findByEmail(String email) {
-        //todo
-
+        String sql = "SELECT * FROM user WHERE email = ?";
+        try (PreparedStatement pstmt = conn.prepareStatement(sql)) {
+            pstmt.setString(1, email);
+            try (ResultSet rs = pstmt.executeQuery()) {
+                if (rs.next()) {
+                    // Utilise ton constructeur User(id, username, email)
+                    return new User(
+                            rs.getInt("id_User"),
+                            rs.getString("userName"),
+                            rs.getString("email")
+                    );
+                }
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
         return null;
     }
 
@@ -115,7 +129,31 @@ public class UserDAO {
     }
 
     public static boolean AddUser(User newUser) {
-        //todo
-        return false;
+        // Le rôle est 'user' par défaut selon ton ENUM
+        String sql = "INSERT INTO user (userName, email, password, role) VALUES (?, ?, ?, 'user')";
+        try (PreparedStatement pstmt = conn.prepareStatement(sql)) {
+            pstmt.setString(1, newUser.getUsername());
+            pstmt.setString(2, newUser.getEmail());
+            pstmt.setString(3, newUser.getPassword());
+
+            return pstmt.executeUpdate() > 0;
+        } catch (SQLException e) {
+            e.printStackTrace();
+            return false;
+        }
+    }
+
+    public static boolean isFavorite(int idUser, int idMedia) {
+        String sql = "SELECT * FROM favorite WHERE id_User = ? AND id_Media = ?";
+        try (PreparedStatement pstmt = conn.prepareStatement(sql)) {
+            pstmt.setInt(1, idUser);
+            pstmt.setInt(2, idMedia);
+            try (ResultSet rs = pstmt.executeQuery()) {
+                return rs.next(); // true si le média est déjà en favori
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+            return false;
+        }
     }
 }
