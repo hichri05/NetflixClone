@@ -21,9 +21,9 @@
                <content>
                   <VBox fx:id="mediaRows" spacing="5.0" style="-fx-background-color: #141414;" stylesheets="@../Styles/style.css">
                      <children>
-                        <StackPane fx:id="heroStack" styleClass="heroStack">
+                        <StackPane fx:id="heroStack" styleClass="heroStack" VBox.vgrow="NEVER" maxWidth="Infinity" >
                            <children>
-                              <VBox alignment="BOTTOM_LEFT" prefHeight="200.0" prefWidth="100.0" spacing="10.0" styleClass="heroStack">
+                              <VBox alignment="BOTTOM_LEFT" prefHeight="200.0" prefWidth="100.0" spacing="10.0" styleClass="">
                                  <children>
                                     <Label fx:id="mvTrendName" styleClass="hero-title" text="Label">
                                        <VBox.margin>
@@ -37,8 +37,8 @@
                                     </Label>
                                     <HBox prefHeight="100.0" prefWidth="200.0" spacing="10.0">
                                        <children>
-                                          <Button mnemonicParsing="false" styleClass="btn-play" text="▶ Play" />
-                                          <Button mnemonicParsing="false" styleClass="btn-mylist" text="+ My List" />
+                                          <Button fx:id="playbtn" mnemonicParsing="false" onAction="#handlePlay" styleClass="btn-play" text="▶ Play" />
+                                          <Button fx:id="mylistbtn" mnemonicParsing="false" onAction="#handleAddToMyList" styleClass="btn-mylist" text="+ My List" />
                                        </children>
                                     </HBox>
                                  </children>
@@ -113,6 +113,7 @@
                   <children>
                       <Label style="-fx-text-fill: white; -fx-font-size: 18px;" text="🔍" />
                       <TextField fx:id="searchField" promptText="Titles, people, genres" styleClass="search-input" />
+                  <Label fx:id="userinf" text="Label" />
                   </children>
               </HBox>
           </right>

@@ -1,21 +1,17 @@
 package org.netflix.Controllers;
 
-import javafx.fxml.FXML;
-import javafx.fxml.FXMLLoader;
-import javafx.fxml.Initializable;
+import javafx.event.ActionEvent;
+import javafx.fxml.*;
 import javafx.scene.Parent;
-import javafx.scene.control.Label;
-import javafx.scene.control.ScrollPane;
-import javafx.scene.control.TextField;
+import javafx.scene.control.*;
+import javafx.scene.image.Image;
+import javafx.scene.image.ImageView;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.*;
-import org.netflix.DAO.MediaDAO;
-import org.netflix.DAO.MovieDAO;
-import org.netflix.DAO.UserDAO;
-import org.netflix.Models.Media;
-import org.netflix.Models.Movie;
-
-import org.netflix.Utils.SceneSwitcher;
+import javafx.scene.shape.Rectangle;
+import org.netflix.DAO.*;
+import org.netflix.Models.*;
+import org.netflix.Utils.*;
 
 import java.io.IOException;
 import java.net.URL;
@@ -23,148 +19,160 @@ import java.util.List;
 import java.util.ResourceBundle;
 
 public class MainController implements Initializable {
-    @FXML public ScrollPane searchContent;
-    @FXML public FlowPane searchGrid;
-    @FXML public ScrollPane mainScrollList;
-    @FXML public FlowPane listGrid;
+
+    //
+    @FXML private ScrollPane searchContent, mainScrollList, mainScroll;
+    @FXML private FlowPane searchGrid;
+    @FXML private FlowPane listGrid;
     @FXML private TextField searchField;
-    @FXML private HBox actionRow;
-    @FXML private HBox dramaRow;
-    @FXML private Label mvTrendName;
-    @FXML private Label mvTrendDesc;
-    @FXML private ScrollPane mainScroll;
+    @FXML private Label mvTrendName, mvTrendDesc, userinf;
     @FXML private StackPane heroStack;
     @FXML private VBox mediaRows;
-    @FXML private BorderPane navbar;
+    @FXML private Button playbtn, mylistbtn;
+
+    //
+    User user;
+    //
     @Override
     public void initialize(URL url, ResourceBundle resourceBundle) {
-
-        List<Media> trendingMedias = MediaDAO.getTrendingMedias();
-        List<Media> actionMedias = MediaDAO.getMediasByGenre("Action");
-        List<Media> dramaMedias = MediaDAO.getMediasByGenre("Drama");
-        //List<Media> horrorMedias = MediaDAO.getMediasByGenre("Horror");
-        List<Media> comedyMedias = MediaDAO.getMediasByGenre("Comedy");
-        List<Media> scifiMedias = MediaDAO.getMediasByGenre("Scifi");
-        try {
-            fillRow("Action", actionMedias);
-        } catch (IOException e) {
-            throw new RuntimeException(e);
-        }
-        try {
-            fillRow("Drama", dramaMedias);
-        } catch (IOException e) {
-            throw new RuntimeException(e);
-        }
-       /* try {
-            fillRow("Horror", horrorMedias);
-        } catch (IOException e) {
-            throw new RuntimeException(e);
-        }*/
-        try {
-            fillRow("Comedy", comedyMedias);
-        } catch (IOException e) {
-            throw new RuntimeException(e);
-        }
-        try {
-            fillRow("Sci-Fi", scifiMedias);
-        } catch (IOException e) {
-            throw new RuntimeException(e);
-        }
+        setupHeroSize();
+        loadMediaRows();
+        setupSearch();
+        setupUser();
+        setupInitialView();
         getTrendMovie();
-        mainScrollList.setVisible(false);
-        searchContent.setVisible(false);
-        mainScroll.setVisible(true);
-        searchField.textProperty().addListener((observable, oldValue, newValue) -> {
-            if (newValue.length() >= 2) {
-                searchContent.setVisible(true);
-                mainScroll.setVisible(false);
-                mainScrollList.setVisible(false);
+    }
+    private void setupHeroSize() {
 
-                performSearch(newValue);
-            } else if (newValue.isEmpty()) {
-                searchContent.setVisible(false);
-                mainScroll.setVisible(true);
-                mainScrollList.setVisible(false);
+        heroStack.sceneProperty().addListener((obs, oldScene, newScene) -> {
+            if (newScene != null) {
+                // Hero = 55% of window height
+                heroStack.prefHeightProperty().bind(newScene.heightProperty().multiply(0.55));
             }
         });
-
+    }
+    private void loadMediaRows() {
+        loadRow("Action", MediaDAO.getMediasByGenre("Action"));
+        loadRow("Drama", MediaDAO.getMediasByGenre("Drama"));
+        loadRow("Comedy", MediaDAO.getMediasByGenre("Comedy"));
+        loadRow("Sci-Fi", MediaDAO.getMediasByGenre("Scifi"));
     }
 
-
-    public void fillRow(String Title, List<Media> medias) throws IOException {
-        if(medias.isEmpty()) {return;}
-        FXMLLoader loader = new FXMLLoader(getClass().getResource("/org/Views/MediaRow.fxml"));
-        Parent row = loader.load();
-        MediaRowController controller = loader.getController();
-        controller.setData(Title, medias);
-        mediaRows.getChildren().add(row);
-
+    private void setupSearch() {
+        searchField.textProperty().addListener((obs, oldVal, newVal) -> {
+            if (newVal.length() >= 2) {
+                showSearchView();
+                performSearch(newVal);
+            } else if (newVal.isEmpty()) {
+                showHomeView();
+            }
+        });
     }
-    public void getTrendMovie(){
 
-        Movie movie = MovieDAO.getTrendMovie();
-
-        mvTrendName.setText(movie.getTitle());
-        mvTrendDesc.setText(movie.getDescription());
-        String imgurl = movie.getBackdropImageUrl();
-        heroStack.setStyle(
-                        "-fx-background-image: url('" + imgurl + "'); " +
-                        "-fx-background-size: cover; " +
-                        "-fx-background-position: center center; " +
-                        "-fx-background-repeat: no-repeat;" +
-                                "-fx-background-color: linear-gradient(to bottom, rgba(0,0,0,0.7) 0%, transparent 20%);"
-        );
+    private void setupUser() {
+        user = Session.getUser();
+        if (user != null) {
+            userinf.setText(user.getUsername());
+        }
     }
-    @FXML
-    private void handleMyListClick(MouseEvent event) {
+
+    private void setupInitialView() {
         searchContent.setVisible(false);
-        mainScroll.setVisible(false);
-        mainScrollList.setVisible(true);
-        int userid = 1;
-        List<Media> userFavorites = UserDAO.getUserFavorites(userid);
-        displayMyList(userFavorites);
+        mainScrollList.setVisible(false);
+        mainScroll.setVisible(true);
     }
 
-    private void performSearch(String search) {
-        List<Media> results = MediaDAO.searchMedia(search);
-        if (results.isEmpty()) {
-            Label noResults = new Label("Your search for '" + search + "' did not have any matches.");
-            noResults.setStyle("-fx-text-fill: #999; -fx-font-size: 16px;");
-            searchGrid.getChildren().add(noResults);
-        }
+    //
+    private void loadRow(String title, List<Media> medias) {
+        if (medias == null || medias.isEmpty()) return;
 
-        searchGrid.getChildren().clear();
-        for (Media m : results) {
-            loadMovieCard(m);
-        }
-    }
-
-    private void loadMovieCard(Media m) {
         try {
-            FXMLLoader loader = new FXMLLoader(getClass().getResource("/org/Views/MediaPoster.fxml"));
-            Parent card = loader.load();
-            MediaPosterController controller = loader.getController();
-            controller.setData(m);
-            searchGrid.getChildren().add(card);
+            FXMLLoader loader = new FXMLLoader(getClass().getResource("/org/Views/MediaRow.fxml"));
+            Parent row = loader.load();
+
+            MediaRowController controller = loader.getController();
+            controller.setData(title, medias);
+
+            mediaRows.getChildren().add(row);
+
         } catch (IOException e) {
             e.printStackTrace();
         }
     }
 
-    public void displayMyList(List<Media> userFavorites) {
+    public void getTrendMovie() {
+        Movie movie = MovieDAO.getTrendMovie();
+
+        mvTrendName.setText(movie.getTitle());
+        mvTrendDesc.setText(movie.getDescription());
+
+        heroStack.getChildren().removeIf(n -> n instanceof ImageView);
+
+        String url = movie.getBackdropImageUrl().replace("\\", "/");
+
+        heroStack.setStyle(
+                "-fx-background-image: url('" + url + "');" +
+                        "-fx-background-size: cover;" +
+                        "-fx-background-position: center center;" +
+                        "-fx-background-repeat: no-repeat;"
+        );
+
+        updateButtonUI(user, movie);
+    }
+
+    private void updateButtonUI(User u,  Media m) {
+        if (UserDAO.isFavorite(u.getId(), m.getIdMedia())) {
+            mylistbtn.setText("✓ In My List");
+        } else {
+            mylistbtn.setText("+ My List");
+        }
+    }
+
+    //
+    private void performSearch(String search) {
+        List<Media> results = MediaDAO.searchMedia(search);
+
+        searchGrid.getChildren().clear();
+
+        if (results.isEmpty()) {
+            Label noResults = new Label("No results for '" + search + "'");
+            noResults.setStyle("-fx-text-fill: #999; -fx-font-size: 16px;");
+            searchGrid.getChildren().add(noResults);
+            return;
+        }
+
+        results.forEach(this::loadMovieCard);
+    }
+
+    private void loadMovieCard(Media media) {
+        try {
+            FXMLLoader loader = new FXMLLoader(getClass().getResource("/org/Views/MediaPoster.fxml"));
+            Parent card = loader.load();
+
+            MediaPosterController controller = loader.getController();
+            controller.setData(media);
+
+            searchGrid.getChildren().add(card);
+
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
+
+    //
+    public void displayMyList(List<Media> favorites) {
         listGrid.getChildren().clear();
 
-        for (Media media : userFavorites) {
+        for (Media media : favorites) {
             try {
-
-                FXMLLoader loader = new FXMLLoader(getClass().getResource("org/netflix/Views/moviePoster.fxml"));
-                StackPane posterNode = loader.load();
+                FXMLLoader loader = new FXMLLoader(MainController.class.getResource("/org/Views/MediaPoster.fxml"));
+                Parent poster = loader.load();
 
                 MediaPosterController controller = loader.getController();
                 controller.showRemoveButton(true);
                 controller.setData(media);
 
-                listGrid.getChildren().add(posterNode);
+                listGrid.getChildren().add(poster);
 
             } catch (IOException e) {
                 e.printStackTrace();
@@ -172,10 +180,75 @@ public class MainController implements Initializable {
         }
     }
 
-    @FXML
-    private void handleHomeClick(MouseEvent event) {
+    //
+    private void showHomeView() {
         searchContent.setVisible(false);
         mainScroll.setVisible(true);
         mainScrollList.setVisible(false);
+    }
+
+    private void showSearchView() {
+        searchContent.setVisible(true);
+        mainScroll.setVisible(false);
+        mainScrollList.setVisible(false);
+    }
+
+    private void showMyListView() {
+        searchContent.setVisible(false);
+        mainScroll.setVisible(false);
+        mainScrollList.setVisible(true);
+    }
+
+    //
+
+    @FXML
+    private void handleHomeClick(MouseEvent event) {
+        showHomeView();
+    }
+
+    @FXML
+    private void handleMyListClick(MouseEvent event) {
+        showMyListView();
+
+        User user = Session.getUser();
+        List<Media> favorites = UserDAO.getUserFavorites(user.getId());
+
+        displayMyList(favorites);
+    }
+
+    @FXML
+    public void handlePlay(ActionEvent event) {
+        SceneSwitcher.goTo(event, "/org/Views/VideoPlayer.fxml");
+    }
+
+    @FXML
+    public void handleAddToMyList(ActionEvent event) {
+        User user = Session.getUser();
+        if (user == null) {
+            System.out.println("No user logged in!");
+            return;
+        }
+
+        Media media = MovieDAO.getTrendMovie();
+        if (UserDAO.isFavorite(user.getId(), media.getIdMedia())) {
+            RemoveFromList(media);
+
+        }else{
+            boolean success = MediaDAO.addToFavorites(user.getId(), media.getIdMedia());
+            if (success) {
+                System.out.println("Successfully added to favorites");
+            } else {
+                System.err.println("Failed to add to list.");
+            }
+        }
+        updateButtonUI(user, media);
+    }
+    @FXML
+    private void RemoveFromList(Media media) {
+        if (media == null) return;
+        System.out.println("Removing: " + media.getTitle());
+
+        User user = Session.getUser();
+        MediaDAO.removeFromFavorites(user.getId(), media.getIdMedia());
     }
 }

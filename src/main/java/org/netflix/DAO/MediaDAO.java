@@ -1,12 +1,10 @@
 package org.netflix.DAO;
 
 import org.netflix.Models.Genre;
+import org.netflix.Models.Media;
 import org.netflix.Utils.ConxDB;
 
-import java.sql.Connection;
-import java.sql.ResultSet;
-import java.sql.SQLException;
-import java.sql.Statement;
+import java.sql.*;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -28,5 +26,77 @@ public class MediaDAO {
             System.out.println("Error fetching genres for Media ID " + mediaId);
         }
         return genres;
+    }
+
+    public static List<Media> getMediasByGenre(String genre) {
+        List<Media> medias = new ArrayList<>();
+        int genreId = getGenreIdByName(genre);
+        String sql = "SELECT m.* FROM Media m " +
+                "inner join media_genres mg on m.id_Media = mg.id_Media " +
+                "where mg.id_Genre = ?" ;
+
+        try (PreparedStatement pstmt = conn.prepareStatement(sql)) {
+            pstmt.setInt(1, genreId);
+            try (ResultSet rs = pstmt.executeQuery()){
+                while (rs.next()) {
+                    medias.add(ResultToMedia(rs));
+                }
+            }
+
+        } catch (SQLException e) {
+            System.out.println(e);
+        }
+        return medias;
+    }
+
+    public static List<Media> getTrendingMedias() {
+        //todo
+        return null;
+    }
+
+    public static int getGenreIdByName(String genreName) {
+        String sql = "select id_Genre from genres where name = ?" ;
+        int genreId = -1;
+        try (PreparedStatement pstmt = conn.prepareStatement(sql)) {
+            pstmt.setString(1, genreName);
+            try(ResultSet rs = pstmt.executeQuery()) {
+                if (rs.next()) {
+                    genreId = rs.getInt("id_Genre");
+                }
+            }
+        } catch (SQLException e) {
+            System.out.println("Error fetching genres" + genreName);
+        }
+        return genreId;
+    }
+    public static List<Media> searchMedia(String search) {
+        List<Media> results = new ArrayList<>();
+
+        String sql = "SELECT * FROM media WHERE LOWER(title) LIKE LOWER(?)";
+
+        try (PreparedStatement pstmt = conn.prepareStatement(sql)) {
+
+            pstmt.setString(1, "%" + search + "%");
+            ResultSet rs = pstmt.executeQuery();
+            while (rs.next()) {
+                results.add(ResultToMedia(rs));
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return results;
+    }
+
+    private static Media ResultToMedia(ResultSet rs) throws SQLException {
+        return new Media(
+                rs.getInt("id_Media"),
+                rs.getString("title"),
+                rs.getString("description"),
+                rs.getInt("releaseYear"),
+                rs.getDouble("averageRating"),
+                rs.getString("coverImageUrl"),
+                rs.getString("backdrop_path"),
+                rs.getString("director")
+        );
     }
 }

@@ -20,11 +20,14 @@
                         <ImageView fx:id="backgroundImage" pickOnBounds="true" preserveRatio="true" />
                         <VBox alignment="BOTTOM_LEFT" spacing="15.0" style="-fx-background-color: linear-gradient(to top, #141414, transparent);">
                             <children>
+                                <Button fx:id="backButton" layoutX="20.0" layoutY="20.0"
+                                        onAction="#handleBack" text="← Back"
+                                        style="-fx-background-color: transparent; -fx-text-fill: white; -fx-font-size: 16px; -fx-cursor: hand;" />
                                 <Label fx:id="titleLabel" styleClass="hero-title" text="SERIES TITLE" />
                                 <HBox spacing="15.0">
                                     <children>
-                                        <Button onAction="#handlePlay" styleClass="btn-play" text="▶ Play" />
-                                        <Button onAction="#handleAddToMyList" styleClass="btn-mylist" text="+ My List" />
+                                        <Button fx:id="playbtn" onAction="#handlePlay" styleClass="btn-play" text="▶ Play" />
+                                        <Button fx:id="mylistbtn" onAction="#handleAddToMyList" styleClass="btn-mylist" text="+ My List" />
                                     </children>
                                 </HBox>
                                 <Label fx:id="descriptionLabel" maxWidth="600.0" styleClass="hero-description" text="Summary of the show ..." wrapText="true" />
