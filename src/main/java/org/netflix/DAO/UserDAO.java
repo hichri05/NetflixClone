@@ -53,24 +53,24 @@ public class UserDAO {
     public static List<Media> getUserFavorites(int userId) {
         List<Media> favorites = new ArrayList<>();
         String sql = "SELECT m.* FROM media m " +
-                "JOIN favorite f ON m.id_Media = f.id_Media " +
+                "Inner JOIN favorite f ON m.id_Media = f.id_Media " +
                 "WHERE f.id_User = ?";
 
         try (PreparedStatement pstmt = conn.prepareStatement(sql)) {
             pstmt.setInt(1, userId);
             try (ResultSet rs = pstmt.executeQuery()) {
                 while (rs.next()) {
-                    int idMedia = rs.getInt("id_Media");
+                    /*int idMedia = rs.getInt("id_Media");
                     String title = rs.getString("title");
                     String description = rs.getString("description");
                     int releaseYear = rs.getInt("releaseYear");
                     double averageRating = rs.getDouble("averageRating");
                     String coverImageUrl = rs.getString("coverImageUrl");
                     String backdropImageUrl =  rs.getString("backdrop_path");
-                    String director = rs.getString("director");
-                    String type = rs.getString("type");
+                    String director = rs.getString("director");*/
+                    favorites.add(MediaDAO.ResultToMedia(rs));
 
-                    if ("movie".equalsIgnoreCase(type)) {
+                    /*if ("movie".equalsIgnoreCase(type)) {
 
                         favorites.add(new Movie(
                                 idMedia, title, description, releaseYear, averageRating,
@@ -82,7 +82,7 @@ public class UserDAO {
                                 idMedia, title, description, releaseYear, averageRating,
                                 coverImageUrl,backdropImageUrl, director, nbrSaison, new ArrayList<>(), new ArrayList<>()
                         ));
-                    }
+                    }*/
                 }
             }
         } catch (SQLException e) {
@@ -135,6 +135,23 @@ public class UserDAO {
 
     public static boolean AddUser(User newUser) {
         //todo
+        return false;
+    }
+    public static boolean isFavorite(int userId, int mediaId) {
+        String sql = "SELECT COUNT(*) FROM favorite WHERE id_user = ? AND id_media = ?";
+
+        try (PreparedStatement pstmt = conn.prepareStatement(sql)) {
+
+            pstmt.setInt(1, userId);
+            pstmt.setInt(2, mediaId);
+            ResultSet rs = pstmt.executeQuery();
+
+            if (rs.next()) {
+                return rs.getInt(1) > 0;
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
         return false;
     }
 

@@ -87,7 +87,7 @@ public class MediaDAO {
         return results;
     }
 
-    private static Media ResultToMedia(ResultSet rs) throws SQLException {
+    public static Media ResultToMedia(ResultSet rs) throws SQLException {
         return new Media(
                 rs.getInt("id_Media"),
                 rs.getString("title"),
@@ -98,5 +98,36 @@ public class MediaDAO {
                 rs.getString("backdrop_path"),
                 rs.getString("director")
         );
+    }
+    public static Boolean addToFavorites(int userId, int mediaId) {
+        String sql = "INSERT INTO favorite (id_User, id_Media) VALUES (?, ?)";
+
+        try (PreparedStatement pstmt = conn.prepareStatement(sql)) {
+
+            pstmt.setInt(1, userId);
+            pstmt.setInt(2, mediaId);
+            int rowsAffected = pstmt.executeUpdate();
+            return rowsAffected > 0;
+
+        } catch (SQLException e) {
+            System.out.println("Media already in favorites or DB error.");
+            return false;
+        }
+    }
+
+    public static void removeFromFavorites(int userId, int mediaId) {
+        String sql = "DELETE FROM favorite WHERE id_user = ? AND id_media = ?";
+
+        try (PreparedStatement pstmt = conn.prepareStatement(sql)) {
+            pstmt.setInt(1, userId);
+            pstmt.setInt(2, mediaId);
+            int rowsDeleted = pstmt.executeUpdate();
+            if (rowsDeleted > 0) {
+                System.out.println("Successfully removed media ID " + mediaId + " from user " + userId);
+            }
+        } catch (SQLException e) {
+            System.err.println("Error removing from favorites: " + e.getMessage());
+            e.printStackTrace();
+        }
     }
 }

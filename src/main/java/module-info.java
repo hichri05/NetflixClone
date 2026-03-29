@@ -9,6 +9,7 @@ module org.netflix {
     requires org.kordamp.ikonli.fontawesome6;
     requires javafx.graphics;
     requires jbcrypt;
+    requires javafx.base;
 
 
     opens org.Styles to javafx.graphics, javafx.fxml;
