@@ -83,4 +83,42 @@ public class MovieDAO {
         //todo
         return null;
     }
+    // Dans MovieDAO.java - Ajouter cette méthode
+    public boolean updateRating(Movie movie) {
+        String sql = "UPDATE movies SET average_rating = ? WHERE id = ?";
+
+        try (Connection conn = DatabaseConnection.getConnection();
+             PreparedStatement pstmt = conn.prepareStatement(sql)) {
+
+            pstmt.setDouble(1, movie.getAverageRating());
+            pstmt.setInt(2, movie.getIdMedia());
+
+            return pstmt.executeUpdate() > 0;
+
+        } catch (SQLException e) {
+            e.printStackTrace();
+            return false;
+        }
+        // Dans MovieDAO.java - Ajouter cette méthode
+        public List<Movie> findTopRated(int limit) {
+            String sql = "SELECT * FROM movies ORDER BY average_rating DESC LIMIT ?";
+            List<Movie> movies = new ArrayList<>();
+
+            try (Connection conn = DatabaseConnection.getConnection();
+                 PreparedStatement pstmt = conn.prepareStatement(sql)) {
+
+                pstmt.setInt(1, limit);
+
+                try (ResultSet rs = pstmt.executeQuery()) {
+                    while (rs.next()) {
+                        movies.add(mapResultSetToMovie(rs));
+                    }
+                }
+
+            } catch (SQLException e) {
+                e.printStackTrace();
+            }
+            return movies;
+        }
+    }
 }

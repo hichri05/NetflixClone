@@ -44,4 +44,29 @@ public class UserDAO {
         }
         return users;
     }
+    // Dans UserDAO.java - Ajouter cette méthode si non existante
+    public Optional<User> findById(int id) {
+        String sql = "SELECT id, username, email FROM users WHERE id = ?";
+
+        try (Connection conn = DatabaseConnection.getConnection();
+             PreparedStatement pstmt = conn.prepareStatement(sql)) {
+
+            pstmt.setInt(1, id);
+
+            try (ResultSet rs = pstmt.executeQuery()) {
+                if (rs.next()) {
+                    return Optional.of(new User(
+                            rs.getInt("id"),
+                            rs.getString("username"),
+                            rs.getString("email")
+                    ));
+                }
+            }
+            return Optional.empty();
+
+        } catch (SQLException e) {
+            e.printStackTrace();
+            return Optional.empty();
+        }
+    }
 }
