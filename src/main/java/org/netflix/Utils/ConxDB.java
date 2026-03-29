@@ -13,7 +13,7 @@ public class ConxDB {
     private final String USER = "root";
     private final String PASS = "";*/
 
-    private ConxDB() throws SQLException{
+    /*private ConxDB() throws SQLException{
         try {
             Class.forName("com.mysql.cj.jdbc.Driver");
         }catch(ClassNotFoundException e) {
@@ -26,14 +26,25 @@ public class ConxDB {
             }
             prop.load(input);
             String port = prop.getProperty("db.port");
-            String url = "jdbc:mysql://localhost:" + port + "/bingepanda";
+            String url = "jdbc:mysql://localhost:" + port + "/netflix";
 
             connexion =  DriverManager.getConnection(url, prop.getProperty("db.user"), prop.getProperty("db.pass"));
 
         } catch (Exception ex) {
             ex.printStackTrace();
         }
-     }
+     }*/
+    private ConxDB() {
+        try {
+            Class.forName("com.mysql.cj.jdbc.Driver");
+            // Test direct avec le port 3307
+            String url = "jdbc:mysql://localhost:3307/netflix?serverTimezone=UTC";
+            connexion = DriverManager.getConnection(url, "root", "");
+            System.out.println("Connexion forcée réussie !");
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
     public static Connection getInstance() {
         if(connexion == null)
             try {

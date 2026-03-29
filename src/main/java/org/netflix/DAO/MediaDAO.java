@@ -171,6 +171,13 @@ public class MediaDAO {
             return false;
         }
     }
-   }
+
+    public static boolean addToFavorites(int id, int idMedia) {
+        return true;
+    }
+
+    public static void removeFromFavorites(int id, int idMedia) {
+    }
+}
 
 
