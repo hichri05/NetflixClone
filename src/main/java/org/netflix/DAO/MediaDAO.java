@@ -99,4 +99,78 @@ public class MediaDAO {
                 rs.getString("director")
         );
     }
-}
+    /**
+     * Ajout
+     */
+    public static boolean addMedia(Media media, String type) {
+        String sql = "INSERT INTO media (title, description, releaseYear, averageRating, coverImageUrl, director, type, views) " +
+                "VALUES (?, ?, ?, ?, ?, ?, ?, 0)";
+
+        try (PreparedStatement pstmt = conn.prepareStatement(sql, Statement.RETURN_GENERATED_KEYS)) {
+            pstmt.setString(1, media.getTitle());
+            pstmt.setString(2, media.getDescription());
+            pstmt.setInt(3, media.getReleaseYear());
+            pstmt.setDouble(4, media.getAverageRating());
+            pstmt.setString(5, media.getCoverImageUrl());
+            pstmt.setString(6, media.getDirector());
+            pstmt.setString(7, type); // 'movie' ou 'serie'
+
+            int affectedRows = pstmt.executeUpdate();
+
+            if (affectedRows > 0) {
+                // Récupération de l'ID généré pour l'utiliser dans MovieDAO ou SerieDAO si besoin
+                try (ResultSet generatedKeys = pstmt.getGeneratedKeys()) {
+                    if (generatedKeys.next()) {
+                        media.setIdMedia(generatedKeys.getInt(1));
+                    }
+                }
+                return true;
+            }
+        } catch (SQLException e) {
+            System.err.println("Erreur lors de l'ajout du média : " + e.getMessage());
+        }
+        return false;
+    }
+
+    /**
+     * ha4i l update
+     */
+    public static boolean updateMedia(Media media) {
+        String sql = "UPDATE media SET title = ?, description = ?, releaseYear = ?, " +
+                "averageRating = ?, coverImageUrl = ?, director = ? WHERE id_Media = ?";
+
+        try (PreparedStatement pstmt = conn.prepareStatement(sql)) {
+            pstmt.setString(1, media.getTitle());
+            pstmt.setString(2, media.getDescription());
+            pstmt.setInt(3, media.getReleaseYear());
+            pstmt.setDouble(4, media.getAverageRating());
+            pstmt.setString(5, media.getCoverImageUrl());
+            pstmt.setString(6, media.getDirector());
+            pstmt.setInt(7, media.getIdMedia());
+
+            return pstmt.executeUpdate() > 0;
+        } catch (SQLException e) {
+            System.err.println("Erreur lors de la mise à jour du média : " + e.getMessage());
+            return false;
+        }
+    }
+
+    /**
+     * supprission
+     */
+    public static boolean deleteMedia(int idMedia) {
+        // Note : Grâce aux contraintes ON DELETE CASCADE en SQL,
+        // supprimer ici supprimera aussi les entrées dans movie/serie/favorite/media_genre
+        String sql = "DELETE FROM media WHERE id_Media = ?";
+
+        try (PreparedStatement pstmt = conn.prepareStatement(sql)) {
+            pstmt.setInt(1, idMedia);
+            return pstmt.executeUpdate() > 0;
+        } catch (SQLException e) {
+            System.err.println("Erreur lors de la suppression : " + e.getMessage());
+            return false;
+        }
+    }
+   }
+
+
