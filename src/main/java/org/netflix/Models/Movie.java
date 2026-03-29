@@ -1,41 +1,88 @@
 package org.netflix.Models;
 
-import java.util.List;
-
-public class Movie extends Media {
-    private String videoUrl;
+public class Movie {
+    private int id;
+    private String title;
+    private String description;
+    private int releaseYear;
+    private double rating;
     private int durationMinutes;
+    private String posterImage;
+    private String filePath;
 
-    public Movie(int idMedia, String title, String description, int releaseYear,
-                 double averageRating, String coverImageUrl, String director,
-                 String videoUrl, int durationMinutes, List<Genre> genres) {
+    public Movie(int id, String title, String description, int releaseYear,
+                 double rating, int durationMinutes, String posterImage, String filePath) {
+        this.id = id;
+        this.title = title;
+        this.description = description;
+        this.releaseYear = releaseYear;
+        this.rating = rating;
+        this.durationMinutes = durationMinutes;
+        this.posterImage = posterImage;
+        this.filePath = filePath;
+    }
 
-        super( idMedia, title, description,releaseYear,
-        averageRating,  coverImageUrl, director, genres);
-        this.videoUrl = videoUrl;
+    public int getId() {
+        return id;
+    }
+
+    public void setId(int id) {
+        this.id = id;
+    }
+
+    public String getTitle() {
+        return title;
+    }
+
+    public void setTitle(String title) {
+        this.title = title;
+    }
+
+    public String getDescription() {
+        return description;
+    }
+
+    public void setDescription(String description) {
+        this.description = description;
+    }
+
+    public int getReleaseYear() {
+        return releaseYear;
+    }
+
+    public void setReleaseYear(int releaseYear) {
+        this.releaseYear = releaseYear;
+    }
+
+    public double getRating() {
+        return rating;
+    }
+
+    public void setRating(double rating) {
+        this.rating = rating;
+    }
+
+    public int getDurationMinutes() {
+        return durationMinutes;
+    }
+
+    public void setDurationMinutes(int durationMinutes) {
         this.durationMinutes = durationMinutes;
     }
-    public Movie(){}
 
-    public String getVideoUrl() { return videoUrl; }
-    public int getDurationMinutes() { return durationMinutes; }
-    @Override
-    public String toString() {
-        return String.format(
-                "MOVIE DETAILS\n" +
-                        "--------------------------------------------------\n" +
-                        "ID:          %d\n" +
-                        "Title:       %s (%d)\n" +
-                        "Director:    %s\n" +
-                        "Rating:      ★ %.1f / 10\n" +
-                        "Duration:    %d min\n" +
-                        "Cover:       %s\n" +
-                        "Video URL:   %s\n" +
-                        "Description: %s\n" +
-                        "--------------------------------------------------",
-                idMedia, title, releaseYear, director, averageRating,
-                durationMinutes, coverImageUrl, videoUrl,
-                (description != null && description.length() > 60) ? description.substring(0, 60) + "..." : description
-        );
+    public String getPosterImage() {
+        return posterImage;
+    }
+
+    public void setPosterImage(String posterImage) {
+        this.posterImage = posterImage;
+    }
+
+    public String getFilePath() {
+        return filePath;
+    }
+
+    public void setFilePath(String filePath) {
+        this.filePath = filePath;
     }
 }
