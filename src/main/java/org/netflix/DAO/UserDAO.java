@@ -157,4 +157,31 @@ public class UserDAO {
 
         }
     }
+    public static boolean updateRole(int idUser, String newRole) {
+        String sql = "UPDATE user SET role = ? WHERE id_User = ?";
+
+        try (PreparedStatement pstmt = conn.prepareStatement(sql)) {
+            pstmt.setString(1, newRole);
+            pstmt.setInt(2, idUser);
+
+            return pstmt.executeUpdate() > 0;
+        } catch (SQLException e) {
+            System.err.println("Erreur lors de la mise à jour du rôle : " + e.getMessage());
+            return false;
+        }
+    }
+    /**
+     *supp d'utilisateur
+     */
+    public static boolean deleteUser(int idUser) {
+        String sql = "DELETE FROM user WHERE id_User = ?";
+
+        try (PreparedStatement pstmt = conn.prepareStatement(sql)) {
+            pstmt.setInt(1, idUser);
+            return pstmt.executeUpdate() > 0;
+        } catch (SQLException e) {
+            System.err.println("Erreur lors de la suppression de l'utilisateur : " + e.getMessage());
+            return false;
+        }
+    }
 }
