@@ -9,14 +9,16 @@ public class User {
     private String username;
     private String email;
     private String password;
+    private String role;
     private Timestamp createdAt;
     private List<Media> favorites = new ArrayList<>();
 
-    public User(int id, String username, String email, Timestamp createdAt, List<Media> favorites) {
+    public User(int id, String username, String email,String role, Timestamp createdAt, List<Media> favorites) {
         this.id = id;
         this.username = username;
         this.email = email;
         this.createdAt = createdAt;
+        this.role = role;
         this.favorites = favorites;
     }
 
@@ -57,6 +59,13 @@ public class User {
 
     public Timestamp getCreatedAt() {
         return createdAt;
+    }
+
+    public String  getRole() {
+        return role;
+    }
+    public void setRole(String role) {
+        this.role = role;
     }
 
     public List<Media> getFavorites() {

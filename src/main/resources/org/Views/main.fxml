@@ -21,7 +21,7 @@
                <content>
                   <VBox fx:id="mediaRows" spacing="5.0" style="-fx-background-color: #141414;" stylesheets="@../Styles/style.css">
                      <children>
-                        <StackPane fx:id="heroStack" styleClass="heroStack" VBox.vgrow="NEVER" maxWidth="Infinity" >
+                        <StackPane fx:id="heroStack" maxWidth="Infinity" styleClass="heroStack" VBox.vgrow="NEVER">
                            <children>
                               <VBox alignment="BOTTOM_LEFT" prefHeight="200.0" prefWidth="100.0" spacing="10.0" styleClass="">
                                  <children>
@@ -114,6 +114,7 @@
                       <Label style="-fx-text-fill: white; -fx-font-size: 18px;" text="🔍" />
                       <TextField fx:id="searchField" promptText="Titles, people, genres" styleClass="search-input" />
                   <Label fx:id="userinf" text="Label" />
+                      <Button fx:id="adminBtn" onAction="#handleOpenDashboard" text="Admin Dashboard" />
                   </children>
               </HBox>
           </right>

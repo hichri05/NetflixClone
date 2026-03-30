@@ -53,24 +53,24 @@ public class UserDAO {
     public static List<Media> getUserFavorites(int userId) {
         List<Media> favorites = new ArrayList<>();
         String sql = "SELECT m.* FROM media m " +
-                "JOIN favorite f ON m.id_Media = f.id_Media " +
+                "Inner JOIN favorite f ON m.id_Media = f.id_Media " +
                 "WHERE f.id_User = ?";
 
         try (PreparedStatement pstmt = conn.prepareStatement(sql)) {
             pstmt.setInt(1, userId);
             try (ResultSet rs = pstmt.executeQuery()) {
                 while (rs.next()) {
-                    int idMedia = rs.getInt("id_Media");
+                    /*int idMedia = rs.getInt("id_Media");
                     String title = rs.getString("title");
                     String description = rs.getString("description");
                     int releaseYear = rs.getInt("releaseYear");
                     double averageRating = rs.getDouble("averageRating");
                     String coverImageUrl = rs.getString("coverImageUrl");
                     String backdropImageUrl =  rs.getString("backdrop_path");
-                    String director = rs.getString("director");
-                    String type = rs.getString("type");
+                    String director = rs.getString("director");*/
+                    favorites.add(MediaDAO.ResultToMedia(rs));
 
-                    if ("movie".equalsIgnoreCase(type)) {
+                    /*if ("movie".equalsIgnoreCase(type)) {
 
                         favorites.add(new Movie(
                                 idMedia, title, description, releaseYear, averageRating,
@@ -82,7 +82,7 @@ public class UserDAO {
                                 idMedia, title, description, releaseYear, averageRating,
                                 coverImageUrl,backdropImageUrl, director, nbrSaison, new ArrayList<>(), new ArrayList<>()
                         ));
-                    }
+                    }*/
                 }
             }
         } catch (SQLException e) {
@@ -93,19 +93,25 @@ public class UserDAO {
 
     public static User findByEmail(String email) {
         String sql = "SELECT * FROM user WHERE email = ?";
+
         try (PreparedStatement pstmt = conn.prepareStatement(sql)) {
+
             pstmt.setString(1, email);
-            try (ResultSet rs = pstmt.executeQuery()) {
-                if (rs.next()) {
-                    // Utilise ton constructeur User(id, username, email)
-                    return new User(
-                            rs.getInt("id_User"),
-                            rs.getString("userName"),
-                            rs.getString("email")
-                    );
-                }
+            ResultSet rs = pstmt.executeQuery();
+
+            if (rs.next()) {
+
+                User user = new User();
+                user.setId(rs.getInt("id_User"));
+                user.setUsername(rs.getString("userName"));
+                user.setEmail(rs.getString("email"));
+                user.setPassword(rs.getString("password"));
+                user.setRole(rs.getString("role"));
+
+                return user;
             }
         } catch (SQLException e) {
+            System.err.println("Error finding user by email: " + e.getMessage());
             e.printStackTrace();
         }
         return null;
@@ -142,19 +148,20 @@ public class UserDAO {
             return false;
         }
     }
+    public static boolean isFavorite(int userId, int mediaId) {
+        String sql = "SELECT COUNT(*) FROM favorite WHERE id_user = ? AND id_media = ?";
 
-    public static boolean isFavorite(int idUser, int idMedia) {
-        String sql = "SELECT * FROM favorite WHERE id_User = ? AND id_Media = ?";
         try (PreparedStatement pstmt = conn.prepareStatement(sql)) {
-            pstmt.setInt(1, idUser);
-            pstmt.setInt(2, idMedia);
-            try (ResultSet rs = pstmt.executeQuery()) {
-                return rs.next(); // true si le média est déjà en favori
+
+            pstmt.setInt(1, userId);
+            pstmt.setInt(2, mediaId);
+            ResultSet rs = pstmt.executeQuery();
+
+            if (rs.next()) {
+                return rs.getInt(1) > 0;
             }
         } catch (SQLException e) {
             e.printStackTrace();
-            return false;
-
         }
     }
     public static boolean updateRole(int idUser, String newRole) {
@@ -184,4 +191,28 @@ public class UserDAO {
             return false;
         }
     }
+    public Optional<User> findById(int id) {
+        String sql = "SELECT id, username, email FROM users WHERE id = ?";
+
+        try (PreparedStatement pstmt = conn.prepareStatement(sql)) {
+
+            pstmt.setInt(1, id);
+
+            try (ResultSet rs = pstmt.executeQuery()) {
+                if (rs.next()) {
+                    return Optional.of(new User(
+                            rs.getInt("id"),
+                            rs.getString("username"),
+                            rs.getString("email")
+                    ));
+                }
+            }
+            return Optional.empty();
+
+        } catch (SQLException e) {
+            e.printStackTrace();
+            return Optional.empty();
+        }
+    }
+
 }
