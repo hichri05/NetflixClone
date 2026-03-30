@@ -106,6 +106,7 @@ public class UserDAO {
                 user.setUsername(rs.getString("userName"));
                 user.setEmail(rs.getString("email"));
                 user.setPassword(rs.getString("password"));
+                user.setRole(rs.getString("role"));
 
                 return user;
             }
@@ -153,6 +154,29 @@ public class UserDAO {
             e.printStackTrace();
         }
         return false;
+    }
+    public Optional<User> findById(int id) {
+        String sql = "SELECT id, username, email FROM users WHERE id = ?";
+
+        try (PreparedStatement pstmt = conn.prepareStatement(sql)) {
+
+            pstmt.setInt(1, id);
+
+            try (ResultSet rs = pstmt.executeQuery()) {
+                if (rs.next()) {
+                    return Optional.of(new User(
+                            rs.getInt("id"),
+                            rs.getString("username"),
+                            rs.getString("email")
+                    ));
+                }
+            }
+            return Optional.empty();
+
+        } catch (SQLException e) {
+            e.printStackTrace();
+            return Optional.empty();
+        }
     }
 
 }

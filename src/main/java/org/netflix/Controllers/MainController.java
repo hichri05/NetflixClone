@@ -28,13 +28,22 @@ public class MainController implements Initializable {
     @FXML private Label mvTrendName, mvTrendDesc, userinf;
     @FXML private StackPane heroStack;
     @FXML private VBox mediaRows;
-    @FXML private Button playbtn, mylistbtn;
+    @FXML private Button playbtn, mylistbtn, adminBtn;
 
     //
     User user;
     //
     @Override
     public void initialize(URL url, ResourceBundle resourceBundle) {
+        user = Session.getUser();
+
+        if (user != null && "ADMIN".equalsIgnoreCase(user.getRole())) {
+            adminBtn.setVisible(true);
+            adminBtn.setManaged(true);
+        } else {
+            adminBtn.setVisible(false);
+            adminBtn.setManaged(false);
+        }
         setupHeroSize();
         loadMediaRows();
         setupSearch();
@@ -46,7 +55,6 @@ public class MainController implements Initializable {
 
         heroStack.sceneProperty().addListener((obs, oldScene, newScene) -> {
             if (newScene != null) {
-                // Hero = 55% of window height
                 heroStack.prefHeightProperty().bind(newScene.heightProperty().multiply(0.55));
             }
         });
@@ -251,4 +259,10 @@ public class MainController implements Initializable {
         User user = Session.getUser();
         MediaDAO.removeFromFavorites(user.getId(), media.getIdMedia());
     }
+
+
+    public void handleOpenDashboard(ActionEvent event) {
+        SceneSwitcher.goTo(event, "/org/Views/MainDashboard.fxml");
+    }
+
 }

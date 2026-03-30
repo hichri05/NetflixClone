@@ -4,10 +4,8 @@ import org.netflix.Models.Acteur;
 import org.netflix.Models.Genre;
 import org.netflix.Models.Movie;
 import org.netflix.Utils.ConxDB;
-import java.sql.Connection;
-import java.sql.ResultSet;
-import java.sql.SQLException;
-import java.sql.Statement;
+
+import java.sql.*;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -91,4 +89,40 @@ public class MovieDAO {
         //todo
         return null;
     }
+
+    public boolean updateRating(Movie movie) {
+        String sql = "UPDATE movies SET average_rating = ? WHERE id = ?";
+
+        try (PreparedStatement pstmt = conn.prepareStatement(sql)) {
+
+            pstmt.setDouble(1, movie.getAverageRating());
+            pstmt.setInt(2, movie.getIdMedia());
+
+            return pstmt.executeUpdate() > 0;
+
+        } catch (SQLException e) {
+            e.printStackTrace();
+            return false;
+        }
+    }
+
+        public List<Movie> findTopRated(int limit) {
+            String sql = "SELECT * FROM movies ORDER BY average_rating DESC LIMIT ?";
+            List<Movie> movies = new ArrayList<>();
+
+            try (PreparedStatement pstmt = conn.prepareStatement(sql)) {
+
+                pstmt.setInt(1, limit);
+
+                try (ResultSet rs = pstmt.executeQuery()) {
+                    while (rs.next()) {
+                        //movies.add(ResultSetToMovie(rs));
+                    }
+                }
+
+            } catch (SQLException e) {
+                e.printStackTrace();
+            }
+            return movies;
+        }
 }

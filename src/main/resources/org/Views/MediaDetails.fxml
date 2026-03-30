@@ -20,9 +20,7 @@
                         <ImageView fx:id="backgroundImage" pickOnBounds="true" preserveRatio="true" />
                         <VBox alignment="BOTTOM_LEFT" spacing="15.0" style="-fx-background-color: linear-gradient(to top, #141414, transparent);">
                             <children>
-                                <Button fx:id="backButton" layoutX="20.0" layoutY="20.0"
-                                        onAction="#handleBack" text="← Back"
-                                        style="-fx-background-color: transparent; -fx-text-fill: white; -fx-font-size: 16px; -fx-cursor: hand;" />
+                                <Button fx:id="backButton" alignment="TOP_LEFT" onAction="#handleBack" style="-fx-background-color: transparent; -fx-text-fill: white; -fx-font-size: 16px; -fx-cursor: hand;" text="← Back" />
                                 <Label fx:id="titleLabel" styleClass="hero-title" text="SERIES TITLE" />
                                 <HBox spacing="15.0">
                                     <children>
