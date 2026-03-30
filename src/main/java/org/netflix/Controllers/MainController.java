@@ -35,6 +35,7 @@ public class MainController implements Initializable {
     //
     @Override
     public void initialize(URL url, ResourceBundle resourceBundle) {
+        searchField.setFocusTraversable(false);
         user = Session.getUser();
 
         if (user != null && "ADMIN".equalsIgnoreCase(user.getRole())) {

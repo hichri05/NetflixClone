@@ -87,7 +87,7 @@ public class MediaDAO {
         return results;
     }
 
-    private static Media ResultToMedia(ResultSet rs) throws SQLException {
+    static Media ResultToMedia(ResultSet rs) throws SQLException {
         return new Media(
                 rs.getInt("id_Media"),
                 rs.getString("title"),

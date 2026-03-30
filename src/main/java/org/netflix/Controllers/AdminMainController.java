@@ -6,12 +6,13 @@ import javafx.fxml.FXMLLoader;
 import javafx.scene.Node;
 import javafx.scene.control.Button;
 import javafx.scene.layout.StackPane;
+import org.netflix.Utils.SceneSwitcher;
 
 import java.io.IOException;
 
 public class AdminMainController {
     @FXML private StackPane contentArea;
-    @FXML private Button btnCatalogue, btnCategories, btnUsers;
+    @FXML private Button btnCatalogue, btnCategories, btnUsers, logoutbtn;
 
     public void showCatalogue(ActionEvent actionEvent) {
         contentArea.getChildren().clear();
@@ -63,6 +64,6 @@ public class AdminMainController {
 
 
     public void handleLogout(ActionEvent actionEvent) {
-
+        SceneSwitcher.goTo(actionEvent, "/org/Views/main.fxml");
     }
 }

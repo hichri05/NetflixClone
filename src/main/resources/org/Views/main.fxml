@@ -114,7 +114,7 @@
                       <Label style="-fx-text-fill: white; -fx-font-size: 18px;" text="🔍" />
                       <TextField fx:id="searchField" promptText="Titles, people, genres" styleClass="search-input" />
                   <Label fx:id="userinf" text="Label" />
-                      <Button fx:id="adminBtn" onAction="#handleOpenDashboard" text="Admin Dashboard" />
+                      <Button fx:id="adminBtn" onAction="#handleOpenDashboard" styleClass="btn-play" text="Admin Dashboard" />
                   </children>
               </HBox>
           </right>

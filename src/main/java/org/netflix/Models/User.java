@@ -32,6 +32,7 @@ public class User {
         this.email = email;
         this.password = password;
     }
+    public User(){}
 
     public int getId() {
         return id;
@@ -83,5 +84,9 @@ public class User {
 
     public String getPassword() {
         return password;
+    }
+
+    public void setPassword(String password) {
+        this.password = password;
     }
 }

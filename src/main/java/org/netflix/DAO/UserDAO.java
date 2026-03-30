@@ -163,6 +163,7 @@ public class UserDAO {
         } catch (SQLException e) {
             e.printStackTrace();
         }
+        return false;
     }
     public static boolean updateRole(int idUser, String newRole) {
         String sql = "UPDATE user SET role = ? WHERE id_User = ?";
@@ -174,8 +175,9 @@ public class UserDAO {
             return pstmt.executeUpdate() > 0;
         } catch (SQLException e) {
             System.err.println("Erreur lors de la mise à jour du rôle : " + e.getMessage());
-            return false;
+
         }
+        return false;
     }
     /**
      *supp d'utilisateur
