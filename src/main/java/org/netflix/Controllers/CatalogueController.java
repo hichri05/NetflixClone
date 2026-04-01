@@ -8,6 +8,7 @@ import javafx.scene.control.*;
 import javafx.scene.control.cell.PropertyValueFactory;
 import org.netflix.Models.Media;
 import org.netflix.DAO.MediaDAO;
+import org.netflix.Utils.SceneSwitcher;
 
 public class CatalogueController {
 
@@ -45,7 +46,7 @@ public class CatalogueController {
     }
 
     private void refreshTable() {
-        //mediaList.setAll(MediaDAO.getAllMedia());
+        mediaList.setAll(MediaDAO.getAllMedia());
         mediaTable.setItems(mediaList);
     }
 
@@ -64,6 +65,14 @@ public class CatalogueController {
     }
 
     public void handleOpenEpisodeManager(ActionEvent actionEvent) {
+        selectedMedia = mediaTable.getSelectionModel().getSelectedItem();
+        if (selectedMedia != null) {
+            SceneSwitcher.goTo(actionEvent, "/org/Views/EpisodeManager.fxml");
+        }else{
+            Alert alert = new Alert(Alert.AlertType.WARNING, "Please select a Series first!");
+            alert.show();
+            return;
+        }
     }
 
     public void handleDelete(ActionEvent actionEvent) {
@@ -71,7 +80,7 @@ public class CatalogueController {
             Alert alert = new Alert(Alert.AlertType.CONFIRMATION, "Delete " + selectedMedia.getTitle() + "?");
             alert.showAndWait().ifPresent(response -> {
                 if (response == ButtonType.OK) {
-                    //MediaDAO.deleteMedia(selectedMedia.getId());
+                    MediaDAO.deleteMedia(selectedMedia.getIdMedia());
                     refreshTable();
                     clearFields();
                 }
@@ -81,7 +90,7 @@ public class CatalogueController {
 
     public void handleSave(ActionEvent actionEvent) {
         if (selectedMedia == null) {
-            //Media newMedia = new Media(titleField.getText(), descArea.getText(), posterUrlField.getText());
+            Media newMedia = new Media(titleField.getText(), descArea.getText(), posterUrlField.getText());
             //MediaDAO.addMedia(newMedia);
         } else {
             selectedMedia.setTitle(titleField.getText());

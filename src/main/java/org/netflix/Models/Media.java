@@ -40,6 +40,13 @@ public class Media {
         this.director = director;
     }
     public  Media() {}
+
+    public Media(String title, String description, String coverImageUrl) {
+        this.title = title;
+        this.description = description;
+        this.coverImageUrl = coverImageUrl;
+    }
+
     public int getIdMedia() { return idMedia; }
     public String getTitle() { return title; }
     public String getCoverImageUrl() { return coverImageUrl; }
