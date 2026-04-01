@@ -161,7 +161,7 @@ public class MediaDAO {
     public static boolean deleteMedia(int idMedia) {
         // Note : Grâce aux contraintes ON DELETE CASCADE en SQL,
         // supprimer ici supprimera aussi les entrées dans movie/serie/favorite/media_genre
-        String sql = "DELETE FROM media WHERE id_Media = ?";
+        String sql = "DELETE FROM media WHERE id_Media = ? ON DELETE CASCADE";
 
         try (PreparedStatement pstmt = conn.prepareStatement(sql)) {
             pstmt.setInt(1, idMedia);
@@ -177,6 +177,11 @@ public class MediaDAO {
     }
 
     public static void removeFromFavorites(int id, int idMedia) {
+    }
+
+    public static Media getAllMedia() {
+        //todo
+        return null;
     }
 }
 
