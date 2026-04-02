@@ -20,7 +20,7 @@
 <?import javafx.scene.layout.VBox?>
 <?import javafx.scene.text.Text?>
 
-<VBox spacing="20" style="-fx-background-color: #141414;" xmlns="http://javafx.com/javafx/25" xmlns:fx="http://javafx.com/fxml/1" fx:controller="org.netflix.Controllers.CatalogueController">
+<VBox spacing="20" style="-fx-background-color: #141414;" stylesheets="@../Styles/style.css" xmlns="http://javafx.com/javafx/25" xmlns:fx="http://javafx.com/fxml/1" fx:controller="org.netflix.Controllers.CatalogueController">
     <padding>
         <Insets bottom="20" left="20" right="20" top="20" />
     </padding>
@@ -47,7 +47,7 @@
     <SplitPane dividerPositions="0.4" style="-fx-background-color: transparent;" VBox.vgrow="ALWAYS">
 
         <VBox spacing="10" style="-fx-background-color: #1b1b1b; -fx-padding: 10;">
-            <TableView fx:id="mediaTable" VBox.vgrow="ALWAYS" style="-fx-background-color: #1b1b1b;">
+            <TableView fx:id="mediaTable" style="-fx-background-color: #1b1b1b;" VBox.vgrow="ALWAYS">
                 <columns>
                     <TableColumn fx:id="colTitle" prefWidth="180" text="Title" />
                     <TableColumn fx:id="colType" prefWidth="90" text="Type" />
@@ -98,9 +98,18 @@
                         </rowConstraints>
                     </GridPane>
 
-                    <Label style="-fx-text-fill: #aaa; -fx-font-weight: bold;" text="Genres" />
-                    <FlowPane fx:id="genreFlowPane" hgap="10" style="-fx-padding: 10; -fx-border-color: #444; -fx-border-radius: 5;" vgap="8" />
+                    <VBox spacing="10">
+                        <HBox alignment="CENTER_LEFT" spacing="10">
+                            <Label style="-fx-text-fill: #aaa; -fx-font-weight: bold;" text="Genres" />
+                            <Region HBox.hgrow="ALWAYS" />
 
+                            <ComboBox fx:id="genreSelectionCombo" prefWidth="150" promptText="Select Genre" style="-fx-background-color: #333; -fx-text-fill: white; -fx-prompt-text-fill: white;" />
+
+                            <Button onAction="#handleAddGenreFromCombo" style="-fx-background-color: #333; -fx-text-fill: #46d369; -fx-border-color: #46d369; -fx-cursor: hand;" text="+ Add" />
+                        </HBox>
+
+                        <FlowPane fx:id="genreFlowPane" hgap="10" style="-fx-padding: 10; -fx-border-color: #444; -fx-border-radius: 5; -fx-min-height: 40;" vgap="8" />
+                    </VBox>
                     <Separator style="-fx-opacity: 0.1;" />
 
                     <HBox alignment="CENTER_RIGHT" spacing="10">

@@ -12,11 +12,12 @@ public class Media {
     protected String coverImageUrl;
     protected String backdropImageUrl;
     protected String director;
+    protected String type;
     protected List<Genre> genres;
-    private List<Acteur> casting = new ArrayList<>();
+    protected List<Acteur> casting = new ArrayList<>();
 
     public Media(int idMedia, String title, String description, int releaseYear,
-                 double averageRating, String coverImageUrl, String backdropImageUrl,String director,List<Genre> genres,List<Acteur> casting) {
+                 double averageRating, String coverImageUrl, String backdropImageUrl,String director,String type, List<Genre> genres,List<Acteur> casting) {
         this.idMedia = idMedia;
         this.title = title;
         this.description = description;
@@ -25,11 +26,12 @@ public class Media {
         this.coverImageUrl = coverImageUrl;
         this.backdropImageUrl = backdropImageUrl;
         this.director = director;
+        this.type = type;
         this.genres = genres;
         this.casting=casting;
     }
     public Media(int idMedia, String title, String description, int releaseYear,
-                 double averageRating, String coverImageUrl, String backdropImageUrl,String director) {
+                 double averageRating, String coverImageUrl, String backdropImageUrl,String director, String type, List<Genre> genres) {
         this.idMedia = idMedia;
         this.title = title;
         this.description = description;
@@ -38,6 +40,8 @@ public class Media {
         this.coverImageUrl = coverImageUrl;
         this.backdropImageUrl = backdropImageUrl;
         this.director = director;
+        this.type = type;
+        this.genres = genres;
     }
     public  Media() {}
 
@@ -58,36 +62,37 @@ public class Media {
     public List<Genre> getGenres() { return genres; }
     public List<Acteur> getCasting() { return casting; }
     public void setCasting(List<Acteur> casting) { this.casting = casting; }
-
     public void setAverageRating(double averageRating) {
         this.averageRating = averageRating;
     }
-
     public void setCoverImageUrl(String coverImageUrl) {
         this.coverImageUrl = coverImageUrl;
     }
-
     public void setDescription(String description) {
         this.description = description;
     }
-
     public void setIdMedia(int idMedia) {
         this.idMedia = idMedia;
     }
-
     public void setDirector(String director) {
         this.director = director;
     }
-
     public void setGenres(List<Genre> genres) {
         this.genres = genres;
     }
-
     public void setReleaseYear(int releaseYear) {
         this.releaseYear = releaseYear;
     }
-
     public void setTitle(String title) {
         this.title = title;
+    }
+    public String getType() {
+        return type;
+    }
+    public void setType(String type) {
+        this.type = type;
+    }
+    public void setBackdropImageUrl(String backdropImageUrl) {
+        this.backdropImageUrl = backdropImageUrl;
     }
 }

@@ -30,9 +30,10 @@ public class SerieDAO {
                         rs.getString("coverImageUrl"),
                         rs.getString("backdrop_path"),
                         rs.getString("director"),
-                        rs.getInt("nbrSaison"),
+                        rs.getString("type"),
                         genresList,
-                        casting
+                        casting,
+                        rs.getInt("nbrSaison")
                                 ));
             }
         } catch (SQLException e) {

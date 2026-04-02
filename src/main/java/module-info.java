@@ -12,6 +12,7 @@ module org.netflix {
     requires javafx.base;
 
 
+    opens org.netflix.Models to javafx.base, javafx.fxml;
     opens org.Styles to javafx.graphics, javafx.fxml;
     opens org.Views to javafx.fxml;
     exports org.netflix.Main;

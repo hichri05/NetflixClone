@@ -206,3 +206,12 @@
     -fx-font-size: 13px;
     -fx-visibility: false;
 }
+
+.combo-box .cell {
+    -fx-text-fill: white !important;
+}
+
+.combo-box .list-view .list-cell {
+    -fx-text-fill: white !important;
+    -fx-background-color: #333;
+}

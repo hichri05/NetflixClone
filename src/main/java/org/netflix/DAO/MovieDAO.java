@@ -33,10 +33,11 @@ public class MovieDAO {
                             rs.getString("coverImageUrl"),
                             rs.getString("backdrop_path"),
                             rs.getString("director"),
-                            rs.getString("videoUrl"),
-                            rs.getInt("duration_minutes"),
+                            rs.getString("type"),
                             genresList,
-                            casting
+                            casting,
+                            rs.getString("videoUrl"),
+                            rs.getInt("duration_minutes")
                     ));
                 }
             } catch (SQLException e) {
@@ -73,10 +74,11 @@ public class MovieDAO {
                         rs.getString("coverImageUrl"),
                         rs.getString("backdrop_path"),
                         rs.getString("director"),
-                        rs.getString("videoUrl"),
-                        rs.getInt("duration_minutes"),
+                        rs.getString("type"),
                         genreList,
-                        casting
+                        casting,
+                        rs.getString("videoUrl"),
+                        rs.getInt("duration_minutes")
                 );
             }
         } catch (SQLException e) {

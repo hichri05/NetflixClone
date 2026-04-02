@@ -14,7 +14,7 @@ public class Genre {
     }
 
     public int getId() { return id; }
-    public MediaGenre getName() { return name; }
+    public MediaGenre getName() { return this.name; }
 
     @Override
     public String toString() {
