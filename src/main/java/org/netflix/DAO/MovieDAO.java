@@ -85,9 +85,47 @@ public class MovieDAO {
         return movie;
     }
 
-    public static List<Movie> findbyGenre(String genre) {
-        //todo
-        return null;
+    public static List<Movie> findbyGenre(String genreName) {
+        List<Movie> movies = new ArrayList<>();
+
+        String sql = "SELECT m.*, v.videoUrl, v.duration_minutes " +
+                "FROM media m " +
+                "INNER JOIN movie v ON m.id_Media = v.id_Media " +
+                "INNER JOIN media_genres mg ON m.id_Media = mg.id_Media " +
+                "INNER JOIN genres g ON mg.id_Genre = g.id_Genre " +
+                "WHERE g.name = ?";
+
+        try (PreparedStatement pstmt = conn.prepareStatement(sql)) {
+            pstmt.setString(1, genreName);
+
+            try (ResultSet rs = pstmt.executeQuery()) {
+                while (rs.next()) {
+                    int currentId = rs.getInt("id_Media");
+                    // On réutilise ta méthode existante pour les genres
+                    List<Genre> genreList = MediaDAO.getGenresByMediaId(currentId);
+                    List<Acteur> casting = new ArrayList<>(); // À compléter si besoin
+
+                    movies.add(new Movie(
+                            currentId,
+                            rs.getString("title"),
+                            rs.getString("description"),
+                            rs.getInt("releaseYear"),
+                            rs.getDouble("averageRating"),
+                            rs.getString("coverImageUrl"),
+                            rs.getString("backdrop_path"),
+                            rs.getString("director"),
+                            rs.getString("videoUrl"),
+                            rs.getInt("duration_minutes"),
+                            genreList,
+                            casting
+                    ));
+                }
+            }
+        } catch (SQLException e) {
+            System.out.println("Erreur findbyGenre : " + e.getMessage());
+            e.printStackTrace();
+        }
+        return movies;
     }
 
     public boolean updateRating(Movie movie) {

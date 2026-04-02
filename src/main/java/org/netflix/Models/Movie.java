@@ -38,4 +38,9 @@ public class Movie extends Media {
                 (description != null && description.length() > 60) ? description.substring(0, 60) + "..." : description
         );
     }
+
+    @Override
+    public String getCoverUrl() {
+        return super.getCoverUrl();
+    }
 }

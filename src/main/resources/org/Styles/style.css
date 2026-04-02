@@ -206,3 +206,8 @@
     -fx-font-size: 13px;
     -fx-visibility: false;
 }
+.movie-row {
+    -fx-spacing: 10; /* Espace horizontal entre les enfants de la HBox */
+    -fx-padding: 0 0 20 20; /* Top, Right, Bottom, Left */
+    -fx-background-color: transparent;
+}

@@ -1,0 +1,203 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.control.Button?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.control.ProgressBar?>
+<?import javafx.scene.control.Separator?>
+<?import javafx.scene.image.Image?>
+<?import javafx.scene.image.ImageView?>
+<?import javafx.scene.layout.ColumnConstraints?>
+<?import javafx.scene.layout.GridPane?>
+<?import javafx.scene.layout.HBox?>
+<?import javafx.scene.layout.Pane?>
+<?import javafx.scene.layout.Region?>
+<?import javafx.scene.layout.RowConstraints?>
+<?import javafx.scene.layout.StackPane?>
+<?import javafx.scene.layout.VBox?>
+<?import javafx.scene.text.Font?>
+
+<StackPane fx:controller="org.netflix.Controllers.NetflixController" stylesheets="@../Styles/style.css" xmlns="http://javafx.com/javafx/17" xmlns:fx="http://fxml.com/fxml/1">
+    <children>
+
+        <ImageView fx:id="heroImageView" fitWidth="1280.0" pickOnBounds="true" preserveRatio="true">
+            <image>
+                <Image url="@placeholders/hero_image_placeholder.jpg" />
+            </image>
+        </ImageView>
+
+        <VBox prefHeight="200.0" prefWidth="100.0" style="-fx-background-color: linear-gradient(to top, #000 0%, transparent 100%);" StackPane.alignment="BOTTOM_CENTER" />
+
+        <VBox spacing="40.0" StackPane.alignment="TOP_CENTER">
+            <children>
+
+                <HBox alignment="CENTER_LEFT" spacing="20.0">
+                    <children>
+                        <ImageView fitHeight="40.0" pickOnBounds="true" preserveRatio="true">
+                            <image>
+                                <Image url="@placeholders/netflix_logo.png" />
+                            </image>
+                        </ImageView>
+                        <Region HBox.hgrow="ALWAYS" />
+                        <Button mnemonicParsing="false" styleClass="icon-button" text="X" />
+                    </children>
+                    <padding>
+                        <Insets bottom="20.0" left="40.0" right="40.0" top="30.0" />
+                    </padding>
+                </HBox>
+
+                <VBox spacing="15.0">
+                    <children>
+                        <Label text="QUEER EYE" textFill="WHITE">
+                            <font>
+                                <Font name="Inter Bold" size="64.0" />
+                            </font>
+                        </Label>
+                        <Label text="more than a makeover" textFill="WHITE">
+                            <font>
+                                <Font name="Inter Regular" size="24.0" />
+                            </font>
+                            <VBox.margin>
+                                <Insets top="-10.0" />
+                            </VBox.margin>
+                        </Label>
+
+                        <Region minHeight="20.0" prefHeight="20.0" />
+
+                        <HBox alignment="CENTER_LEFT" spacing="100.0">
+                            <children>
+                                <HBox alignment="CENTER" spacing="15.0">
+                                    <children>
+                                        <ProgressBar prefWidth="300.0" progress="0.1" />
+                                        <Label text="3 of 48m" textFill="#b9b9b9">
+                                            <font>
+                                                <Font name="Inter Regular" size="14.0" />
+                                            </font>
+                                        </Label>
+                                    </children>
+                                </HBox>
+                                <Label fx:id="subtitlesLabel" text="I always feel inadequate." textFill="WHITE">
+                                    <font>
+                                        <Font name="Inter Regular" size="20.0" />
+                                    </font>
+                                </Label>
+                            </children>
+                        </HBox>
+
+                        <HBox alignment="CENTER_LEFT" spacing="15.0">
+                            <children>
+                                <Button graphicTextGap="10.0" mnemonicParsing="false" styleClass="primary-button" text="Resume">
+                                    <padding>
+                                        <Insets bottom="10.0" left="30.0" right="30.0" top="10.0" />
+                                    </padding>
+                                </Button>
+                                <Button mnemonicParsing="false" styleClass="secondary-button" text="✓" />
+                                <Button mnemonicParsing="false" styleClass="secondary-button" text="👍" />
+                                <Button mnemonicParsing="false" styleClass="secondary-button" text="👎" />
+                                <Region HBox.hgrow="ALWAYS" />
+                                <Button mnemonicParsing="false" styleClass="icon-button" text="🔊" />
+                            </children>
+                            <padding>
+                                <Insets top="10.0" />
+                            </padding>
+                        </HBox>
+                    </children>
+                    <VBox.margin>
+                        <Insets />
+                    </VBox.margin>
+                    <padding>
+                        <Insets left="40.0" right="40.0" />
+                    </padding>
+                </VBox>
+
+                <Pane prefHeight="400.0" prefWidth="1280.0" style="-fx-background-color: #111;">
+                    <children>
+                        <VBox prefWidth="1280.0" spacing="20.0">
+                            <children>
+
+                                <HBox alignment="CENTER_LEFT" spacing="15.0">
+                                    <children>
+                                        <Label text="2020" textFill="#b9b9b9" />
+                                        <Separator orientation="VERTICAL" />
+                                        <Label fx:id="ratingLabel" styleClass="maturity-rating" text="TV-14" />
+                                        <Label text="5 Seasons" textFill="#b9b9b9" />
+                                        <Label text="AD 🕬" textFill="#b9b9b9" />
+                                    </children>
+                                    <padding>
+                                        <Insets left="40.0" />
+                                    </padding>
+                                </HBox>
+                                <HBox spacing="10.0">
+                                    <children>
+                                        <Label text="🏆" textFill="#d89e3a" />
+                                        <Label text="2021 Emmy Nominee" textFill="WHITE" />
+                                    </children>
+                                    <padding>
+                                        <Insets left="40.0" />
+                                    </padding>
+                                </HBox>
+
+                                <GridPane hgap="40.0" vgap="20.0">
+                                    <columnConstraints>
+                                        <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="600.0" />
+                                        <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="400.0" />
+                                    </columnConstraints>
+                                    <rowConstraints>
+                                        <RowConstraints minHeight="10.0" vgrow="SOMETIMES" />
+                                    </rowConstraints>
+                                    <children>
+
+                                        <VBox spacing="10.0">
+                                            <children>
+                                                <Label fx:id="episodeTitleLabel" text="&quot;The Anxious Activist&quot;" textFill="WHITE">
+                                                    <font>
+                                                        <Font name="Inter Regular" size="20.0" />
+                                                    </font>
+                                                </Label>
+                                                <Label fx:id="synopsisLabel" prefWidth="600.0" text="A passionate Gen Z activist is so focused on saving the planet that she forgets to schedule self-care. Can the Fab Five help her find balance?" textFill="#b9b9b9" wrapText="true">
+                                                    <font>
+                                                        <Font name="Inter Regular" size="16.0" />
+                                                    </font>
+                                                </Label>
+                                            </children>
+                                        </VBox>
+
+                                        <VBox spacing="15.0" GridPane.columnIndex="1">
+                                            <children>
+                                                <HBox spacing="5.0">
+                                                    <children>
+                                                        <Label minWidth="60.0" text="Cast:" textFill="#b9b9b9" />
+                                                        <Label fx:id="castLabel" text="Bobby Berk, Karamo Brown, Tan France, more" textFill="WHITE" wrapText="true" />
+                                                    </children>
+                                                </HBox>
+                                                <HBox spacing="5.0">
+                                                    <children>
+                                                        <Label minWidth="60.0" text="Genres:" textFill="#b9b9b9" />
+                                                        <Label fx:id="genreLabel" text="Lifestyle, Makeover Reality TV, Reality TV" textFill="WHITE" wrapText="true" />
+                                                    </children>
+                                                </HBox>
+                                                <HBox spacing="5.0">
+                                                    <children>
+                                                        <Label minWidth="100.0" text="This show is:" textFill="#b9b9b9" />
+                                                        <Label fx:id="thisShowIsLabel" text="Heartfelt, Feel-Good" textFill="WHITE" />
+                                                    </children>
+                                                </HBox>
+                                            </children>
+                                        </VBox>
+                                    </children>
+                                    <padding>
+                                        <Insets left="40.0" right="40.0" />
+                                    </padding>
+                                </GridPane>
+                            </children>
+                        </VBox>
+                    </children>
+                    <padding>
+                        <Insets top="30.0" />
+                    </padding>
+                </Pane>
+
+            </children>
+        </VBox>
+    </children>
+</StackPane>

@@ -83,4 +83,11 @@ public class Media {
     public void setTitle(String title) {
         this.title = title;
     }
+
+    public String getCoverUrl() {
+        return coverImageUrl;
+    }
+    public String getBackDropImageUrl(){
+        return backdropImageUrl;
+    }
 }
