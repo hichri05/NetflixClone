@@ -24,20 +24,7 @@ public class MovieDAO {
                 while (rs.next()) {
                     List<Genre> genresList = MediaDAO.getGenresByMediaId(rs.getInt("id_Media"));
 
-                    movies.add(new Movie(
-                            rs.getInt("id_Media"),
-                            rs.getString("title"),
-                            rs.getString("description"),
-                            rs.getInt("releaseYear"),
-                            rs.getDouble("averageRating"),
-                            rs.getString("coverImageUrl"),
-                            rs.getString("backdrop_path"),
-                            rs.getString("director"),
-                            rs.getString("videoUrl"),
-                            rs.getInt("duration_minutes"),
-                            genresList,
-                            casting
-                    ));
+
                 }
             } catch (SQLException e) {
                 e.printStackTrace();
@@ -64,25 +51,27 @@ public class MovieDAO {
                 List<Genre> genreList = MediaDAO.getGenresByMediaId(currentId);
 
 
-                movie = new Movie(
+                movie=(new Movie(
                         currentId,
                         rs.getString("title"),
                         rs.getString("description"),
                         rs.getInt("releaseYear"),
                         rs.getDouble("averageRating"),
                         rs.getString("coverImageUrl"),
-                        rs.getString("backdrop_path"),
+                        rs.getString("backdrop_path"), // Nom colonne DB
                         rs.getString("director"),
-                        rs.getString("videoUrl"),
-                        rs.getInt("duration_minutes"),
+                        rs.getString("type"),
                         genreList,
-                        casting
-                );
+                        casting,
+                        rs.getInt("views"),
+                        rs.getString("videoUrl"),
+                        rs.getInt("duration_minutes")
+                ));
             }
         } catch (SQLException e) {
             e.printStackTrace();
         }
-        return movie;
+        return  movie;
     }
 
     public static List<Movie> findbyGenre(String genreName) {
@@ -101,10 +90,8 @@ public class MovieDAO {
             try (ResultSet rs = pstmt.executeQuery()) {
                 while (rs.next()) {
                     int currentId = rs.getInt("id_Media");
-                    // On réutilise ta méthode existante pour les genres
                     List<Genre> genreList = MediaDAO.getGenresByMediaId(currentId);
-                    List<Acteur> casting = new ArrayList<>(); // À compléter si besoin
-
+                    List<Acteur> casting = new ArrayList<>();
                     movies.add(new Movie(
                             currentId,
                             rs.getString("title"),
@@ -112,12 +99,14 @@ public class MovieDAO {
                             rs.getInt("releaseYear"),
                             rs.getDouble("averageRating"),
                             rs.getString("coverImageUrl"),
-                            rs.getString("backdrop_path"),
+                            rs.getString("backdrop_path"), // Nom colonne DB
                             rs.getString("director"),
-                            rs.getString("videoUrl"),
-                            rs.getInt("duration_minutes"),
+                            rs.getString("type"),
                             genreList,
-                            casting
+                            casting,
+                            rs.getInt("views"),
+                            rs.getString("videoUrl"),
+                            rs.getInt("duration_minutes")
                     ));
                 }
             }

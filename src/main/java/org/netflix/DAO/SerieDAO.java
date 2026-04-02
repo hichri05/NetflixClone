@@ -22,18 +22,21 @@ public class SerieDAO {
         {
             while(rs.next()){
                 List<Genre> genresList = MediaDAO.getGenresByMediaId(rs.getInt("id_Media"));
-                series.add(new Serie(rs.getInt("id_Media"),
+                series.add(new Serie(
+                        rs.getInt("id_Media"),
                         rs.getString("title"),
                         rs.getString("description"),
                         rs.getInt("releaseYear"),
                         rs.getDouble("averageRating"),
                         rs.getString("coverImageUrl"),
-                        rs.getString("backdrop_path"),
+                        rs.getString("backdrop_path"), // backdrop_path selon ta DB
                         rs.getString("director"),
-                        rs.getInt("nbrSaison"),
-                        genresList,
-                        casting
-                                ));
+                        rs.getString("type"),          // Position 9 : type
+                        rs.getInt("nbrSaison"),        // Position 10 : nbrSaison
+                        genresList,                    // Position 11 : genres
+                        casting,                       // Position 12 : casting
+                        rs.getInt("views")             // Position 13 : views
+                ));
             }
         } catch (SQLException e) {
             e.printStackTrace();
