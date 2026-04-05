@@ -23,7 +23,7 @@ public class AnalyticsService {
     private final WatchProgressDAO watchProgressDAO;
     private final MyListDAO myListDAO;
     private final GenreDAO genreDAO;
-    private final MediaGenreDAO mediaGenreDAO;
+
 
     public AnalyticsService() {
         this.userDAO = new UserDAO();
@@ -35,15 +35,9 @@ public class AnalyticsService {
         this.watchProgressDAO = new WatchProgressDAO();
         this.myListDAO = new MyListDAO();
         this.genreDAO = new GenreDAO();
-        this.mediaGenreDAO = new MediaGenreDAO();
+
     }
 
-    // ==================== RÉPARTITION DES FILMS PAR CATÉGORIE ====================
-
-    /**
-     * Récupère la répartition des films par genre (pour graphique camembert)
-     * @return Map contenant le nom du genre et le nombre de films
-     */
     public Map<String, Integer> getMoviesDistributionByGenre() {
         List<Genre> allGenres = genreDAO.findAll();
         Map<String, Integer> distribution = new LinkedHashMap<>();

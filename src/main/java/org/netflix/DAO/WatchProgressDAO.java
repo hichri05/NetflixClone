@@ -2,7 +2,6 @@
 
 package org.netflix.DAO;
 
-import org.netflix.Models.WatchProgress;
 import org.netflix.Utils.DatabaseConnection;
 
 import java.sql.*;

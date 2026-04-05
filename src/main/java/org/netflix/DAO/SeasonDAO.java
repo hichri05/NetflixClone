@@ -4,6 +4,8 @@ import org.netflix.Utils.ConxDB;
 import java.sql.*;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
+
 public class SeasonDAO {
     private static Connection conn = ConxDB.getInstance();
 
@@ -59,4 +61,94 @@ public class SeasonDAO {
             return false;
         }
     }
+    public boolean update(Season season) {
+        String sql = "UPDATE seasons SET season_number = ?, title = ?, description = ? WHERE id = ?";
+
+        try (Connection conn = ConxDB.getConnection();
+             PreparedStatement pstmt = conn.prepareStatement(sql)) {
+
+            pstmt.setInt(1, season.getSeasonNumber());
+            pstmt.setString(2, season.getTitle());
+            pstmt.setString(3, season.getDescription());
+            pstmt.setInt(4, season.getIdSeason());
+
+            return pstmt.executeUpdate() > 0;
+
+        } catch (SQLException e) {
+            e.printStackTrace();
+            return false;
+        }
+    }
+    public Optional<Season> findById(int id) {
+        String sql = "SELECT * FROM seasons WHERE id = ?";
+
+        try (Connection conn = ConxDB.getConnection();
+             PreparedStatement pstmt = conn.prepareStatement(sql)) {
+
+            pstmt.setInt(1, id);
+
+            try (ResultSet rs = pstmt.executeQuery()) {
+                if (rs.next()) {
+                    return Optional.of(mapResultSetToSeason(rs));
+                }
+            }
+            return Optional.empty();
+
+        } catch (SQLException e) {
+            e.printStackTrace();
+            return Optional.empty();
+        }
+    }
+
+    public Optional<Season> findBySerieIdAndNumber(int serieId, int seasonNumber) {
+        String sql = "SELECT * FROM seasons WHERE serie_id = ? AND season_number = ?";
+
+        try (Connection conn = ConxDB.getConnection();
+             PreparedStatement pstmt = conn.prepareStatement(sql)) {
+
+            pstmt.setInt(1, serieId);
+            pstmt.setInt(2, seasonNumber);
+
+            try (ResultSet rs = pstmt.executeQuery()) {
+                if (rs.next()) {
+                    return Optional.of(mapResultSetToSeason(rs));
+                }
+            }
+            return Optional.empty();
+
+        } catch (SQLException e) {
+            e.printStackTrace();
+            return Optional.empty();
+        }
+    }
+
+    public int countBySerieId(int serieId) {
+        String sql = "SELECT COUNT(*) FROM seasons WHERE serie_id = ?";
+
+        try (Connection conn = ConxDB.getConnection();
+             PreparedStatement pstmt = conn.prepareStatement(sql)) {
+
+            pstmt.setInt(1, serieId);
+
+            try (ResultSet rs = pstmt.executeQuery()) {
+                if (rs.next()) {
+                    return rs.getInt(1);
+                }
+            }
+
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return 0;
+    }
+    private Season mapResultSetToSeason(ResultSet rs) throws SQLException {
+        return new Season(
+                rs.getInt("id"),
+                rs.getInt("serie_id"),
+                rs.getInt("season_number"),
+                rs.getString("title"),
+                rs.getString("description")
+        );
+    }
+}
 }

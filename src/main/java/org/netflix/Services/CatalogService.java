@@ -160,25 +160,15 @@ public class CatalogService {
         return Optional.empty();
     }
 
-    // ==================== MÉTHODES DE RECHERCHE ====================
-
-    /**
-     * Recherche dynamique de médias
-     * @param query Mot-clé de recherche (titre, description, réalisateur)
-     * @param genre Nom du genre (peut être null)
-     * @param year Année de sortie (peut être null)
-     * @return Liste des médias correspondants
-     */
     public List<Media> searchMedia(String query, String genre, Integer year) {
         List<Media> results = new ArrayList<>();
 
-        // 1. Recherche par titre/description/réalisateur
         List<Movie> movies = movieDAO.search(query);
         List<Serie> series = serieDAO.search(query);
         results.addAll(movies);
         results.addAll(series);
 
-        // 2. Filtrage par genre
+
         if (genre != null && !genre.trim().isEmpty()) {
             Optional<Genre> genreOpt = genreDAO.findByName(genre);
             if (genreOpt.isPresent()) {
@@ -192,24 +182,17 @@ public class CatalogService {
             }
         }
 
-        // 3. Filtrage par année
         if (year != null) {
             results = results.stream()
                     .filter(media -> media.getReleaseYear() == year)
                     .collect(Collectors.toList());
         }
 
-        // 4. Trier par note moyenne (les mieux notés en premier)
         results.sort((m1, m2) -> Double.compare(m2.getAverageRating(), m1.getAverageRating()));
 
         return results;
     }
 
-    /**
-     * Recherche rapide par titre
-     * @param title Titre à rechercher
-     * @return Liste des médias correspondants
-     */
     public List<Media> searchByTitle(String title) {
         List<Media> results = new ArrayList<>();
 

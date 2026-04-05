@@ -62,6 +62,7 @@ public class SignInController {
     }
 
 
+
     public void goToSignUp(MouseEvent event) {
         SceneSwitcher.goTo(event, "/org/Views/SignUp.fxml");
     }
