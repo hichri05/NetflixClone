@@ -23,6 +23,7 @@ import java.net.URL;
 import java.util.ResourceBundle;
 
 public class VideoPlayerController implements Initializable {
+    @FXML private Label timeLabel;
     @FXML private MediaView mediaView;
     @FXML private Button playBtn;
     @FXML private Slider timeSlider;
@@ -46,6 +47,7 @@ public class VideoPlayerController implements Initializable {
             if (!timeSlider.isValueChanging()) {
                 timeSlider.setValue(newTime.toSeconds());
             }
+            timeLabel.setText(formatTime(newTime, mediaPlayer.getTotalDuration()));
         });
         mediaPlayer.setOnReady(() -> {
             timeSlider.setMax(mediaPlayer.getTotalDuration().toSeconds());
@@ -54,13 +56,27 @@ public class VideoPlayerController implements Initializable {
             playBtn.setText("⏸");
         });
 
+        timeSlider.valueProperty().addListener((observable, oldValue, newValue) -> {
+            if (timeSlider.isValueChanging()) {
+                mediaPlayer.seek(Duration.seconds(newValue.doubleValue()));
+            }
+        });
+        timeSlider.setOnMouseClicked(event -> {
+            mediaPlayer.seek(Duration.seconds(timeSlider.getValue()));
+        });
+
+
+
+        org.netflix.Models.Media m = TransferData.getMedia();
+        videoTitle.setText(m.getTitle());
+
 
     }
 
     @FXML
     public void handleBack(ActionEvent event) {
         mediaPlayer.stop();
-        SceneSwitcher.goTo(event, "/org/netflix/Views/Home.fxml");
+        SceneSwitcher.goTo(event, "/org/Views/MediaDetails.fxml");
     }
 
     public void handleRewind(ActionEvent actionEvent) {
@@ -78,6 +94,27 @@ public class VideoPlayerController implements Initializable {
         } else {
             mediaPlayer.play();
             playBtn.setText("⏸");
+        }
+    }
+    private String formatTime(Duration elapsed, Duration total) {
+        int intElapsed = (int) Math.floor(elapsed.toSeconds());
+        int elapsedHours = intElapsed / (60 * 60);
+        int elapsedMinutes = (intElapsed - elapsedHours * 60 * 60) / 60;
+        int elapsedSeconds = intElapsed - elapsedHours * 60 * 60 - elapsedMinutes * 60;
+
+        int intTotal = (int) Math.floor(total.toSeconds());
+        int totalHours = intTotal / (60 * 60);
+        int totalMinutes = (intTotal - totalHours * 60 * 60) / 60;
+        int totalSeconds = intTotal - totalHours * 60 * 60 - totalMinutes * 60;
+
+        if (totalHours > 0) {
+            return String.format("%d:%02d:%02d / %d:%02d:%02d",
+                    elapsedHours, elapsedMinutes, elapsedSeconds,
+                    totalHours, totalMinutes, totalSeconds);
+        } else {
+            return String.format("%02d:%02d / %02d:%02d",
+                    elapsedMinutes, elapsedSeconds,
+                    totalMinutes, totalSeconds);
         }
     }
 }

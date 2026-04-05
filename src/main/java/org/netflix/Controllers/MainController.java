@@ -114,17 +114,12 @@ public class MainController implements Initializable {
 
         mvTrendName.setText(movie.getTitle());
         mvTrendDesc.setText(movie.getDescription());
-
-        heroStack.getChildren().removeIf(n -> n instanceof ImageView);
-
+        heroStack.prefWidthProperty().bind(mediaRows.widthProperty());
         String url = movie.getBackdropImageUrl().replace("\\", "/");
-
-        heroStack.setStyle(
-                "-fx-background-image: url('" + url + "');" +
-                        "-fx-background-size: cover;" +
-                        "-fx-background-position: center center;" +
-                        "-fx-background-repeat: no-repeat;"
-        );
+        heroStack.setStyle("");
+        heroStack.setStyle("-fx-background-image: url('" + url + "');"+
+                "-fx-background-size: 110%;" +
+                "-fx-background-position: center;");
 
         updateButtonUI(user, movie);
     }
