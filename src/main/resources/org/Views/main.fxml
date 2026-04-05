@@ -13,17 +13,27 @@
 <?import javafx.scene.layout.VBox?>
 <?import javafx.scene.text.Font?>
 
+<?import javafx.scene.layout.Pane?>
 <BorderPane style="-fx-background-color: #222222;" stylesheets="@../Styles/style.css" xmlns="http://javafx.com/javafx/25" xmlns:fx="http://javafx.com/fxml/1" fx:controller="org.netflix.Controllers.MainController">
    <center>
       <StackPane>
          <children>
-            <ScrollPane fx:id="mainScroll" fitToWidth="true" hbarPolicy="NEVER" style="-fx-background-color: #333333;" styleClass="main-scroll-pane" stylesheets="@../Styles/style.css" vbarPolicy="NEVER">
+            <ScrollPane fx:id="mainScroll" fitToWidth="true" hbarPolicy="NEVER" style="-fx-background-color: #333333;" styleClass="main-scroll-pane" vbarPolicy="NEVER">
                <content>
-                  <VBox fx:id="mediaRows" spacing="5.0" style="-fx-background-color: #141414;" stylesheets="@../Styles/style.css">
+                  <VBox fx:id="mediaRows" fillWidth="true" style="-fx-background-color: #141414;">
                      <children>
-                        <StackPane fx:id="heroStack" maxWidth="Infinity" styleClass="heroStack" VBox.vgrow="NEVER">
+                        <StackPane id="heroStack" fx:id="heroStack" maxWidth="Infinity" prefHeight="400" styleClass="heroStack" VBox.vgrow="NEVER">
                            <children>
-                              <VBox alignment="BOTTOM_LEFT" prefHeight="200.0" prefWidth="100.0" spacing="10.0" styleClass="">
+                               <Pane mouseTransparent="true">
+                                   <style>
+                                       -fx-background-color: linear-gradient(
+                                       to bottom,
+                                       rgba(0,0,0,0.2),
+                                       rgba(0,0,0,0.85)
+                                       );
+                                   </style>
+                               </Pane>
+                              <VBox alignment="BOTTOM_LEFT" prefHeight="200.0" prefWidth="100.0" spacing="15.0" style="-fx-padding: 0 0 40 40;">
                                  <children>
                                     <Label fx:id="mvTrendName" styleClass="hero-title" text="Label">
                                        <VBox.margin>
