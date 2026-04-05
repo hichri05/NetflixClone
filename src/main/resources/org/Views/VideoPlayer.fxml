@@ -48,7 +48,7 @@
                 <HBox alignment="CENTER_LEFT" spacing="20.0" style="-fx-padding: 0 20 20 20;">
                     <children>
                         <Button fx:id="playBtn" onAction="#togglePlay" style="-fx-background-color: transparent; -fx-text-fill: white; -fx-font-size: 18; -fx-cursor: hand;" text="▶" />
-                        <Label fx:id="timeLabel" id="timeLabel"  *style="-fx-text-fill: white; -fx-font-family: 'Monospaced';" text="00:00 / 00:00">
+                        <Label fx:id="timeLabel" id="timeLabel"  style="-fx-text-fill: white; -fx-font-family: 'Monospaced';" text="00:00 / 00:00">
                             <font>
                                 <Font size="14.0" />
                             </font>
