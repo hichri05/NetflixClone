@@ -72,8 +72,8 @@ public class MediaPosterController {
 
         User user = Session.getUser();
         MediaDAO.removeFromFavorites(user.getId(), media.getIdMedia());
-        MediaDAO.removeFromFavorites(user.getId(), media.getIdMedia());
         List<Media> favorites = UserDAO.getUserFavorites(user.getId());
         //MainController.displayMyList(favorites);
+        rootPane.getChildren().clear();
     }
 }

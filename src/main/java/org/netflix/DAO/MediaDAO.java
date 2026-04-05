@@ -180,10 +180,35 @@ public class MediaDAO {
     }
 
     public static boolean addToFavorites(int id, int idMedia) {
-        return true;
+        String sql = "INSERT INTO favorite (id_User, id_Media) VALUES (?, ?)";
+
+        try (PreparedStatement pstmt = conn.prepareStatement(sql)) {
+
+            pstmt.setInt(1, id);
+            pstmt.setInt(2, idMedia);
+            int rowsAffected = pstmt.executeUpdate();
+            return rowsAffected > 0;
+
+        } catch (SQLException e) {
+            System.out.println("Media already in favorites or DB error.");
+            return false;
+        }
     }
 
     public static void removeFromFavorites(int id, int idMedia) {
+        String sql = "DELETE FROM favorite WHERE id_user = ? AND id_media = ?";
+
+        try (PreparedStatement pstmt = conn.prepareStatement(sql)) {
+            pstmt.setInt(1, id);
+            pstmt.setInt(2, idMedia);
+            int rowsDeleted = pstmt.executeUpdate();
+            if (rowsDeleted > 0) {
+                System.out.println("Successfully removed media ID " + id + " from user " + idMedia);
+            }
+        } catch (SQLException e) {
+            System.err.println("Error removing from favorites: " + e.getMessage());
+            e.printStackTrace();
+        }
     }
 
     public static List<Media> getAllMedia() {
