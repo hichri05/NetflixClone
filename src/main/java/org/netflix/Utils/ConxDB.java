@@ -26,15 +26,15 @@ public class ConxDB {
             }
             prop.load(input);
             String port = prop.getProperty("db.port");
-            String url = "jdbc:mysql://localhost:" + port + "/netflix";
+            String url = "jdbc:mysql://localhost:" + port + "/bingepanda";
 
             connexion =  DriverManager.getConnection(url, prop.getProperty("db.user"), prop.getProperty("db.pass"));
 
         } catch (Exception ex) {
             ex.printStackTrace();
         }
-    }
-
+     }
+ Updated upstream
 
 
     /*
@@ -49,7 +49,7 @@ public class ConxDB {
             e.printStackTrace();
         }
     }*/
-
+    Stashed changes
     public static Connection getInstance() {
         if(connexion == null)
             try {

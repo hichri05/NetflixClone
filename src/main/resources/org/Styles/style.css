@@ -206,8 +206,12 @@
     -fx-font-size: 13px;
     -fx-visibility: false;
 }
-.movie-row {
-    -fx-spacing: 10; /* Espace horizontal entre les enfants de la HBox */
-    -fx-padding: 0 0 20 20; /* Top, Right, Bottom, Left */
-    -fx-background-color: transparent;
+
+.combo-box .cell {
+    -fx-text-fill: white !important;
+}
+
+.combo-box .list-view .list-cell {
+    -fx-text-fill: white !important;
+    -fx-background-color: #333;
 }

@@ -26,4 +26,13 @@ public enum MediaGenre {
  public String toString() {
   return name(); // or return a custom display name
  }
+
+    public static MediaGenre fromString(String text) {
+        for (MediaGenre g : MediaGenre.values()) {
+            if (g.name().equalsIgnoreCase(text)) {
+                return g;
+            }
+        }
+        return null;
+    }
 }

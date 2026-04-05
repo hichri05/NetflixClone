@@ -12,10 +12,10 @@ public class Media {
     protected String coverImageUrl;
     protected String backdropImageUrl;
     protected String director;
+    protected String type;
     protected List<Genre> genres;
     protected List<Acteur> casting = new ArrayList<>();
     protected int views;
-    protected String type;
 
 
     public Media(int idMedia, String title, String description, int releaseYear,
@@ -28,13 +28,14 @@ public class Media {
         this.coverImageUrl = coverImageUrl;
         this.backdropImageUrl = backdropImageUrl;
         this.director = director;
+        this.type = type;
         this.genres = genres;
         this.casting=casting;
         this.views=views;
         this.type=type;
     }
     public Media(int idMedia, String title, String description, int releaseYear,
-                 double averageRating, String coverImageUrl, String backdropImageUrl,String director) {
+                 double averageRating, String coverImageUrl, String backdropImageUrl,String director, String type, List<Genre> genres) {
         this.idMedia = idMedia;
         this.title = title;
         this.description = description;
@@ -45,8 +46,17 @@ public class Media {
         this.director = director;
         this.views=views;
         this.type=type;
+
+        this.genres = genres;
     }
     public  Media() {}
+
+    public Media(String title, String description, String coverImageUrl) {
+        this.title = title;
+        this.description = description;
+        this.coverImageUrl = coverImageUrl;
+    }
+
     public int getIdMedia() { return idMedia; }
     public String getTitle() { return title; }
     public String getCoverImageUrl() { return coverImageUrl; }
@@ -90,6 +100,15 @@ public class Media {
     public void setTitle(String title) {
         this.title = title;
     }
+    public String getType() {
+        return type;
+    }
+    public void setType(String type) {
+        this.type = type;
+    }
+    public void setBackdropImageUrl(String backdropImageUrl) {
+        this.backdropImageUrl = backdropImageUrl;
+    }
 
     public String getCoverUrl() {
         return coverImageUrl;
@@ -102,7 +121,5 @@ public class Media {
         return views;
     }
 
-    public String getType() {
-        return type;
-    }
+
 }

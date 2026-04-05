@@ -2,6 +2,7 @@ package org.netflix.DAO;
 
 import org.netflix.Models.Genre;
 import org.netflix.Models.Media;
+import org.netflix.Models.MediaGenre;
 import org.netflix.Utils.ConxDB;
 
 import java.sql.*;
@@ -12,15 +13,18 @@ public class MediaDAO {
     private static Connection conn = ConxDB.getInstance();
     public static List<Genre> getGenresByMediaId(int mediaId) {
         List<Genre> genres = new ArrayList<>();
+        String sql = "SELECT g.* FROM genres g " +
+                "inner join media_genres mg on mg.id_Genre=g.id_Genre " +
+                "WHERE mg.id_Media = ?";
 
-        String sql = "SELECT id_Genre FROM media_genres WHERE id_Media = " + mediaId;
-
-        try (Statement stmt = conn.createStatement();
-             ResultSet rs = stmt.executeQuery(sql)) {
-
+        try (PreparedStatement pstmt = conn.prepareStatement(sql)) {
+            pstmt.setInt(1, mediaId);
+            ResultSet rs = pstmt.executeQuery();
             while (rs.next()) {
 
-                genres.add(new Genre(rs.getInt("id_Genre")));
+                genres.add(new Genre(rs.getInt("id_Genre"),
+                        MediaGenre.fromString( rs.getString("name"))
+                ));
             }
         } catch (SQLException e) {
             System.out.println("Error fetching genres for Media ID " + mediaId);
@@ -80,6 +84,7 @@ public class MediaDAO {
             ResultSet rs = pstmt.executeQuery();
             while (rs.next()) {
                 results.add(ResultToMedia(rs));
+
             }
         } catch (SQLException e) {
             e.printStackTrace();
@@ -96,13 +101,15 @@ public class MediaDAO {
                 rs.getDouble("averageRating"),
                 rs.getString("coverImageUrl"),
                 rs.getString("backdrop_path"),
-                rs.getString("director")
+                rs.getString("director"),
+                rs.getString("type"),
+                getGenresByMediaId(rs.getInt("id_Media"))
         );
     }
     /**
      * Ajout
      */
-    public static boolean addMedia(Media media, String type) {
+    public static boolean addMedia(Media media) {
         String sql = "INSERT INTO media (title, description, releaseYear, averageRating, coverImageUrl, director, type, views) " +
                 "VALUES (?, ?, ?, ?, ?, ?, ?, 0)";
 
@@ -113,7 +120,7 @@ public class MediaDAO {
             pstmt.setDouble(4, media.getAverageRating());
             pstmt.setString(5, media.getCoverImageUrl());
             pstmt.setString(6, media.getDirector());
-            pstmt.setString(7, type); // 'movie' ou 'serie'
+            pstmt.setString(7, media.getType()); // 'movie' ou 'serie'
 
             int affectedRows = pstmt.executeUpdate();
 
@@ -161,7 +168,7 @@ public class MediaDAO {
     public static boolean deleteMedia(int idMedia) {
         // Note : Grâce aux contraintes ON DELETE CASCADE en SQL,
         // supprimer ici supprimera aussi les entrées dans movie/serie/favorite/media_genre
-        String sql = "DELETE FROM media WHERE id_Media = ?";
+        String sql = "DELETE FROM media WHERE id_Media = ? ON DELETE CASCADE";
 
         try (PreparedStatement pstmt = conn.prepareStatement(sql)) {
             pstmt.setInt(1, idMedia);
@@ -177,6 +184,26 @@ public class MediaDAO {
     }
 
     public static void removeFromFavorites(int id, int idMedia) {
+    }
+
+    public static List<Media> getAllMedia() {
+        List<Media> mediaList = new ArrayList<>();
+        String sql = "SELECT * FROM media";
+
+        try (PreparedStatement pstmt = conn.prepareStatement(sql);
+             ResultSet rs = pstmt.executeQuery()) {
+
+            while (rs.next()) {
+
+                Media media = ResultToMedia(rs);
+                mediaList.add(media);
+            }
+        } catch (SQLException e) {
+            System.err.println("Error fetching catalogue: " + e.getMessage());
+            e.printStackTrace();
+        }
+
+        return mediaList;
     }
 }
 
