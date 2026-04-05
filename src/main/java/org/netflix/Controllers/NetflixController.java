@@ -1,107 +1,136 @@
 package org.netflix.Controllers;
 
-import java.util.stream.Collectors;
+import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
-import javafx.scene.Parent;
+import javafx.fxml.Initializable;
 import javafx.scene.control.Label;
-import javafx.scene.control.ProgressBar;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
-import javafx.stage.Stage;
 import org.netflix.Models.Acteur;
 import org.netflix.Models.Genre;
 import org.netflix.Models.Movie;
 
-public class NetflixController {
+import java.net.URL;
+import java.util.List;
+import java.util.ResourceBundle;
+import java.util.stream.Collectors;
 
-    @FXML private ImageView backgroundImage;
-    @FXML private Label titleLabel;
-    @FXML private Label taglineLabel;
-    @FXML private Label matchLabel;
-    @FXML private Label yearLabel;
-    @FXML private Label durationLabel;
-    @FXML private Label descriptionLabel;
-    @FXML private Label castLabel;
-    @FXML private Label genreLabel;
-    @FXML private Label tagsLabel;
-    @FXML private Label episodeTitleLabel;
-    @FXML private Label quoteLabel;
-    @FXML private ProgressBar progressBar;
+/**
+ * Controller for FilmDetail.fxml
+ * Receives a Movie object from FilmPageController and populates all fields.
+ */
+public class NetflixController implements Initializable {
+
+    // ── Matches FilmDetail.fxml fx:id fields EXACTLY ─────────────────
+    @FXML private ImageView heroImageView;
+    @FXML private Label     movieTitleLabel;
+    @FXML private Label     directorLabel;
+    @FXML private Label     yearLabel;
+    @FXML private Label     ratingLabel;
+    @FXML private Label     durationLabel;
+    @FXML private Label     typeLabel;
+    @FXML private Label     descriptionLabel;
+    @FXML private Label     castLabel;
+    @FXML private Label     genreLabel;
+    @FXML private Label     viewsLabel;
+
+    @Override
+    public void initialize(URL location, ResourceBundle resources) {
+        // Nothing to do — setMovie() is called right after load()
+    }
+
+    // ═════════════════════════════════════════════════════════════════
+    //  ENTRY POINT — called by FilmPageController after loader.load()
+    // ═════════════════════════════════════════════════════════════════
+
+    public void setMovie(Movie movie) {
+        if (movie == null) return;
+
+        // Hero backdrop
+        String backdropUrl = movie.getBackDropImageUrl();
+        if (backdropUrl != null && !backdropUrl.isEmpty()) {
+            try { heroImageView.setImage(new Image(backdropUrl, true)); }
+            catch (Exception ignored) {}
+        }
+
+        // Title
+        movieTitleLabel.setText(movie.getTitle().toUpperCase());
+
+        // Director
+        String dir = movie.getDirector();
+        directorLabel.setText("Directed by " + (dir != null && !dir.isEmpty() ? dir : "Unknown"));
+
+        // Year
+        yearLabel.setText(String.valueOf(movie.getReleaseYear()));
+
+        // Match % — stable per movie (derived from title hash)
+        int match = 80 + (Math.abs(movie.getTitle().hashCode()) % 19);
+        ratingLabel.setText(match + "% Match");
+
+        // Duration
+        int mins = movie.getDurationMinutes();
+        durationLabel.setText(mins > 0 ? (mins / 60) + "h " + (mins % 60) + "m" : "—");
+
+        // Type badge
+        typeLabel.setText("MOVIE");
+
+        // Synopsis
+        String desc = movie.getDescription();
+        descriptionLabel.setText(desc != null && !desc.isEmpty() ? desc : "No synopsis available.");
+
+        // Cast
+        List<Acteur> casting = movie.getCasting();
+        if (casting != null && !casting.isEmpty()) {
+            String castStr = casting.stream()
+                    .map(a -> a.getNom() + " " + a.getNom())
+                    .collect(Collectors.joining(", "));
+            castLabel.setText("Cast: " + castStr);
+        } else {
+            castLabel.setText("Cast: —");
+        }
+
+        // Genres
+        List<Genre> genres = movie.getGenres();
+        if (genres != null && !genres.isEmpty()) {
+            String genreStr = genres.stream()
+                    .map(Genre::toString)
+                    .collect(Collectors.joining(", "));
+            genreLabel.setText("Genres: " + genreStr);
+        } else {
+            genreLabel.setText("Genres: —");
+        }
+
+        // Views
+        viewsLabel.setText("Views: " + movie.getViews());
+    }
+
+    // ═════════════════════════════════════════════════════════════════
+    //  FXML HANDLER — X button in FilmDetail.fxml (onAction="#handleClose")
+    // ═════════════════════════════════════════════════════════════════
 
     @FXML
-    private void goBack() {
+    private void handleClose() {
         try {
-            FXMLLoader loader = new FXMLLoader(
-                    getClass().getResource("/org/netflix/Views/FilmPage.fxml")
-            );
-            Parent root = loader.load();
-            Stage stage = (Stage) titleLabel.getScene().getWindow();
-            stage.getScene().setRoot(root);
+            javafx.scene.Parent filmPage = FXMLLoader.load(
+                    getClass().getResource("/org/Views/FilmPage.fxml"));
+            javafx.stage.Stage stage =
+                    (javafx.stage.Stage) movieTitleLabel.getScene().getWindow();
+            stage.getScene().setRoot(filmPage);
         } catch (Exception e) {
             e.printStackTrace();
         }
     }
 
-    public void setMovieData(Movie movie) {
-        // Hero backdrop image
-        try {
-            String backdropUrl = movie.getBackDropImageUrl(); // from Media class
-            if (backdropUrl != null && !backdropUrl.isEmpty()) {
-                backgroundImage.setImage(new Image(backdropUrl, true));
-            }
-        } catch (Exception e) {
-            System.out.println("Backdrop image error: " + e.getMessage());
-        }
+    public void handleLike(ActionEvent actionEvent) {
+    }
 
-        // Title
-        if (titleLabel != null)
-            titleLabel.setText(movie.getTitle() != null ? movie.getTitle().toUpperCase() : "");
+    public void handleDislike(ActionEvent actionEvent) {
+    }
 
-        // Tagline — empty unless your model has one
-        if (taglineLabel != null)
-            taglineLabel.setText(movie.getDirector() != null ? "Directed by " + movie.getDirector() : "");
+    public void handleAddToList(ActionEvent actionEvent) {
+    }
 
-        // Match score based on title hash
-        if (matchLabel != null) {
-            int match = 80 + (Math.abs(movie.getTitle().hashCode()) % 19);
-            matchLabel.setText(match + "% Match");
-        }
-
-        // Year
-        if (yearLabel != null)
-            yearLabel.setText(String.valueOf(movie.getReleaseYear()));
-
-        // Duration — Movie uses getDurationMinutes()
-        if (durationLabel != null)
-            durationLabel.setText(movie.getDurationMinutes() + " min");
-
-        // Description
-        if (descriptionLabel != null)
-            descriptionLabel.setText(movie.getDescription() != null ? movie.getDescription() : "");
-
-        // Genres
-        if (genreLabel != null && movie.getGenres() != null) {
-            String genres = movie.getGenres().stream()
-                    .map(g -> g.getName().name())
-                    .collect(Collectors.joining(", "));
-            genreLabel.setText(genres);
-        }
-
-        // Cast
-        if (castLabel != null && movie.getCasting() != null && !movie.getCasting().isEmpty()) {
-            String cast = movie.getCasting().stream()
-                    .map(Acteur::getNom)
-                    .collect(Collectors.joining(", "));
-            castLabel.setText(cast);
-        } else if (castLabel != null) {
-            castLabel.setText("N/A");
-        }
-
-        // Optional fields
-        if (episodeTitleLabel != null) episodeTitleLabel.setText("");
-        if (quoteLabel != null) quoteLabel.setText("");
-        if (tagsLabel != null) tagsLabel.setText("");
-        if (progressBar != null) progressBar.setProgress(0);
+    public void handleResume(ActionEvent actionEvent) {
     }
 }

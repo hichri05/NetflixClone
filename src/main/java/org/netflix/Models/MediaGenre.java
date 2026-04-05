@@ -20,6 +20,10 @@ public enum MediaGenre {
     Sport,
     Western,
     Tragedy,
-    Crime
+    Crime;
 
+ @Override
+ public String toString() {
+  return name(); // or return a custom display name
+ }
 }

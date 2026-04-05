@@ -97,4 +97,12 @@ public class Media {
     public String getBackDropImageUrl(){
         return backdropImageUrl;
     }
+
+    public int getViews() {
+        return views;
+    }
+
+    public String getType() {
+        return type;
+    }
 }

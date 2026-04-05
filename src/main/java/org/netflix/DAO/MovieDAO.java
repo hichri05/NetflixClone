@@ -152,4 +152,45 @@ public class MovieDAO {
             }
             return movies;
         }
+    public static Movie getMovieById(int id) {
+        Movie movie = null;
+        List<Acteur> casting = new ArrayList<>();
+
+        // Requête avec jointure pour récupérer les infos Media + Movie
+        String sql = "SELECT m.*, v.videoUrl, v.duration_minutes " +
+                "FROM media m " +
+                "INNER JOIN movie v ON m.id_Media = v.id_Media " +
+                "WHERE m.id_Media = ?";
+
+        try (PreparedStatement pstmt = conn.prepareStatement(sql)) {
+            pstmt.setInt(1, id);
+
+            try (ResultSet rs = pstmt.executeQuery()) {
+                if (rs.next()) {
+                    List<Genre> genreList = MediaDAO.getGenresByMediaId(id);
+
+                    movie = new Movie(
+                            rs.getInt("id_Media"),
+                            rs.getString("title"),
+                            rs.getString("description"),
+                            rs.getInt("releaseYear"),
+                            rs.getDouble("averageRating"),
+                            rs.getString("coverImageUrl"),
+                            rs.getString("backdrop_path"), // Nom exact de la colonne dans ta DB
+                            rs.getString("director"),
+                            rs.getString("type"),
+                            genreList,
+                            casting,
+                            rs.getInt("views"),            // Position 12 : views
+                            rs.getString("videoUrl"),
+                            rs.getInt("duration_minutes")
+                    );
+                }
+            }
+        } catch (SQLException e) {
+            System.err.println("Erreur getMovieById : " + e.getMessage());
+            e.printStackTrace();
+        }
+        return movie;
+    }
 }
