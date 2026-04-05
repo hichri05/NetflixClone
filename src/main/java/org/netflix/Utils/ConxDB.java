@@ -34,7 +34,7 @@ public class ConxDB {
             ex.printStackTrace();
         }
      }
- Updated upstream
+
 
 
     /*
@@ -49,7 +49,7 @@ public class ConxDB {
             e.printStackTrace();
         }
     }*/
-    Stashed changes
+
     public static Connection getInstance() {
         if(connexion == null)
             try {
