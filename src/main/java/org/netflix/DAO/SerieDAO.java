@@ -1,6 +1,7 @@
 package org.netflix.DAO;
 import org.netflix.Models.Acteur;
 import org.netflix.Models.Genre;
+import org.netflix.Models.Movie;
 import org.netflix.Models.Serie;
 import org.netflix.Utils.ConxDB;
 
@@ -94,6 +95,46 @@ public class SerieDAO {
             e.printStackTrace();
             return false;
         }
+    }
+    public static List<Serie> findbyGenre(String genreName) {
+        List<Serie> series = new ArrayList<>();
+
+        String sql = "SELECT m.*, v.nbrSaison " +
+                "FROM media m " +
+                "INNER JOIN Serie v ON m.id_Media = v.id_Media " +
+                "INNER JOIN media_genres mg ON m.id_Media = mg.id_Media " +
+                "INNER JOIN genres g ON mg.id_Genre = g.id_Genre " +
+                "WHERE g.name = ?";
+
+        try (PreparedStatement pstmt = con.prepareStatement(sql)) {
+            pstmt.setString(1, genreName);
+
+            try (ResultSet rs = pstmt.executeQuery()) {
+                while (rs.next()) {
+                    List<Genre> genresList = MediaDAO.getGenresByMediaId(rs.getInt("id_Media"));
+                    List<Acteur> casting = new ArrayList<>();
+                    series.add(new Serie(
+                            rs.getInt("id_Media"),
+                            rs.getString("title"),
+                            rs.getString("description"),
+                            rs.getInt("releaseYear"),
+                            rs.getDouble("averageRating"),
+                            rs.getString("coverImageUrl"),
+                            rs.getString("backdrop_path"),
+                            rs.getString("director"),
+                            rs.getString("type"),
+                            rs.getInt("nbrSaison"),
+                            genresList,
+                            casting,
+                            rs.getInt("views")
+                    ));
+                }
+            }
+        } catch (SQLException e) {
+            System.out.println("Erreur findbyGenre : " + e.getMessage());
+            e.printStackTrace();
+        }
+        return series;
     }
 
 }

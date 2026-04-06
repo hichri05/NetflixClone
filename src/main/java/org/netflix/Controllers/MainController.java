@@ -2,6 +2,8 @@ package org.netflix.Controllers;
 
 import javafx.event.ActionEvent;
 import javafx.fxml.*;
+import javafx.geometry.Insets;
+import javafx.geometry.Pos;
 import javafx.scene.Parent;
 import javafx.scene.control.*;
 import javafx.scene.image.Image;
@@ -130,6 +132,10 @@ public class MainController implements Initializable {
     }
 
     private void updateButtonUI(User u,  Media m) {
+        if (u == null) {
+            mylistbtn.setText("+ My List");
+            return;
+        }
         if (UserDAO.isFavorite(u.getId(), m.getIdMedia())) {
             mylistbtn.setText("✓ In My List");
         } else {
@@ -265,6 +271,50 @@ public class MainController implements Initializable {
     public void handleOpenDashboard(ActionEvent event) {
         SceneSwitcher.goTo(event, "/org/Views/MainDashboard.fxml");
     }
+    private VBox buildHoverPopup(Serie serie) {
+        VBox preview = new VBox(10);
+        preview.setStyle("-fx-background-color: #181818; -fx-background-radius: 10; " +
+                "-fx-border-color: #333; -fx-border-radius: 10; -fx-padding: 0;");
+        preview.setPrefWidth(300);
 
+        // Backdrop image
+        ImageView img = new ImageView(new Image(serie.getBackDropImageUrl(), true));
+        img.setFitWidth(300);
+        img.setFitHeight(160);
+        img.setPreserveRatio(false);
+
+
+        VBox info = new VBox(8);
+        info.setPadding(new Insets(15));
+
+        int match = 80 + (Math.abs(serie.getTitle().hashCode()) % 19);
+        Label matchLbl = new Label(match + "% Match");
+        matchLbl.setStyle("-fx-text-fill: #46d369; -fx-font-weight: bold; -fx-font-size: 14;");
+
+
+        String outlineBtn = "-fx-background-color: transparent; -fx-border-color: white; " +
+                "-fx-border-radius: 50; -fx-text-fill: white; -fx-cursor: hand;";
+        Button playBtn = new Button("▶");
+        playBtn.setStyle("-fx-background-color: white; -fx-text-fill: black; " +
+                "-fx-background-radius: 50; -fx-padding: 5 12; -fx-cursor: hand;");
+
+        Button addBtn  = new Button("+"); addBtn.setStyle(outlineBtn);
+        Button likeBtn = new Button("♥"); likeBtn.setStyle(outlineBtn);
+        HBox buttons = new HBox(10, playBtn, addBtn, likeBtn);
+        buttons.setAlignment(Pos.CENTER_LEFT);
+
+        Label titleLbl = new Label(serie.getTitle());
+        titleLbl.setStyle("-fx-text-fill: white; -fx-font-weight: bold; -fx-font-size: 18;");
+
+        Label desc = new Label(serie.getDescription());
+        desc.setStyle("-fx-text-fill: #d2d2d2; -fx-font-size: 12;");
+        desc.setWrapText(true);
+        desc.setMaxWidth(270);
+        desc.setMaxHeight(60);
+
+        info.getChildren().addAll(matchLbl, buttons, titleLbl, desc);
+        preview.getChildren().addAll(img, info);
+        return preview;
+    }
 
 }

@@ -10,9 +10,8 @@ import javafx.scene.layout.VBox;
 import org.netflix.Services.AuthService;
 import org.netflix.Utils.SceneSwitcher;
 
-import java.lang.reflect.Field;
-
 public class SignUpController {
+
     @FXML public TextField emailField;
     @FXML public TextField username;
     @FXML public PasswordField passwordField;
@@ -29,33 +28,102 @@ public class SignUpController {
         background.fitWidthProperty().bind(root.widthProperty());
         background.fitHeightProperty().bind(root.heightProperty());
         background.setPreserveRatio(false);
+
+        errorLabel.setVisible(false);
     }
 
+    @FXML
     public void handleLogin(ActionEvent event) {
-        String email = emailField.getText();
-        String userName = username.getText();
+        String email    = emailField.getText().trim();
+        String userName = username.getText().trim();
         String password = passwordField.getText();
         String passwordConfirm = passwordFieldConfirm.getText();
-        if (email.isEmpty() || userName.isEmpty() || password.isEmpty() || passwordConfirm.isEmpty()) {
-            errorLabel.setText("Please enter a valid email or phone number.");
-            errorLabel.setVisible(true);
 
-            for (Node n: container.getChildren()) {
-                if (n instanceof TextInputControl ti){
-                    if (ti.getText().isEmpty()) ti.setStyle("-fx-border-color: #e87c03;-fx-border-width: 0 0 2 0;");
-                    ti.textProperty().addListener((observable, oldValue, newValue) -> {
-                        errorLabel.setVisible(false);
-                        ti.setStyle("-fx-border-color: transparent;");
-                    });
-                }
-            }
-        } else if (AuthService.register(userName, email, password)) {
-            SceneSwitcher.goTo(event, "/org/Views/main.fxml");
-        }else{
-            errorLabel.setText("Sorry, we can't find an account with this email address.");
-            errorLabel.setVisible(true);
+        // Reset styles
+        resetStyles();
+
+        // 1. Empty fields check
+        if (email.isEmpty() || userName.isEmpty() || password.isEmpty() || passwordConfirm.isEmpty()) {
+            showError("Please fill in all fields.");
+            highlightEmptyFields();
+            return;
         }
 
-        //SceneSwitcher.goTo(event, "/org/Views/main.fxml");
+        // 2. Basic email format check
+        if (!email.matches("^[A-Za-z0-9+_.-]+@(.+)$")) {
+            showError("Please enter a valid email address.");
+            highlight(emailField);
+            return;
+        }
+
+        // 3. Username length check
+        if (userName.length() < 2) {
+            showError("Username must be at least 2 characters.");
+            highlight(username);
+            return;
+        }
+
+        // 4. Password strength check
+        if (password.length() < 8) {
+            showError("Password must be at least 8 characters.");
+            highlight(passwordField);
+            return;
+        }
+
+        if (!password.matches("^(?=.*[0-9])(?=.*[a-z])(?=.*[A-Z])(?=.*[@#$%^&+=])(?=\\S+$).{8,}$")) {
+            showError("Password must contain: uppercase, lowercase, digit, and special character (@#$%^&+=).");
+            highlight(passwordField);
+            return;
+        }
+
+        // 5. Passwords match check
+        if (!password.equals(passwordConfirm)) {
+            showError("Passwords do not match.");
+            highlight(passwordField);
+            highlight(passwordFieldConfirm);
+            return;
+        }
+
+        // 6. Attempt registration
+        if (AuthService.register(userName, email, password)) {
+            SceneSwitcher.goTo(event, "/org/Views/main.fxml");
+        } else {
+            showError("An account with this email already exists.");
+            highlight(emailField);
+        }
+    }
+
+    // --- Helpers ---
+
+    private void showError(String message) {
+        errorLabel.setText(message);
+        errorLabel.setVisible(true);
+    }
+
+    private void highlight(TextInputControl field) {
+        field.setStyle(field.getStyle() + "; -fx-border-color: #e87c03; -fx-border-width: 0 0 2 0;");
+        field.textProperty().addListener((obs, oldVal, newVal) -> {
+            field.setStyle(field.getStyle()
+                    .replace("; -fx-border-color: #e87c03; -fx-border-width: 0 0 2 0;", ""));
+            errorLabel.setVisible(false);
+        });
+    }
+
+    private void highlightEmptyFields() {
+        for (Node n : container.getChildren()) {
+            if (n instanceof TextInputControl ti && ti.getText().trim().isEmpty()) {
+                highlight(ti);
+            }
+        }
+    }
+
+    private void resetStyles() {
+        for (Node n : container.getChildren()) {
+            if (n instanceof TextInputControl ti) {
+                ti.setStyle(ti.getStyle()
+                        .replace("; -fx-border-color: #e87c03; -fx-border-width: 0 0 2 0;", ""));
+            }
+        }
+        errorLabel.setVisible(false);
     }
 }
