@@ -61,10 +61,15 @@ public class MainController implements Initializable {
         });
     }
     private void loadMediaRows() {
+        loadRow("Top 10 Views on Netflix", MediaDAO.getTopViews());
         loadRow("Action", MediaDAO.getMediasByGenre("Action"));
-        loadRow("Drama", MediaDAO.getMediasByGenre("Drama"));
-        loadRow("Comedy", MediaDAO.getMediasByGenre("Comedy"));
+        loadRow("Drama", MediaDAO.getMediasByGenre("Drame"));
+        loadRow("Comedy", MediaDAO.getMediasByGenre("Comedie"));
         loadRow("Sci-Fi", MediaDAO.getMediasByGenre("Scifi"));
+        loadRow("Thriller", MediaDAO.getMediasByGenre("Thriller"));
+        loadRow("Animation", MediaDAO.getMediasByGenre("Animation"));
+        loadRow("Romance", MediaDAO.getMediasByGenre("Romance"));
+        loadRow("Historique", MediaDAO.getMediasByGenre("Historique"));
     }
 
     private void setupSearch() {
@@ -260,5 +265,6 @@ public class MainController implements Initializable {
     public void handleOpenDashboard(ActionEvent event) {
         SceneSwitcher.goTo(event, "/org/Views/MainDashboard.fxml");
     }
+
 
 }

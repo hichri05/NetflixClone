@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import java.lang.*?>
+<?import java.util.*?>
+<?import javafx.scene.*?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+
+<?import javafx.scene.image.ImageView?>
+<StackPane fx:id="rootPane" onMouseClicked="#handlePosterClick" prefHeight="240.0" prefWidth="200.0" xmlns="http://javafx.com/javafx/21" xmlns:fx="http://javafx.com/fxml/1" fx:controller="org.netflix.Controllers.MediaPosterController">
+    <children>
+        <AnchorPane>
+            <children>
+                <ImageView fx:id="posterImageView" fitHeight="200.0" fitWidth="140.0" layoutX="40.0" layoutY="20.0" pickOnBounds="true" preserveRatio="false" />
+
+                <Label fx:id="rankLabel" text="1" layoutX="0.0" layoutY="80.0" style="-fx-font-size: 100; -fx-font-weight: bold; -fx-text-fill: black; -fx-effect: dropshadow(three-pass-box, white, 2, 0, 0, 0); -fx-font-family: 'Arial Black';" />
+            </children>
+        </AnchorPane>
+    </children>
+</StackPane>

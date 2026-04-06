@@ -105,7 +105,7 @@ public class FilmPageController implements Initializable {
         poster.setFitHeight(112);
         poster.setPreserveRatio(false);
 
-        // Hover: scale + show popup
+
         poster.setOnMouseEntered(e -> {
             hideDelay.stop();
             poster.setScaleX(1.1);
@@ -146,9 +146,8 @@ public class FilmPageController implements Initializable {
         return card;
     }
 
-    // ═════════════════════════════════════════════════════════════════
     //  HOVER POPUP BUILDER
-    // ═════════════════════════════════════════════════════════════════
+
 
     private VBox buildHoverPopup(Movie movie) {
         VBox preview = new VBox(10);

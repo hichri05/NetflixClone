@@ -26,7 +26,7 @@ public class ConxDB {
             }
             prop.load(input);
             String port = prop.getProperty("db.port");
-            String url = "jdbc:mysql://localhost:" + port + "/bingepanda";
+            String url = "jdbc:mysql://localhost:" + port + "/netflix";
 
             connexion =  DriverManager.getConnection(url, prop.getProperty("db.user"), prop.getProperty("db.pass"));
 
