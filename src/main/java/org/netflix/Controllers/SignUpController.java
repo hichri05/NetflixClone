@@ -39,31 +39,30 @@ public class SignUpController {
         String password = passwordField.getText();
         String passwordConfirm = passwordFieldConfirm.getText();
 
-        // Reset styles
+
         resetStyles();
 
-        // 1. Empty fields check
+
         if (email.isEmpty() || userName.isEmpty() || password.isEmpty() || passwordConfirm.isEmpty()) {
             showError("Please fill in all fields.");
             highlightEmptyFields();
             return;
         }
 
-        // 2. Basic email format check
+
         if (!email.matches("^[A-Za-z0-9+_.-]+@(.+)$")) {
             showError("Please enter a valid email address.");
             highlight(emailField);
             return;
         }
 
-        // 3. Username length check
+
         if (userName.length() < 2) {
             showError("Username must be at least 2 characters.");
             highlight(username);
             return;
         }
 
-        // 4. Password strength check
         if (password.length() < 8) {
             showError("Password must be at least 8 characters.");
             highlight(passwordField);
@@ -76,7 +75,7 @@ public class SignUpController {
             return;
         }
 
-        // 5. Passwords match check
+
         if (!password.equals(passwordConfirm)) {
             showError("Passwords do not match.");
             highlight(passwordField);
@@ -84,7 +83,7 @@ public class SignUpController {
             return;
         }
 
-        // 6. Attempt registration
+
         if (AuthService.register(userName, email, password)) {
             SceneSwitcher.goTo(event, "/org/Views/main.fxml");
         } else {
@@ -93,7 +92,7 @@ public class SignUpController {
         }
     }
 
-    // --- Helpers ---
+
 
     private void showError(String message) {
         errorLabel.setText(message);
