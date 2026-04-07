@@ -3,8 +3,10 @@ package org.netflix.Controllers;
 import javafx.animation.PauseTransition;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
+import javafx.fxml.FXMLLoader;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
+import javafx.scene.Parent;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.scene.image.Image;
@@ -15,6 +17,7 @@ import javafx.scene.layout.StackPane;
 import javafx.scene.layout.VBox;
 import javafx.scene.shape.Rectangle;
 import javafx.stage.Popup;
+import javafx.stage.Stage;
 import javafx.util.Duration;
 import org.netflix.DAO.MediaDAO;
 import org.netflix.DAO.UserDAO;
@@ -24,6 +27,7 @@ import org.netflix.Utils.SceneSwitcher;
 import org.netflix.Utils.Session;
 import org.netflix.Utils.TransferData;
 
+import java.io.IOException;
 import java.util.List;
 
 public class MediaPosterController {
@@ -172,8 +176,15 @@ public class MediaPosterController {
     @FXML
     private void handlePosterClick(MouseEvent event) {
         if (media == null) return;
+        if (hoverPopup != null) hoverPopup.hide();
         TransferData.setMedia(media);
-        SceneSwitcher.goTo(event, "/org/Views/MediaDetails.fxml");
+        try {
+            Parent root = FXMLLoader.load(getClass().getResource("/org/Views/MediaDetails.fxml"));
+            Stage stage = (Stage) rootPane.getScene().getWindow();
+            stage.getScene().setRoot(root);
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
     }
 
     @FXML

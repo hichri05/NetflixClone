@@ -7,8 +7,13 @@ import javafx.scene.control.*;
 import javafx.scene.image.ImageView;
 import javafx.scene.layout.StackPane;
 import javafx.scene.layout.VBox;
+import org.netflix.DAO.UserDAO;
+import org.netflix.Models.User;
 import org.netflix.Services.AuthService;
+import org.netflix.Services.ValidationResult;
+import org.netflix.Services.ValidationService;
 import org.netflix.Utils.SceneSwitcher;
+import org.netflix.Utils.Session;
 
 public class SignUpController {
 
@@ -28,71 +33,35 @@ public class SignUpController {
         background.fitWidthProperty().bind(root.widthProperty());
         background.fitHeightProperty().bind(root.heightProperty());
         background.setPreserveRatio(false);
-
         errorLabel.setVisible(false);
     }
 
     @FXML
     public void handleLogin(ActionEvent event) {
-        String email    = emailField.getText().trim();
-        String userName = username.getText().trim();
-        String password = passwordField.getText();
+        String email           = emailField.getText().trim();
+        String userName        = username.getText().trim();
+        String password        = passwordField.getText();
         String passwordConfirm = passwordFieldConfirm.getText();
-
 
         resetStyles();
 
+        ValidationResult result = ValidationService.validate(email, userName, password, passwordConfirm);
 
-        if (email.isEmpty() || userName.isEmpty() || password.isEmpty() || passwordConfirm.isEmpty()) {
-            showError("Please fill in all fields.");
+        if (!result.isValid()) {
+            showError(result.getMessage());
             highlightEmptyFields();
             return;
         }
 
-
-        if (!email.matches("^[A-Za-z0-9+_.-]+@(.+)$")) {
-            showError("Please enter a valid email address.");
-            highlight(emailField);
-            return;
-        }
-
-
-        if (userName.length() < 2) {
-            showError("Username must be at least 2 characters.");
-            highlight(username);
-            return;
-        }
-
-        if (password.length() < 8) {
-            showError("Password must be at least 8 characters.");
-            highlight(passwordField);
-            return;
-        }
-
-        if (!password.matches("^(?=.*[0-9])(?=.*[a-z])(?=.*[A-Z])(?=.*[@#$%^&+=])(?=\\S+$).{8,}$")) {
-            showError("Password must contain: uppercase, lowercase, digit, and special character (@#$%^&+=).");
-            highlight(passwordField);
-            return;
-        }
-
-
-        if (!password.equals(passwordConfirm)) {
-            showError("Passwords do not match.");
-            highlight(passwordField);
-            highlight(passwordFieldConfirm);
-            return;
-        }
-
-
         if (AuthService.register(userName, email, password)) {
+            User registeredUser = UserDAO.findByEmail(email);
+            Session.setUser(registeredUser);
             SceneSwitcher.goTo(event, "/org/Views/main.fxml");
         } else {
             showError("An account with this email already exists.");
             highlight(emailField);
         }
     }
-
-
 
     private void showError(String message) {
         errorLabel.setText(message);
