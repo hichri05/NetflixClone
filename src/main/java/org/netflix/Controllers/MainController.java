@@ -352,4 +352,15 @@ public class MainController implements Initializable {
             e.printStackTrace();
         }
     }
+
+    @FXML
+    private void handleSerieClick(MouseEvent event) {
+        try {
+            Parent root = FXMLLoader.load(getClass().getResource("/org/Views/SeriePage.fxml"));
+            Stage stage = (Stage) mediaRows.getScene().getWindow();
+            stage.getScene().setRoot(root);
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
 }
