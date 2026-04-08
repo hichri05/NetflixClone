@@ -232,4 +232,33 @@ public class MediaDAO {
         }
         return medias;
     }
+
+    public static void saveRating(int id_User, int id_Media, int rating) {
+        String sql = """
+        INSERT INTO rating (id_User, id_Media, score)
+        VALUES (?, ?, ?)
+        ON DUPLICATE KEY UPDATE score = ?
+        """;
+        try (PreparedStatement ps = conn.prepareStatement(sql)) {
+            ps.setInt(1, id_User);
+            ps.setInt(2, id_Media);
+            ps.setInt(3, rating);
+            ps.setInt(4, rating);
+            ps.executeUpdate();
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+    }
+    public static int getRating(int id_User, int id_Media) {
+        String sql = "SELECT score FROM rating WHERE id_User = ? AND id_Media = ?";
+        try (PreparedStatement ps = conn.prepareStatement(sql)) {
+            ps.setInt(1, id_User);
+            ps.setInt(2, id_Media);
+            ResultSet rs = ps.executeQuery();
+            if (rs.next()) return rs.getInt("score");
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return 0;
+    }
 }

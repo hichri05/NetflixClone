@@ -238,3 +238,16 @@
     -fx-font-family: "Monospaced";
     -fx-font-weight: bold;
 }
+.star-btn {
+    -fx-font-size: 28px;
+    -fx-text-fill: #555;
+    -fx-cursor: hand;
+}
+
+.star-filled {
+    -fx-text-fill: #f5c518;
+}
+
+.star-btn:hover {
+    -fx-text-fill: #f5c518;
+}

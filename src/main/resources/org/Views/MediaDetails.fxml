@@ -29,6 +29,14 @@
                                     </children>
                                 </HBox>
                                 <Label fx:id="descriptionLabel" maxWidth="600.0" styleClass="hero-description" text="Summary of the show ..." wrapText="true" />
+                                <HBox fx:id="ratingBox" alignment="CENTER_LEFT" spacing="5.0">
+                                    <Label fx:id="star1" styleClass="star-btn" text="★" onMouseClicked="#handleRate" userData="1" />
+                                    <Label fx:id="star2" styleClass="star-btn" text="★" onMouseClicked="#handleRate" userData="2" />
+                                    <Label fx:id="star3" styleClass="star-btn" text="★" onMouseClicked="#handleRate" userData="3" />
+                                    <Label fx:id="star4" styleClass="star-btn" text="★" onMouseClicked="#handleRate" userData="4" />
+                                    <Label fx:id="star5" styleClass="star-btn" text="★" onMouseClicked="#handleRate" userData="5" />
+                                    <Label fx:id="ratingLabel" style="-fx-text-fill: #aaa; -fx-font-size: 13px;" text="" />
+                                </HBox>
                             </children>
                             <padding><Insets bottom="40.0" left="50.0" /></padding>
                         </VBox>
