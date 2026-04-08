@@ -238,3 +238,15 @@
     -fx-font-family: "Monospaced";
     -fx-font-weight: bold;
 }
+.chart-bar {
+    -fx-bar-fill: #e50914; /* Netflix Red */
+}
+
+.chart-plot-background {
+    -fx-background-color: transparent;
+}
+
+.axis {
+    -fx-tick-label-fill: white;
+    -fx-axis-label-fill: white;
+}
