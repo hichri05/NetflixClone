@@ -25,7 +25,7 @@ public class ActeurDAO {
         List<Acteur> acteurs = new ArrayList<>();
         // On suppose l'existence d'une table de liaison 'media_acteur'
         String sql = "SELECT a.* FROM acteur a " +
-                "JOIN media_acteur ma ON a.id_Acteur = ma.id_Acteur " +
+                "JOIN media_acteurs ma ON a.id_Acteur = ma.id_Acteur " +
                 "WHERE ma.id_Media = ?";
 
         try (PreparedStatement pstmt = conn.prepareStatement(sql)) {
