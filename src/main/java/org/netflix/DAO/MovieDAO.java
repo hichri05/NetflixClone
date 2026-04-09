@@ -12,27 +12,41 @@ import java.util.List;
 public class MovieDAO {
     private static Connection conn = ConxDB.getInstance();
 
-    public static List<Movie> getAllMovies(){
-        List<Movie> movies = new ArrayList<Movie>();
-        List<Acteur> casting=new ArrayList<Acteur>();
+    public static List<Movie> getAllMovies() {
+        List<Movie> movies = new ArrayList<>();
+        // Note: I removed backdrop_path and views if they aren't in your media table screenshot
+        // Use averageRating as a placeholder if 'views' is missing, or add 'views' to your DB
         String sql = "SELECT m.*, v.videoUrl, v.duration_minutes " +
                 "FROM media m " +
                 "INNER JOIN movie v ON m.id_Media = v.id_Media";
 
         try (Statement stmt = conn.createStatement(); ResultSet rs = stmt.executeQuery(sql)) {
-            try {
-                while (rs.next()) {
-                    List<Genre> genresList = MediaDAO.getGenresByMediaId(rs.getInt("id_Media"));
+            while (rs.next()) {
+                int currentId = rs.getInt("id_Media");
+                List<Genre> genresList = MediaDAO.getGenresByMediaId(currentId);
+                List<Acteur> casting = new ArrayList<>();
 
-
-                }
-            } catch (SQLException e) {
-                e.printStackTrace();
+                movies.add(new Movie(
+                        currentId,
+                        rs.getString("title"),
+                        rs.getString("description"),
+                        rs.getInt("releaseYear"),
+                        rs.getDouble("averageRating"),
+                        rs.getString("coverImageUrl"),
+                        rs.getString("coverImageUrl"), // Using cover as backdrop if column missing
+                        rs.getString("director"),
+                        "Movie",
+                        genresList,
+                        casting,
+                        0, // Default views to 0 if column is missing from schema
+                        rs.getString("videoUrl"),
+                        rs.getInt("duration_minutes")
+                ));
             }
         } catch (SQLException e) {
             e.printStackTrace();
         }
-        return  movies;
+        return movies;
     }
     public static Movie getTrendMovie() {
         Movie movie = null;

@@ -112,8 +112,8 @@
                         <String fx:value="nav-link-active" />
                      </styleClass>
                   </Label>
-                  <Label styleClass="nav-link" text="Movies" />
-                  <Label styleClass="nav-link" text="TV Shows" />
+                   <Label styleClass="nav-link" text="Movies" onMouseClicked="#handleMoviesClick" style="-fx-cursor: hand;" />
+                  <Label styleClass="nav-link" text="TV Shows" onMouseClicked="#handleSerieClick" />
                   <Label fx:id="Mylist" onMouseClicked="#handleMyListClick" styleClass="nav-link" text="My List" />
                </children>
             </HBox>

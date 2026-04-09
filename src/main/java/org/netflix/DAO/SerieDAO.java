@@ -12,17 +12,30 @@ import java.util.List;
 
 public class SerieDAO {
     private static Connection  con=ConxDB.getInstance();
-    public List <Serie> getAllSeries(){
-        List<Serie> series =new ArrayList<>();
-        List<Acteur> casting=new ArrayList<>();
-        //ha4i l requettee
-        String sql="SELECT m.*, s.nbrSaison"+
-                "FROM media m"+
-                "INNER JOIN serie s ON m.id_Media=s.id_Media" ;
-        try(Statement stmt=con.createStatement(); ResultSet rs =stmt.executeQuery(sql))
-        {
-            while(rs.next()){
+    public List<Serie> getAllSeries() {
+        List<Serie> series = new ArrayList<>();
+        // FIX 1: Added spaces at the end of each string line to prevent "s.nbrSaisonFROM" error
+        // FIX 2: Corrected table names to match your schema (media and serie)
+        String sql = "SELECT m.*, s.nbrSaison " +
+                "FROM media m " +
+                "INNER JOIN serie s ON m.id_Media = s.id_Media";
+
+        try (Statement stmt = con.createStatement();
+             ResultSet rs = stmt.executeQuery(sql)) {
+
+            while (rs.next()) {
+                // Fetch genres for this specific media
                 List<Genre> genresList = MediaDAO.getGenresByMediaId(rs.getInt("id_Media"));
+                List<Acteur> casting = new ArrayList<>(); // Placeholder as seen in your code
+
+                // FIX 3: Defensive Null Checks for the Chart
+                // If views or backdrop_path are missing in DB, we provide defaults
+                int views = 0;
+                try { views = rs.getInt("views"); } catch (SQLException e) { /* Column might not exist */ }
+
+                String backdrop = rs.getString("backdrop_path");
+                if (backdrop == null) backdrop = rs.getString("coverImageUrl");
+
                 series.add(new Serie(
                         rs.getInt("id_Media"),
                         rs.getString("title"),
@@ -30,16 +43,17 @@ public class SerieDAO {
                         rs.getInt("releaseYear"),
                         rs.getDouble("averageRating"),
                         rs.getString("coverImageUrl"),
-                        rs.getString("backdrop_path"), // backdrop_path selon ta DB
+                        backdrop,
                         rs.getString("director"),
-                        rs.getString("type"),          // Position 9 : type
-                        rs.getInt("nbrSaison"),        // Position 10 : nbrSaison
-                        genresList,                    // Position 11 : genres
-                        casting,                       // Position 12 : casting
-                        rs.getInt("views")             // Position 13 : views
+                        rs.getString("type"),
+                        rs.getInt("nbrSaison"),
+                        genresList,
+                        casting,
+                        views
                 ));
             }
         } catch (SQLException e) {
+            System.err.println("Error in getAllSeries: " + e.getMessage());
             e.printStackTrace();
         }
         return series;

@@ -6,12 +6,14 @@ import javafx.fxml.FXMLLoader;
 import javafx.fxml.Initializable;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
+import javafx.scene.Parent;
 import javafx.scene.control.*;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.*;
 import javafx.stage.Popup;
+import javafx.stage.Stage;
 import javafx.util.Duration;
 import org.netflix.DAO.MovieDAO;
 import org.netflix.DAO.SerieDAO;
@@ -19,6 +21,7 @@ import org.netflix.Models.MediaGenre;
 import org.netflix.Models.Movie;
 import org.netflix.Models.Serie;
 
+import java.io.IOException;
 import java.net.URL;
 import java.util.List;
 import java.util.ResourceBundle;
@@ -34,6 +37,7 @@ public class SeriePageController implements Initializable {
     private Popup             sharedPreviewPopup;
     private PauseTransition   showDelay;
     private PauseTransition   hideDelay;
+    @FXML private VBox mediaRows;
 
     @Override
     public void initialize(URL url, ResourceBundle rb) {
@@ -187,5 +191,26 @@ public class SeriePageController implements Initializable {
     }
 
 
+    @FXML
+    private void handleMainClick(MouseEvent event) {
+        try {
+            Parent root = FXMLLoader.load(getClass().getResource("/org/Views/main.fxml"));
+            Stage stage = (Stage) categoryContainer.getScene().getWindow(); // ← changed
+            stage.getScene().setRoot(root);
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
+
+    @FXML
+    private void handleMoviesClick(MouseEvent event) {
+        try {
+            Parent root = FXMLLoader.load(getClass().getResource("/org/Views/FilmPage.fxml"));
+            Stage stage = (Stage) categoryContainer.getScene().getWindow(); // ← changed
+            stage.getScene().setRoot(root);
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
 
 }

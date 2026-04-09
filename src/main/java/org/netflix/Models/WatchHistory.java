@@ -32,4 +32,5 @@ public class WatchHistory {
     public Timestamp getLastWatched() { return lastWatched; }
     public int getCompleted() { return completed; }
 
+   
 }

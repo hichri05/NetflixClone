@@ -1,0 +1,110 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.chart.BarChart?>
+<?import javafx.scene.chart.CategoryAxis?>
+<?import javafx.scene.chart.NumberAxis?>
+<?import javafx.scene.control.ComboBox?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.layout.AnchorPane?>
+<?import javafx.scene.layout.HBox?>
+<?import javafx.scene.layout.VBox?>
+<?import javafx.scene.text.Font?>
+
+<AnchorPane prefHeight="600.0" prefWidth="1000.0" style="-fx-background-color: #000000;" xmlns="http://javafx.com/javafx/17" xmlns:fx="http://javafx.com/fxml/1" fx:controller="org.netflix.Controllers.DashboardController">
+    <children>
+        <HBox alignment="CENTER_LEFT" layoutX="20.0" layoutY="20.0" spacing="50.0">
+            <children>
+                <Label text="NETFLIX" textFill="#e50914">
+                    <font>
+                        <Font name="System Bold" size="36.0" />
+                    </font>
+                </Label>
+                <Label text="NETFLIX WATCHED CONTENT DASHBOARD" textFill="#e50914">
+                    <font>
+                        <Font size="24.0" />
+                    </font>
+                </Label>
+            </children>
+        </HBox>
+
+        <HBox layoutX="20.0" layoutY="100.0" spacing="20.0" AnchorPane.bottomAnchor="50.0" AnchorPane.leftAnchor="20.0" AnchorPane.rightAnchor="250.0" AnchorPane.topAnchor="100.0">
+            <children>
+                <VBox spacing="15.0" prefWidth="220.0">
+                    <children>
+                        <VBox alignment="CENTER" prefHeight="140.0" style="-fx-border-color: #333333; -fx-background-color: #0a0a0a; -fx-border-radius: 5; -fx-background-radius: 5;">
+                            <children>
+                                <Label text="Number of Movies" textFill="#e50914">
+                                    <font>
+                                        <Font name="System Bold" size="14.0" />
+                                    </font></Label>
+                                <Label fx:id="movieCountLabel" text="0" textFill="#b20710">
+                                    <font>
+                                        <Font size="40.0" />
+                                    </font>
+                                </Label>
+                            </children>
+                        </VBox>
+
+                        <VBox alignment="CENTER" prefHeight="140.0" style="-fx-border-color: #333333; -fx-background-color: #0a0a0a; -fx-border-radius: 5; -fx-background-radius: 5;">
+                            <children>
+                                <Label text="Number of Series" textFill="#e50914">
+                                    <font>
+                                        <Font name="System Bold" size="14.0" />
+                                    </font></Label>
+                                <Label fx:id="seriesCountLabel" text="0" textFill="#b20710">
+                                    <font>
+                                        <Font size="40.0" />
+                                    </font>
+                                </Label>
+                            </children>
+                        </VBox>
+
+                        <VBox alignment="CENTER" prefHeight="140.0" style="-fx-border-color: #333333; -fx-background-color: #0a0a0a; -fx-border-radius: 5; -fx-background-radius: 5;">
+                            <children>
+                                <Label text="Number of Users" textFill="#e50914">
+                                    <font>
+                                        <Font name="System Bold" size="14.0" />
+                                    </font></Label>
+                                <Label fx:id="userCountLabel" text="0" textFill="#b20710">
+                                    <font>
+                                        <Font size="40.0" />
+                                    </font>
+                                </Label>
+                            </children>
+                        </VBox>
+                    </children>
+                </VBox>
+
+                <VBox alignment="TOP_CENTER" HBox.hgrow="ALWAYS" style="-fx-background-color: #0a0a0a; -fx-border-color: #333333; -fx-border-radius: 5; -fx-background-radius: 5;">
+                    <children>
+                        <Label style="-fx-padding: 10;" text="Top 5 Most Watched Categories (Count)" textFill="#e50914">
+                            <font>
+                                <Font name="System Bold" size="14.0" />
+                            </font></Label>
+                        <BarChart fx:id="categoryChart" alternativeRowFillVisible="false" horizontalGridLinesVisible="false" legendVisible="false" verticalGridLinesVisible="false">
+                            <xAxis>
+                                <NumberAxis side="BOTTOM" tickLabelFill="WHITE" />
+                            </xAxis>
+                            <yAxis>
+                                <CategoryAxis side="LEFT" tickLabelFill="WHITE" />
+                            </yAxis>
+                        </BarChart>
+                    </children>
+                </VBox>
+            </children>
+        </HBox>
+
+        <VBox layoutX="770.0" layoutY="20.0" prefWidth="210.0" spacing="10.0" style="-fx-background-color: #141414; -fx-padding: 10; -fx-background-radius: 5;">
+            <children>
+                <Label text="Filters" textFill="WHITE">
+                    <font>
+                        <Font name="System Bold" size="18.0" />
+                    </font></Label>
+                <Label text="Date Range" textFill="WHITE" />
+                <ComboBox fx:id="dateFilter" prefWidth="180.0" promptText="All" style="-fx-background-color: #333333; -fx-text-fill: white;" />
+            </children>
+        </VBox>
+
+        <Label layoutX="450.0" layoutY="570.0" text="Data as of Q4 2026" textFill="GRAY" />
+    </children>
+</AnchorPane>

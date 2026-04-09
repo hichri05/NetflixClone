@@ -6,39 +6,37 @@ import javafx.fxml.FXMLLoader;
 import javafx.fxml.Initializable;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
+import javafx.scene.Parent;
 import javafx.scene.control.*;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.*;
 import javafx.stage.Popup;
+import javafx.stage.Stage;
 import javafx.util.Duration;
 import org.netflix.DAO.MovieDAO;
 import org.netflix.Models.MediaGenre;
 import org.netflix.Models.Movie;
+import org.netflix.Utils.TransferData;
 
+import java.io.IOException;
 import java.net.URL;
 import java.util.List;
 import java.util.ResourceBundle;
 
-/**
- * Controller for FilmPage.fxml
- * Shows genre rows of movie cards. Clicking a card navigates to FilmDetail.fxml.
- */
 public class FilmPageController implements Initializable {
 
-    // ── Matches FilmPage.fxml ─────────────────────────────────────────
     @FXML private VBox      categoryContainer;
     @FXML private TextField searchField;
 
-    // ── Hover popup shared across all cards ───────────────────────────
     private Popup             sharedPreviewPopup;
     private PauseTransition   showDelay;
     private PauseTransition   hideDelay;
+    @FXML private VBox mediaRows;
 
     @Override
     public void initialize(URL url, ResourceBundle rb) {
-        // Setup shared popup + delays
         sharedPreviewPopup = new Popup();
         sharedPreviewPopup.setAutoHide(false);
         sharedPreviewPopup.setHideOnEscape(true);
@@ -50,14 +48,9 @@ public class FilmPageController implements Initializable {
         sharedPreviewPopup.addEventFilter(MouseEvent.MOUSE_ENTERED, e -> hideDelay.stop());
         sharedPreviewPopup.addEventFilter(MouseEvent.MOUSE_EXITED,  e -> hideDelay.playFromStart());
 
-        // Load all genre rows
         categoryContainer.getChildren().clear();
         loadMovieCategories();
     }
-
-    // ═════════════════════════════════════════════════════════════════
-    //  DATA LOADING
-    // ═════════════════════════════════════════════════════════════════
 
     private void loadMovieCategories() {
         for (MediaGenre genre : MediaGenre.values()) {
@@ -89,12 +82,7 @@ public class FilmPageController implements Initializable {
         categoryContainer.getChildren().add(new VBox(label, hScroll));
     }
 
-    // ═════════════════════════════════════════════════════════════════
-    //  CARD BUILDER
-    // ═════════════════════════════════════════════════════════════════
-
     private VBox createMovieCard(Movie movie) {
-        // Poster thumbnail
         ImageView poster = new ImageView();
         try {
             String url = movie.getBackDropImageUrl();
@@ -104,7 +92,6 @@ public class FilmPageController implements Initializable {
         poster.setFitWidth(200);
         poster.setFitHeight(112);
         poster.setPreserveRatio(false);
-
 
         poster.setOnMouseEntered(e -> {
             hideDelay.stop();
@@ -125,8 +112,12 @@ public class FilmPageController implements Initializable {
             poster.setStyle("-fx-border-width: 0;");
             hideDelay.playFromStart();
         });
+        poster.setOnMouseClicked(e -> {
+            if (sharedPreviewPopup != null) sharedPreviewPopup.hide();
+            showDelay.stop();
+            openMediaDetails(movie);
+        });
 
-        // Title label under poster
         Label title = new Label(movie.getTitle());
         title.setStyle("-fx-text-fill: #b3b3b3; -fx-font-size: 12;");
         title.setMaxWidth(200);
@@ -136,32 +127,25 @@ public class FilmPageController implements Initializable {
         card.setAlignment(Pos.CENTER);
         card.setCursor(javafx.scene.Cursor.HAND);
 
-        // Click → open FilmDetail
         card.setOnMouseClicked(e -> {
             if (sharedPreviewPopup != null) sharedPreviewPopup.hide();
             showDelay.stop();
-            openFilmDetail(movie);
+            openMediaDetails(movie);
         });
 
         return card;
     }
-
-    //  HOVER POPUP BUILDER
-
-
     private VBox buildHoverPopup(Movie movie) {
         VBox preview = new VBox(10);
         preview.setStyle("-fx-background-color: #181818; -fx-background-radius: 10; " +
                 "-fx-border-color: #333; -fx-border-radius: 10; -fx-padding: 0;");
         preview.setPrefWidth(300);
 
-        // Backdrop image
         ImageView img = new ImageView(new Image(movie.getBackDropImageUrl(), true));
         img.setFitWidth(300);
         img.setFitHeight(160);
         img.setPreserveRatio(false);
 
-        // Info section
         VBox info = new VBox(8);
         info.setPadding(new Insets(15));
 
@@ -169,7 +153,6 @@ public class FilmPageController implements Initializable {
         Label matchLbl = new Label(match + "% Match");
         matchLbl.setStyle("-fx-text-fill: #46d369; -fx-font-weight: bold; -fx-font-size: 14;");
 
-        // Buttons
         String outlineBtn = "-fx-background-color: transparent; -fx-border-color: white; " +
                 "-fx-border-radius: 50; -fx-text-fill: white; -fx-cursor: hand;";
         Button playBtn = new Button("▶");
@@ -177,7 +160,7 @@ public class FilmPageController implements Initializable {
                 "-fx-background-radius: 50; -fx-padding: 5 12; -fx-cursor: hand;");
         playBtn.setOnAction(e -> {
             if (sharedPreviewPopup != null) sharedPreviewPopup.hide();
-            openFilmDetail(movie);
+            openMediaDetails(movie);
         });
         Button addBtn  = new Button("+"); addBtn.setStyle(outlineBtn);
         Button likeBtn = new Button("♥"); likeBtn.setStyle(outlineBtn);
@@ -198,26 +181,37 @@ public class FilmPageController implements Initializable {
         return preview;
     }
 
-    // ═════════════════════════════════════════════════════════════════
-    //  NAVIGATION → FilmDetail.fxml + NetflixController
-    // ═════════════════════════════════════════════════════════════════
-
-    private void openFilmDetail(Movie movie) {
+    private void openMediaDetails(Movie movie) {
         try {
+            TransferData.setMedia(movie);
             FXMLLoader loader = new FXMLLoader(
-                    getClass().getResource("/org/Views/FilmDetail.fxml"));
+                    getClass().getResource("/org/Views/MediaDetails.fxml"));
             javafx.scene.Parent root = loader.load();
-
-            // Hand the movie to NetflixController
-            NetflixController ctrl = loader.getController();
-            ctrl.setMovie(movie);
-
-            // Swap root — same pattern as App.setRoot()
             javafx.stage.Stage stage =
                     (javafx.stage.Stage) categoryContainer.getScene().getWindow();
             stage.getScene().setRoot(root);
-
         } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+    @FXML
+    private void handleMainClick(MouseEvent event) {
+        try {
+            Parent root = FXMLLoader.load(getClass().getResource("/org/Views/main.fxml"));
+            Stage stage = (Stage) categoryContainer.getScene().getWindow(); // ← changed
+            stage.getScene().setRoot(root);
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
+
+    @FXML
+    private void handleSerieClick(MouseEvent event) {
+        try {
+            Parent root = FXMLLoader.load(getClass().getResource("/org/Views/SeriePage.fxml"));
+            Stage stage = (Stage) categoryContainer.getScene().getWindow(); // ← changed
+            stage.getScene().setRoot(root);
+        } catch (IOException e) {
             e.printStackTrace();
         }
     }

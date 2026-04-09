@@ -18,38 +18,34 @@ import java.util.Optional;
 public class UserDAO {
     private static Connection conn = ConxDB.getInstance();
 
-    public static List<User> getAllUsers()
-    {
-        Statement stmt = null;
-        ResultSet rs = null;
-        List<User> users = new ArrayList<User>();
-        String SQL = "SELECT * FROM users";
-        try
-        {
-            stmt = conn.createStatement();
-            rs = stmt.executeQuery(SQL);
+    public static List<User> getAllUsers() {
+        List<User> users = new ArrayList<>();
+        // Use try-with-resources to ensure the statement and result set are closed automatically
+        String SQL = "SELECT id_User, userName, email FROM user";
 
-            while (rs.next()){
-                int id = rs.getInt("id");
-                String username = rs.getString("username");
-                String Email = rs.getString("email");
+        try (Statement stmt = conn.createStatement();
+             ResultSet rs = stmt.executeQuery(SQL)) {
 
-                User user = new User(id, username, Email);
+            while (rs.next()) {
+                // FIX: Use the exact column names from your schema: id_User and userName
+                int id = rs.getInt("id_User");
+                String username = rs.getString("userName");
+                String email = rs.getString("email");
+
+                // Assuming your User model has a constructor matching (int, String, String)
+                User user = new User(id, username, email);
                 users.add(user);
             }
+
+            // Debug check in the console
+            System.out.println("DEBUG: Successfully loaded " + users.size() + " users.");
+
         } catch (SQLException e) {
+            System.err.println("SQL Error in getAllUsers: " + e.getMessage());
             e.printStackTrace();
-        }  finally {
-            try {
-                if (stmt != null) stmt.close();
-                if (rs != null) rs.close();
-            } catch (SQLException e) {
-                e.printStackTrace();
-            }
         }
         return users;
     }
-
     public static List<Media> getUserFavorites(int userId) {
         List<Media> favorites = new ArrayList<>();
         String sql = "SELECT m.* FROM media m " +
@@ -194,7 +190,7 @@ public class UserDAO {
         }
     }
     public Optional<User> findById(int id) {
-        String sql = "SELECT id, username, email FROM users WHERE id = ?";
+        String sql = "SELECT id, username, email FROM user WHERE id = ?";
 
         try (PreparedStatement pstmt = conn.prepareStatement(sql)) {
 

@@ -20,3 +20,4 @@ public class ValidationResult {
     public boolean isValid() { return valid; }
     public String getMessage() { return message; }
 }
+

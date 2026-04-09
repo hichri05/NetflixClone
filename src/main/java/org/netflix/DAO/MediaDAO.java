@@ -114,11 +114,44 @@ public class MediaDAO {
                 rs.getString("coverImageUrl"),
                 rs.getString("backdrop_path"),
                 rs.getString("director"),
-                rs.getString("type"),
-                new ArrayList<>() // On initialise une liste vide au lieu d'appeler getGenresByMediaId ici
+                new ArrayList<>(),          // genres (loaded separately to avoid recursion)
+                new ArrayList<>(),          // casting
+                rs.getInt("views"),         // ← views
+                rs.getString("type")        // ← type LAST
         );
     }
+    public static List<Media> getAllMediaWithViews() {
+        List<Media> mediaList = new ArrayList<>();
+        String sql = "SELECT id_Media, title, description, releaseYear, averageRating, " +
+                "coverImageUrl, backdrop_path, director, type, views FROM media";
 
+        try (PreparedStatement pstmt = conn.prepareStatement(sql);
+             ResultSet rs = pstmt.executeQuery()) {
+            while (rs.next()) {
+                int id = rs.getInt("id_Media");
+                List<Genre> genres = getGenresByMediaId(id);
+
+                mediaList.add(new Media(
+                        id,
+                        rs.getString("title"),
+                        rs.getString("description"),
+                        rs.getInt("releaseYear"),
+                        rs.getDouble("averageRating"),
+                        rs.getString("coverImageUrl"),
+                        rs.getString("backdrop_path"),  // backdropImageUrl
+                        rs.getString("director"),
+                        genres,                          // ← genres before casting
+                        new ArrayList<>(),               // casting
+                        rs.getInt("views"),              // ← views
+                        rs.getString("type")             // ← type LAST, not duplicated
+                ));
+            }
+        } catch (SQLException e) {
+            System.err.println("Error in getAllMediaWithViews: " + e.getMessage());
+            e.printStackTrace();
+        }
+        return mediaList;
+    }
     public static boolean addMedia(Media media) {
         String sql = "INSERT INTO media (title, description, releaseYear, averageRating, coverImageUrl, director, type, views) " +
                 "VALUES (?, ?, ?, ?, ?, ?, ?, 0)";

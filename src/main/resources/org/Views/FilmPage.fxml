@@ -19,14 +19,14 @@
                 </Label>
                 <HBox alignment="CENTER_LEFT" spacing="15.0" HBox.hgrow="ALWAYS">
                     <children>
-                        <Button style="-fx-background-color: transparent; -fx-cursor: hand;" text="Home" textFill="WHITE">
+                        <Button style="-fx-background-color: transparent; -fx-cursor: hand;" text="Home" textFill="WHITE" onMouseClicked="#handleMainClick">
                             <font><Font name="System Bold" size="14.0" /></font>
                         </Button>
-                        <Button style="-fx-background-color: transparent; -fx-cursor: hand;" text="Séries" textFill="#b3b3b3" />
-                        <Button style="-fx-background-color: transparent; -fx-cursor: hand;" text="Films" textFill="WHITE">
+                        <Button style="-fx-background-color: transparent; -fx-cursor: hand;" text="Tv Shows " textFill="#b3b3b3" onMouseClicked="#handleSerieClick"/>
+                        <Button style="-fx-background-color: transparent; -fx-cursor: hand;" text="Movies" textFill="WHITE" >
                             <font><Font name="System Bold" size="14.0" /></font>
                         </Button>
-                        <Button style="-fx-background-color: transparent; -fx-cursor: hand;" text="Ma liste" textFill="#b3b3b3" />
+                        <Button style="-fx-background-color: transparent; -fx-cursor: hand;" text="My list" textFill="#b3b3b3" />
                     </children>
                 </HBox>
                 <HBox alignment="CENTER_RIGHT" spacing="15.0">
