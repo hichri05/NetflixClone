@@ -1,13 +1,12 @@
 package org.netflix.DAO;
 
-import org.netflix.Models.Genre;
-import org.netflix.Models.Media;
-import org.netflix.Models.MediaGenre;
+import org.netflix.Models.*;
 import org.netflix.Utils.ConxDB;
 
 import java.sql.*;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 
 public class MediaDAO {
     private static Connection conn = ConxDB.getInstance();
@@ -264,5 +263,73 @@ public class MediaDAO {
             e.printStackTrace();
         }
         return medias;
+    }
+    // ✅ NOUVEAUX AJOUTS dans MediaDAO
+
+    public List<Media> searchByKeyword(String keyword) {
+        String sql = "SELECT * FROM media WHERE title LIKE ? OR description LIKE ?";
+        // paramètre : "%" + keyword + "%"
+        return null;
+    }
+
+    public List<Media> findByGenre(String genre) {
+        String sql = """
+        SELECT DISTINCT m.* FROM media m
+        JOIN media_genre mg ON m.id = mg.id_media
+        JOIN genre g ON mg.id_genre = g.id
+        WHERE g.name = ?
+    """;
+        return null;
+    }
+
+    public List<Media> findByYear(int year) {
+        String sql = "SELECT * FROM media WHERE release_year = ?";
+        return null;
+    }
+
+    public List<Media> findFeatured() {
+        String sql = "SELECT * FROM media ORDER BY release_year DESC, average_rating DESC LIMIT 5";
+        return null;
+    }
+
+    public List<Media> findTop5ByViews() {
+        String sql = "SELECT * FROM media ORDER BY views DESC LIMIT 5";
+        return null;
+    }
+
+    public Map<String, Long> countByGenre() {
+        String sql = """
+        SELECT g.name, COUNT(*) as total FROM media m
+        JOIN media_genre mg ON m.id = mg.id_media
+        JOIN genre g ON mg.id_genre = g.id
+        GROUP BY g.name
+    """;
+        // Remplir une Map<String, Long>
+        return null;
+    }
+
+    public void updateAverageRating(int mediaId, double avg) {
+        String sql = "UPDATE media SET average_rating = ? WHERE id = ?";
+        // ... JDBC ...
+    }
+
+    public boolean insertMovie(Movie movie) {
+        // INSERT dans media + movie
+        return false;
+    }
+
+    public boolean insertSerie(Serie serie) {
+        // INSERT dans media + serie
+        return false;
+    }
+
+    public List<Movie> findAllMovies() {
+        String sql = "SELECT * FROM media WHERE type = 'MOVIE'";
+        return null;
+    }
+
+    public List<Serie> findAllSeries() {
+        String sql = "SELECT * FROM media WHERE type = 'SERIE'";
+        return null;
     }
 }

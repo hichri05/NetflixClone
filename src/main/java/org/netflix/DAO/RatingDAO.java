@@ -80,4 +80,25 @@ public class RatingDAO {
         }
         return ids;
     }
+    // ✅ NOUVEAUX AJOUTS dans RatingDAO
+
+    public Rating findByUserAndMedia(int userId, int mediaId) {
+        String sql = "SELECT * FROM rating WHERE id_user=? AND id_media=?";
+        return null;
+    }
+
+    public List<Rating> findByMedia(int mediaId) {
+        String sql = "SELECT * FROM rating WHERE id_media=?";
+        return null;
+    }
+
+    public boolean insert(Rating rating) {
+        String sql = "INSERT INTO rating (id_user, id_media, score, rating_date) VALUES (?,?,?,?)";
+        return false;
+    }
+
+    public boolean update(Rating rating) {
+        String sql = "UPDATE rating SET score=?, rating_date=? WHERE id_user=? AND id_media=?";
+        return false;
+    }
 }

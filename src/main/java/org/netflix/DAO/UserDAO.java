@@ -213,4 +213,34 @@ public class UserDAO {
         }
     }
 
-}
+
+
+        public boolean insert(User user) {
+            String sql = "INSERT INTO users (username, email, password, role, created_at) VALUES (?,?,?,?,NOW())";
+            return false;
+        }
+
+        public boolean update(User user) {
+            String sql = "UPDATE users SET username=?, email=?, password=?, role=? WHERE id=?";
+            // ... JDBC ...
+            return false;
+        }
+
+        public boolean delete(int id) {
+            String sql = "DELETE FROM users WHERE id = ?";
+            return false;
+        }
+
+        public List<User> findAll() {
+            String sql = "SELECT * FROM users";
+            // ... JDBC ...
+            return null;
+        }
+
+        public int countRegistrationsToday() {
+            String sql = "SELECT COUNT(*) FROM users WHERE DATE(created_at) = CURDATE()";
+            // ... JDBC ...
+            return 0;
+        }
+    }
+

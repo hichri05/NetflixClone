@@ -72,4 +72,36 @@ public class WatchHistoryDAO {
             return false;
         }
     }
+    // ✅ NOUVEAUX AJOUTS dans WatchHistoryDAO
+
+    public WatchHistory find(int userId, int mediaId, Integer episodeId) {
+        String sql = "SELECT * FROM watch_history WHERE user_id=? AND media_id=? AND episode_id<=>?";
+        return null;
+    }
+
+    public boolean insert(WatchHistory wh) {
+        String sql = "INSERT INTO watch_history (user_id, media_id, episode_id, stopped_at_time, last_watched, completed) VALUES (?,?,?,?,?,?)";
+        return false;
+    }
+
+    public boolean updateProgress(int userId, int mediaId, Integer episodeId, double stoppedAt, Timestamp now) {
+        String sql = "UPDATE watch_history SET stopped_at_time=?, last_watched=? WHERE user_id=? AND media_id=? AND episode_id<=>?";
+        return false;
+    }
+
+    public boolean updateCompleted(int userId, int mediaId, Integer episodeId, Timestamp now) {
+        String sql = "UPDATE watch_history SET completed=1, last_watched=? WHERE user_id=? AND media_id=? AND episode_id<=>?";
+        return false;
+    }
+
+    public List<WatchHistory> findByUser(int userId) {
+        String sql = "SELECT * FROM watch_history WHERE user_id=? ORDER BY last_watched DESC";
+        return null;
+    }
+
+    public boolean isEpisodeCompleted(int userId, int episodeId) {
+        String sql = "SELECT completed FROM watch_history WHERE user_id=? AND episode_id=?";
+        // retourner true si completed == 1
+        return false;
+    }
 }
