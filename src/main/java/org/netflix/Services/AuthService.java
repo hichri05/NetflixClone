@@ -3,6 +3,7 @@ package org.netflix.Services;
 import org.mindrot.jbcrypt.BCrypt;
 import org.netflix.DAO.UserDAO;
 import org.netflix.Models.User;
+import org.netflix.Utils.Session;
 
 import java.util.regex.Pattern;
 
@@ -25,6 +26,7 @@ public class AuthService {
         }
         String hashedPassword = BCrypt.hashpw(motDePasse, BCrypt.gensalt(12));
         User newUser = new User(nom, email, hashedPassword);
+        Session.setUser(newUser);
         return UserDAO.AddUser(newUser);
     }
 
