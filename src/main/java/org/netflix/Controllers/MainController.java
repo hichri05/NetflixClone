@@ -12,7 +12,6 @@ import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.*;
-import javafx.scene.shape.Rectangle;
 import javafx.stage.Stage;
 import javafx.util.Duration;
 import org.netflix.DAO.*;
@@ -27,34 +26,39 @@ import java.util.ResourceBundle;
 public class MainController implements Initializable {
 
     @FXML private ScrollPane searchContent, mainScrollList, mainScroll;
-    @FXML private FlowPane searchGrid;
-    @FXML private FlowPane listGrid;
-    @FXML private TextField searchField;
-    @FXML private Label mvTrendName, mvTrendDesc, userinf;
-    @FXML private StackPane heroStack;
-    @FXML private VBox mediaRows;
-    @FXML private Button playbtn, mylistbtn, adminBtn;
+    @FXML private FlowPane   searchGrid;
+    @FXML private FlowPane   listGrid;
+    @FXML private TextField  searchField;
+    @FXML private Label      mvTrendName, mvTrendDesc, userinf;
+    @FXML private StackPane  heroStack;
+    @FXML private VBox       mediaRows;
+    @FXML private Button     playbtn, mylistbtn, adminBtn;
 
     User user;
 
-    // Hero rotation
     private List<Media> heroMedias;
-    private int currentHeroIndex = 0;
-    private Timeline heroTimeline;
-    private Media currentHeroMedia;
+    private int         currentHeroIndex = 0;
+    private Timeline    heroTimeline;
+    private Media       currentHeroMedia;
 
     @Override
     public void initialize(URL url, ResourceBundle resourceBundle) {
         searchField.setFocusTraversable(false);
         user = Session.getUser();
 
-        if (user != null && "ADMIN".equalsIgnoreCase(user.getRole())) {
-            adminBtn.setVisible(true);
-            adminBtn.setManaged(true);
-        } else {
-            adminBtn.setVisible(false);
-            adminBtn.setManaged(false);
-        }
+        // Auth guard — redirect to sign-in if not logged in
+        /*if (user == null) {
+            javafx.application.Platform.runLater(() -> {
+                AuthGuard.requireLogin(searchField);
+            });
+            return;
+        }*/
+
+
+        boolean isAdmin = "ADMIN".equalsIgnoreCase(user.getRole());
+        adminBtn.setVisible(isAdmin);
+        adminBtn.setManaged(isAdmin);
+
         setupHeroSize();
         loadMediaRows();
         setupSearch();
@@ -73,14 +77,14 @@ public class MainController implements Initializable {
 
     private void loadMediaRows() {
         loadRow("Top 10 Views on Netflix", MediaDAO.getTopViews());
-        loadRow("Action", MediaDAO.getMediasByGenre("Action"));
-        loadRow("Drama", MediaDAO.getMediasByGenre("Drame"));
-        loadRow("Comedy", MediaDAO.getMediasByGenre("Comedie"));
-        loadRow("Sci-Fi", MediaDAO.getMediasByGenre("Scifi"));
-        loadRow("Thriller", MediaDAO.getMediasByGenre("Thriller"));
-        loadRow("Animation", MediaDAO.getMediasByGenre("Animation"));
-        loadRow("Romance", MediaDAO.getMediasByGenre("Romance"));
-        loadRow("Historique", MediaDAO.getMediasByGenre("Historique"));
+        loadRow("Action",      MediaDAO.getMediasByGenre("Action"));
+        loadRow("Drama",       MediaDAO.getMediasByGenre("Drame"));
+        loadRow("Comedy",      MediaDAO.getMediasByGenre("Comedie"));
+        loadRow("Sci-Fi",      MediaDAO.getMediasByGenre("Science_Fiction"));
+        loadRow("Thriller",    MediaDAO.getMediasByGenre("Thriller"));
+        loadRow("Romance",     MediaDAO.getMediasByGenre("Romance"));
+        loadRow("Historique",  MediaDAO.getMediasByGenre("Historique"));
+        loadRow("Crime",       MediaDAO.getMediasByGenre("Crime"));
     }
 
     private void setupSearch() {
@@ -95,10 +99,7 @@ public class MainController implements Initializable {
     }
 
     private void setupUser() {
-        user = Session.getUser();
-        if (user != null) {
-            userinf.setText(user.getUsername());
-        }
+        if (user != null) userinf.setText(user.getUsername());
     }
 
     private void setupInitialView() {
@@ -120,7 +121,7 @@ public class MainController implements Initializable {
         }
     }
 
-    // ── HERO SECTION ─────────────────────────────────────────────────
+    // ── HERO ─────────────────────────────────────────────────────────
 
     public void getTrendMovie() {
         heroMedias = MediaDAO.getTopViews();
@@ -138,13 +139,11 @@ public class MainController implements Initializable {
 
     private void updateHero(Media media) {
         currentHeroMedia = media;
-
         mvTrendName.setText(media.getTitle());
 
         String desc = media.getDescription();
         mvTrendDesc.setText(desc != null && desc.length() > 120
-                ? desc.substring(0, 120) + "..."
-                : desc);
+                ? desc.substring(0, 120) + "..." : desc);
 
         heroStack.prefWidthProperty().bind(mediaRows.widthProperty());
 
@@ -162,15 +161,9 @@ public class MainController implements Initializable {
     }
 
     private void updateButtonUI(User u, Media m) {
-        if (u == null) {
-            mylistbtn.setText("+ My List");
-            return;
-        }
-        if (UserDAO.isFavorite(u.getId(), m.getIdMedia())) {
-            mylistbtn.setText("✓ In My List");
-        } else {
-            mylistbtn.setText("+ My List");
-        }
+        if (u == null) { mylistbtn.setText("+ My List"); return; }
+        mylistbtn.setText(UserDAO.isFavorite(u.getId(), m.getIdMedia())
+                ? "✓ In My List" : "+ My List");
     }
 
     // ── SEARCH ───────────────────────────────────────────────────────
@@ -206,7 +199,8 @@ public class MainController implements Initializable {
         listGrid.getChildren().clear();
         for (Media media : favorites) {
             try {
-                FXMLLoader loader = new FXMLLoader(MainController.class.getResource("/org/Views/MediaPoster.fxml"));
+                FXMLLoader loader = new FXMLLoader(
+                        MainController.class.getResource("/org/Views/MediaPoster.fxml"));
                 Parent poster = loader.load();
                 MediaPosterController controller = loader.getController();
                 controller.showRemoveButton(true);
@@ -238,19 +232,17 @@ public class MainController implements Initializable {
         mainScrollList.setVisible(true);
     }
 
-    // ── FXML HANDLERS ────────────────────────────────────────────────
+    // ── HANDLERS ─────────────────────────────────────────────────────
 
-    @FXML
-    private void handleHomeClick(MouseEvent event) {
-        showHomeView();
-    }
+    @FXML private void handleHomeClick(MouseEvent event)    { showHomeView(); }
 
     @FXML
     private void handleMyListClick(MouseEvent event) {
         showMyListView();
-        User user = Session.getUser();
-        List<Media> favorites = UserDAO.getUserFavorites(user.getId());
-        displayMyList(favorites);
+        if (user != null) {
+            List<Media> favorites = UserDAO.getUserFavorites(user.getId());
+            displayMyList(favorites);
+        }
     }
 
     @FXML
@@ -259,47 +251,47 @@ public class MainController implements Initializable {
     }
 
     @FXML
-
     public void handleAddToMyList(ActionEvent event) {
-        User user = Session.getUser();
-        if (user == null) {
-            System.out.println("No user logged in!");
-            return;
-        }
-
-        if (currentHeroMedia == null) {
-            if (heroMedias != null && !heroMedias.isEmpty()) {
-                currentHeroMedia = heroMedias.get(0);
-            } else {
-                return;
-            }
-        }
+        if (user == null || currentHeroMedia == null) return;
 
         if (UserDAO.isFavorite(user.getId(), currentHeroMedia.getIdMedia())) {
             MediaDAO.removeFromFavorites(user.getId(), currentHeroMedia.getIdMedia());
-            System.out.println("Removed from favorites");
         } else {
-            boolean success = MediaDAO.addToFavorites(user.getId(), currentHeroMedia.getIdMedia());
-            if (success) {
-                System.out.println("Successfully added to favorites");
-            } else {
-                System.err.println("Failed to add to list.");
-            }
+            MediaDAO.addToFavorites(user.getId(), currentHeroMedia.getIdMedia());
         }
         updateButtonUI(user, currentHeroMedia);
     }
+
     @FXML
     private void RemoveFromList(Media media) {
-        if (media == null) return;
-        System.out.println("Removing: " + media.getTitle());
-        User user = Session.getUser();
+        if (media == null || user == null) return;
         MediaDAO.removeFromFavorites(user.getId(), media.getIdMedia());
     }
 
+    @FXML
     public void handleOpenDashboard(ActionEvent event) {
         SceneSwitcher.goTo(event, "/org/Views/MainDashboard.fxml");
     }
 
+    @FXML
+    private void handleMoviesClick(MouseEvent event) {
+        try {
+            Parent root = FXMLLoader.load(getClass().getResource("/org/Views/FilmPage.fxml"));
+            Stage stage = (Stage) mediaRows.getScene().getWindow();
+            stage.getScene().setRoot(root);
+        } catch (IOException e) { e.printStackTrace(); }
+    }
+
+    @FXML
+    private void handleSerieClick(MouseEvent event) {
+        try {
+            Parent root = FXMLLoader.load(getClass().getResource("/org/Views/SeriePage.fxml"));
+            Stage stage = (Stage) mediaRows.getScene().getWindow();
+            stage.getScene().setRoot(root);
+        } catch (IOException e) { e.printStackTrace(); }
+    }
+
+    // kept for internal use — not used in UI directly
     private VBox buildHoverPopup(Serie serie) {
         VBox preview = new VBox(10);
         preview.setStyle("-fx-background-color: #181818; -fx-background-radius: 10; " +
@@ -307,9 +299,7 @@ public class MainController implements Initializable {
         preview.setPrefWidth(300);
 
         ImageView img = new ImageView(new Image(serie.getBackDropImageUrl(), true));
-        img.setFitWidth(300);
-        img.setFitHeight(160);
-        img.setPreserveRatio(false);
+        img.setFitWidth(300); img.setFitHeight(160); img.setPreserveRatio(false);
 
         VBox info = new VBox(8);
         info.setPadding(new Insets(15));
@@ -323,7 +313,6 @@ public class MainController implements Initializable {
         Button playBtn = new Button("▶");
         playBtn.setStyle("-fx-background-color: white; -fx-text-fill: black; " +
                 "-fx-background-radius: 50; -fx-padding: 5 12; -fx-cursor: hand;");
-
         Button addBtn  = new Button("+"); addBtn.setStyle(outlineBtn);
         Button likeBtn = new Button("♥"); likeBtn.setStyle(outlineBtn);
         HBox buttons = new HBox(10, playBtn, addBtn, likeBtn);
@@ -331,36 +320,12 @@ public class MainController implements Initializable {
 
         Label titleLbl = new Label(serie.getTitle());
         titleLbl.setStyle("-fx-text-fill: white; -fx-font-weight: bold; -fx-font-size: 18;");
-
         Label desc = new Label(serie.getDescription());
         desc.setStyle("-fx-text-fill: #d2d2d2; -fx-font-size: 12;");
-        desc.setWrapText(true);
-        desc.setMaxWidth(270);
-        desc.setMaxHeight(60);
+        desc.setWrapText(true); desc.setMaxWidth(270); desc.setMaxHeight(60);
 
         info.getChildren().addAll(matchLbl, buttons, titleLbl, desc);
         preview.getChildren().addAll(img, info);
         return preview;
-    }
-    @FXML
-    private void handleMoviesClick(MouseEvent event) {
-        try {
-            Parent root = FXMLLoader.load(getClass().getResource("/org/Views/FilmPage.fxml"));
-            Stage stage = (Stage) mediaRows.getScene().getWindow();
-            stage.getScene().setRoot(root);
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-    }
-
-    @FXML
-    private void handleSerieClick(MouseEvent event) {
-        try {
-            Parent root = FXMLLoader.load(getClass().getResource("/org/Views/SeriePage.fxml"));
-            Stage stage = (Stage) mediaRows.getScene().getWindow();
-            stage.getScene().setRoot(root);
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
     }
 }

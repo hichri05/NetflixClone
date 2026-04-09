@@ -104,5 +104,31 @@ public class CommentDAO {
         }
         return 0;
     }
+    // ✅ NOUVEAUX AJOUTS dans CommentDAO
+
+    public boolean insert(Comment comment) {
+        String sql = "INSERT INTO comment (id_user, id_media, content, created_at, is_reported) VALUES (?,?,?,?,?)";
+        return false;
+    }
+
+    public List<Comment> findByMedia(int mediaId) {
+        String sql = "SELECT * FROM comment WHERE id_media=? ORDER BY created_at DESC";
+        return null;
+    }
+
+    public boolean delete(int commentId) {
+        String sql = "DELETE FROM comment WHERE id_comment=?";
+        return false;
+    }
+
+    public boolean markAsReported(int commentId) {
+        String sql = "UPDATE comment SET is_reported=1 WHERE id_comment=?";
+        return false;
+    }
+
+    public List<Comment> findReported() {
+        String sql = "SELECT * FROM comment WHERE is_reported=1";
+        return null;
+    }
 }
 

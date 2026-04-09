@@ -7,63 +7,56 @@ import javafx.scene.Node;
 import javafx.scene.control.Button;
 import javafx.scene.layout.StackPane;
 import org.netflix.Utils.SceneSwitcher;
+import org.netflix.Utils.Session;
 
 import java.io.IOException;
 
 public class AdminMainController {
+
     @FXML private StackPane contentArea;
     @FXML private Button btnCatalogue, btnCategories, btnUsers, logoutbtn;
 
+    private static final String ACTIVE_STYLE   = "-fx-text-fill: white;-fx-background-color: transparent;";
+    private static final String INACTIVE_STYLE = "-fx-text-fill: #aaa;-fx-background-color: transparent;";
+
+    @FXML
+    public void initialize() {
+
+        showCatalogue(null);
+    }
+
     public void showCatalogue(ActionEvent actionEvent) {
-        contentArea.getChildren().clear();
-        try {
-
-            Node node = FXMLLoader.load(getClass().getResource("/org/Views/CatalogueManagement.fxml"));
-
-            contentArea.getChildren().add(node);
-            btnCatalogue.setStyle("-fx-text-fill: white;-fx-background-color: transparent;");
-            btnCategories.setStyle("-fx-text-fill: #aaa;-fx-background-color: transparent;");
-            btnUsers.setStyle("-fx-text-fill: #aaa;-fx-background-color: transparent;");
-
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
+        loadView("/org/Views/CatalogueManagement.fxml");
+        btnCatalogue.setStyle(ACTIVE_STYLE);
+        btnCategories.setStyle(INACTIVE_STYLE);
+        btnUsers.setStyle(INACTIVE_STYLE);
     }
 
     public void showCategories(ActionEvent actionEvent) {
-        contentArea.getChildren().clear();
-        try {
-
-            Node node = FXMLLoader.load(getClass().getResource("/org/Views/CategoryManagement.fxml"));
-
-            contentArea.getChildren().add(node);
-            btnCatalogue.setStyle("-fx-text-fill: #aaa;-fx-background-color: transparent;");
-            btnCategories.setStyle("-fx-text-fill: white;-fx-background-color: transparent;");
-            btnUsers.setStyle("-fx-text-fill: #aaa;-fx-background-color: transparent;");
-
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
+        loadView("/org/Views/CategoryManagement.fxml");
+        btnCatalogue.setStyle(INACTIVE_STYLE);
+        btnCategories.setStyle(ACTIVE_STYLE);
+        btnUsers.setStyle(INACTIVE_STYLE);
     }
 
     public void showUsers(ActionEvent actionEvent) {
-        contentArea.getChildren().clear();
+        loadView("/org/Views/UserManagement.fxml");
+        btnCatalogue.setStyle(INACTIVE_STYLE);
+        btnCategories.setStyle(INACTIVE_STYLE);
+        btnUsers.setStyle(ACTIVE_STYLE);
+    }
+
+    private void loadView(String fxmlPath) {
         try {
-
-            Node node = FXMLLoader.load(getClass().getResource("/org/Views/UserManagement.fxml"));
-
-            contentArea.getChildren().add(node);
-            btnCatalogue.setStyle("-fx-text-fill: #aaa;-fx-background-color: transparent;");
-            btnCategories.setStyle("-fx-text-fill: #aaa;-fx-background-color: transparent;");
-            btnUsers.setStyle("-fx-text-fill: white;-fx-background-color: transparent;");
-
+            Node node = FXMLLoader.load(getClass().getResource(fxmlPath));
+            contentArea.getChildren().setAll(node);
         } catch (IOException e) {
             e.printStackTrace();
         }
     }
 
-
     public void handleLogout(ActionEvent actionEvent) {
-        SceneSwitcher.goTo(actionEvent, "/org/Views/main.fxml");
+        Session.logout();
+        SceneSwitcher.goTo(actionEvent, "/org/Views/SignIn.fxml");
     }
 }

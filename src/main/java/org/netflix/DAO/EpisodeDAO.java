@@ -94,4 +94,36 @@ public class EpisodeDAO {
         }
         return null;
     }
-}
+
+        public List<Episode> findBySeasonId(int seasonId) {
+            String sql = "SELECT * FROM episode WHERE season_id=? ORDER BY episode_number";
+            return null;
+        }
+
+        public Episode findById(int episodeId) {
+            String sql = "SELECT * FROM episode WHERE id=?";
+            return null;
+        }
+
+        // ✅ Utilisé par SerieService pour le binge-watching
+        public Episode findBySeasonAndNumber(int seasonId, int episodeNumber) {
+            String sql = "SELECT * FROM episode WHERE season_id=? AND episode_number=?";
+            return null;
+        }
+
+        public boolean insert(Episode episode) {
+            String sql = "INSERT INTO episode (season_id, episode_number, title, file_path, thumbnail_path) VALUES (?,?,?,?,?)";
+            return false;
+        }
+
+        public boolean update(Episode episode) {
+            String sql = "UPDATE episode SET episode_number=?, title=?, file_path=?, thumbnail_path=? WHERE id=?";
+            return false;
+        }
+
+        public boolean delete(int episodeId) {
+            String sql = "DELETE FROM episode WHERE id=?";
+            return false;
+        }
+    }
+

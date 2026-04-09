@@ -66,4 +66,24 @@ public class SeasonDAO {
             return false;
         }
     }
-}
+
+        public List<Season> findBySerieId(int serieId) {
+            String sql = "SELECT * FROM season WHERE id_serie=? ORDER BY season_number";
+            return null;
+        }
+
+        public boolean insert(Season season) {
+            String sql = "INSERT INTO season (id_serie, season_number, title, description) VALUES (?,?,?,?)";
+            return false;
+        }
+
+        public boolean update(Season season) {
+            String sql = "UPDATE season SET season_number=?, title=?, description=? WHERE id_season=?";
+            return false;
+        }
+
+        public boolean delete(int seasonId) {
+            String sql = "DELETE FROM season WHERE id_season=?";
+            return false;
+        }
+    }
