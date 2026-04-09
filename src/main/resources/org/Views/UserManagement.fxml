@@ -18,15 +18,15 @@
 
     <TableView fx:id="userTable" VBox.vgrow="ALWAYS" style="-fx-background-color: #1b1b1b;">
         <columns>
-            <TableColumn fx:id="colUserEmail" text="Email / Username" prefWidth="300" />
-            <TableColumn fx:id="colUserRole" text="Role (Admin/User)" prefWidth="150" />
-            <TableColumn fx:id="colUserStatus" text="Status" prefWidth="150" />
-            <TableColumn fx:id="colActions" text="Quick Actions" prefWidth="200" />
+            <TableColumn fx:id="colUserEmail"  text="Email / Username"  prefWidth="300" />
+            <TableColumn fx:id="colUserRole"   text="Role (Admin/User)" prefWidth="150" />
+            <TableColumn fx:id="colUserStatus" text="Status"            prefWidth="150" />
+            <TableColumn fx:id="colActions"    text="Quick Actions"     prefWidth="200" />
         </columns>
     </TableView>
 
     <HBox spacing="15" alignment="CENTER_RIGHT">
-        <Button text="Ban User" style="-fx-background-color: transparent; -fx-text-fill: #ff4444; -fx-border-color: #ff4444;"/>
-        <Button text="Promote to Admin" style="-fx-background-color: #333; -fx-text-fill: white;"/>
+        <Button text="Ban User"         onAction="#handleBanSelected"     style="-fx-background-color: transparent; -fx-text-fill: #ff4444; -fx-border-color: #ff4444;"/>
+        <Button text="Promote to Admin" onAction="#handlePromoteSelected" style="-fx-background-color: #333; -fx-text-fill: white;"/>
     </HBox>
 </VBox>
