@@ -1,4 +1,4 @@
-package org.netflix.Services;
+/*package org.netflix.Services;
 
 import org.netflix.DAO.MediaDAO;
 import org.netflix.DAO.RatingDAO;
@@ -103,4 +103,4 @@ public class MediaServiceImpl implements IMediaService {
         mediaDAO.updateAverageRating(idMedia, avg);
         return avg;
     }
-}
+}*/

@@ -1,4 +1,4 @@
-package org.netflix.Services;
+/*package org.netflix.Services;
 
 import org.netflix.DAO.UserDAO;
 import org.netflix.Models.User;
@@ -81,4 +81,4 @@ public class UserServiceImpl implements IUserService {
     public int countNewUsersPerDay() {
         return userDAO.countRegistrationsToday();
     }
-}
+}*/

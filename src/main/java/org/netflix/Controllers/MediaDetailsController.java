@@ -14,6 +14,7 @@ import javafx.scene.control.ScrollPane;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.layout.FlowPane;
+import javafx.scene.layout.HBox;
 import javafx.scene.layout.StackPane;
 import javafx.scene.layout.VBox;
 import javafx.stage.Stage;
@@ -39,12 +40,23 @@ public class MediaDetailsController {
     @FXML public FlowPane relatedGrid;
     @FXML public ScrollPane mainScroll;
     @FXML public Button mylistbtn;
+    @FXML private HBox ratingBox;
+    @FXML private Label star1, star2, star3, star4, star5, ratingLabel;
+    private List<Label> stars;
+    private int currentRating = 0;
     Media media;
     @FXML
     public void initialize() {
         media = TransferData.getMedia();
         User user = Session.getUser();
-
+        stars = List.of(star1, star2, star3, star4, star5);
+        setupStarHover();
+        int saved = MediaDAO.getRating(user.getId(), media.getIdMedia());
+        if (saved > 0) {
+            currentRating = saved;
+            fillStars(saved);
+            ratingLabel.setText("Your rating: " + saved + "/5");
+        }
         titleLabel.setText(media.getTitle());
         descriptionLabel.setText(media.getDescription());
         String imgUrl = media.getBackdropImageUrl();
@@ -98,7 +110,37 @@ public class MediaDetailsController {
             mylistbtn.setText("+ My List");
         }
     }
+    @FXML
+    private void handleRate(MouseEvent event) {
+        Label clicked = (Label) event.getSource();
+        int rating = Integer.parseInt((String) clicked.getUserData());
+        currentRating = rating;
+        fillStars(rating);
+        ratingLabel.setText("Your rating: " + rating + "/5");
 
+        User user = Session.getUser();
+        if (user != null) {
+            MediaDAO.saveRating(user.getId(), media.getIdMedia(), rating);
+        }
+    }
+
+    private void fillStars(int count) {
+        for (int i = 0; i < stars.size(); i++) {
+            if (i < count) {
+                stars.get(i).getStyleClass().add("star-filled");
+            } else {
+                stars.get(i).getStyleClass().remove("star-filled");
+            }
+        }
+    }
+
+    private void setupStarHover() {
+        for (Label star : stars) {
+            int idx = stars.indexOf(star) + 1;
+            star.setOnMouseEntered(e -> fillStars(idx));
+            star.setOnMouseExited(e -> fillStars(currentRating));
+        }
+    }
     public void handleBack(ActionEvent event) {
         SceneSwitcher.goTo(event, "/org/Views/main.fxml");
     }
