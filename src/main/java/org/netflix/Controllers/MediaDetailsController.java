@@ -149,4 +149,7 @@ public class MediaDetailsController {
             star.setOnMouseExited(e -> fillStars(currentRating));
         }
     }
+
+    public void handlePublishComment(ActionEvent actionEvent) {
+    }
 }
