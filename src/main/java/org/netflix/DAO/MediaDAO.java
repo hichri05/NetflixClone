@@ -265,6 +265,7 @@ public class MediaDAO {
         }
         return medias;
     }
+    
 
     public static void saveRating(int id_User, int id_Media, int rating) {
         String sql = """
