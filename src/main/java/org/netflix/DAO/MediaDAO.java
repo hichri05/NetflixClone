@@ -93,12 +93,13 @@ public class MediaDAO {
             e.printStackTrace();
         }
 
-        for (Media m : results) {
+        for(Media m : results) {
             m.setGenres(getGenresByMediaId(m.getIdMedia()));
         }
         return results;
     }
 
+    // Version allégée pour éviter le StackOverflow
     static Media ResultToMedia(ResultSet rs) throws SQLException {
         return new Media(
                 rs.getInt("id_Media"),
@@ -148,7 +149,6 @@ public class MediaDAO {
         }
         return mediaList;
     }
-
     public static boolean addMedia(Media media) {
         String sql = "INSERT INTO media (title, description, releaseYear, averageRating, coverImageUrl, director, type, views) " +
                 "VALUES (?, ?, ?, ?, ?, ?, ?, 0)";
@@ -242,12 +242,11 @@ public class MediaDAO {
             e.printStackTrace();
         }
 
-        for (Media m : mediaList) {
+        for(Media m : mediaList) {
             m.setGenres(getGenresByMediaId(m.getIdMedia()));
         }
         return mediaList;
     }
-
     public static List<Media> getTopViews() {
         List<Media> medias = new ArrayList<>();
         String sql = "SELECT * FROM media ORDER BY views DESC LIMIT 10";
@@ -255,6 +254,7 @@ public class MediaDAO {
         try (PreparedStatement pstmt = conn.prepareStatement(sql);
              ResultSet rs = pstmt.executeQuery()) {
             while (rs.next()) {
+
                 medias.add(ResultToMedia(rs));
             }
         } catch (SQLException e) {
@@ -262,7 +262,7 @@ public class MediaDAO {
         }
         return medias;
     }
-    
+
 
     // Single canonical saveRating — uses the shared connection from config.properties
     public static void saveRating(int userId, int mediaId, int rating) {

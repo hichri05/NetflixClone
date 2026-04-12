@@ -222,6 +222,7 @@ public class EpisodeController {
         stage.close();
     }
 
+
     private void showError(String msg) {
         new Alert(Alert.AlertType.ERROR, msg).show();
     }

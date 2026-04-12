@@ -127,6 +127,7 @@ public class MainController implements Initializable {
                 showHomeView();
             }
         });
+
     }
 
     private void setupUser() {

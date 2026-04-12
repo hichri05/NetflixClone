@@ -40,6 +40,7 @@ public class MediaDetailsController {
     @FXML public ScrollPane mainScroll;
     @FXML public Button mylistbtn;
     Media media;
+
     @FXML
     public void initialize() {
         media = TransferData.getMedia();

@@ -44,6 +44,7 @@ public class CatalogueController {
         colTitle.setCellValueFactory(new PropertyValueFactory<>("title"));
         colType.setCellValueFactory(new PropertyValueFactory<>("type"));
 
+
         refreshTable();
 
         mediaTable.getSelectionModel().selectedItemProperty().addListener(
