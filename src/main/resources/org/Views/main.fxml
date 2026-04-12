@@ -91,6 +91,23 @@
                      </VBox>
                  </content>
              </ScrollPane>
+             <ScrollPane fx:id="moviesScroll" fitToWidth="true" hbarPolicy="NEVER"
+                         style="-fx-background-color: #141414;" visible="false"
+                         stylesheets="@../Styles/style.css" vbarPolicy="NEVER">
+                 <content>
+                     <VBox fx:id="moviesRows" fillWidth="true" spacing="0"
+                           style="-fx-background-color: #141414;" />
+                 </content>
+             </ScrollPane>
+
+             <ScrollPane fx:id="seriesScroll" fitToWidth="true" hbarPolicy="NEVER"
+                         style="-fx-background-color: #141414;" visible="false"
+                         stylesheets="@../Styles/style.css" vbarPolicy="NEVER">
+                 <content>
+                     <VBox fx:id="seriesRows" fillWidth="true" spacing="0"
+                           style="-fx-background-color: #141414;" />
+                 </content>
+             </ScrollPane>
          </children>
       </StackPane>
    </center>
@@ -104,19 +121,23 @@
             </Label>
          </left>
          <center>
-            <HBox id="main-header" alignment="CENTER" spacing="5.0" styleClass="nav-container" stylesheets="@../Styles/style.css" BorderPane.alignment="CENTER">
-               <children>
-                  <Label onMouseClicked="#handleHomeClick" text="Home">
-                     <styleClass>
-                        <String fx:value="nav-link" />
-                        <String fx:value="nav-link-active" />
-                     </styleClass>
-                  </Label>
-                   <Label styleClass="nav-link" text="Movies" onMouseClicked="#handleMoviesClick" style="-fx-cursor: hand;" />
-                  <Label styleClass="nav-link" text="TV Shows" onMouseClicked="#handleSerieClick" />
-                  <Label fx:id="Mylist" onMouseClicked="#handleMyListClick" styleClass="nav-link" text="My List" />
-               </children>
-            </HBox>
+             <HBox id="main-header" alignment="CENTER" spacing="5.0" styleClass="nav-container"
+                   stylesheets="@../Styles/style.css" BorderPane.alignment="CENTER">
+                 <children>
+                     <Label onMouseClicked="#handleHomeClick" text="Home">
+                         <styleClass>
+                             <String fx:value="nav-link" />
+                             <String fx:value="nav-link-active" />
+                         </styleClass>
+                     </Label>
+                     <Label onMouseClicked="#handleMoviesClick" styleClass="nav-link"
+                            text="Movies" style="-fx-cursor: hand;" />
+                     <Label onMouseClicked="#handleSerieClick" styleClass="nav-link"
+                            text="TV Shows" style="-fx-cursor: hand;" />
+                     <Label fx:id="Mylist" onMouseClicked="#handleMyListClick"
+                            styleClass="nav-link" text="My List" />
+                 </children>
+             </HBox>
          </center>
           <right>
               <HBox alignment="CENTER_LEFT" spacing="10.0" styleClass="search-container">

@@ -38,7 +38,7 @@ public class MediaRowController {
             e.printStackTrace();
         }
     }
-        @FXML private Label rowTitleLabel;
+        /*@FXML private Label rowTitleLabel;
     @FXML private HBox  posterContainer;
         private final MediaServiceImpl mediaService =
                 new MediaServiceImpl(new MediaDAO(), new RatingDAO());
@@ -57,15 +57,15 @@ public class MediaRowController {
             List<Media> featured = mediaService.getFeaturedMedia();
 
             loadPosters(featured);
-        }
-        public void initTop5() {
+        }*/
+        /*public void initTop5() {
             rowTitleLabel.setText("Les plus regardés");
 
             List<Media> top5 = mediaService.getTop5MostWatched();
 
             loadPosters(top5);
-        }
-        private void loadPosters(List<Media> mediaList) {
+        }*/
+        /*private void loadPosters(List<Media> mediaList) {
             posterContainer.getChildren().clear();
 
             for (Media media : mediaList) {
@@ -83,5 +83,5 @@ public class MediaRowController {
                     System.err.println("Erreur chargement poster : " + e.getMessage());
                 }
             }
-        }
+        }*/
     }

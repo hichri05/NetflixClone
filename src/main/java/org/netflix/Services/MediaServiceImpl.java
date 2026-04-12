@@ -1,9 +1,17 @@
-/*package org.netflix.Services;
+package org.netflix.Services;
 
 import org.netflix.DAO.MediaDAO;
+import org.netflix.DAO.MovieDAO;
 import org.netflix.DAO.RatingDAO;
-import org.netflix.Models.*;
-import java.util.*;
+import org.netflix.DAO.SerieDAO;
+import org.netflix.Models.Media;
+import org.netflix.Models.Movie;
+import org.netflix.Models.Serie;
+
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Map;
+import java.util.HashMap;
 
 public class MediaServiceImpl implements IMediaService {
 
@@ -17,90 +25,127 @@ public class MediaServiceImpl implements IMediaService {
 
     @Override
     public List<Media> getAllMedia() {
-        return mediaDAO.findAll();
+        return MediaDAO.getAllMedia();
     }
 
     @Override
     public List<Movie> getAllMovies() {
-        return mediaDAO.findAllMovies();
+        return MovieDAO.getAllMovies();
     }
 
     @Override
     public List<Serie> getAllSeries() {
-        return mediaDAO.findAllSeries();
+        return new SerieDAO().getAllSeries();
     }
 
     @Override
     public Media getMediaById(int id) {
-        return mediaDAO.findById(id);
+        // Try movie first, fall back to searching all media
+        Movie movie = MovieDAO.getMovieById(id);
+        if (movie != null) return movie;
+
+        // Search in all media list
+        return MediaDAO.getAllMedia().stream()
+                .filter(m -> m.getIdMedia() == id)
+                .findFirst()
+                .orElse(null);
     }
 
     @Override
     public List<Media> searchMedia(String keyword) {
         if (keyword == null || keyword.isBlank()) return getAllMedia();
-        return mediaDAO.searchByKeyword(keyword.trim());
+        return MediaDAO.searchMedia(keyword.trim());
     }
 
     @Override
     public List<Media> filterByGenre(String genre) {
-        return mediaDAO.findByGenre(genre);
+        return MediaDAO.getMediasByGenre(genre);
     }
 
     @Override
     public List<Media> filterByYear(int year) {
-        return mediaDAO.findByYear(year);
+        // Filter from all media in memory — no dedicated DAO method needed
+        return MediaDAO.getAllMedia().stream()
+                .filter(m -> m.getReleaseYear() == year)
+                .collect(java.util.stream.Collectors.toList());
     }
 
     @Override
     public List<Media> getFeaturedMedia() {
-        // Les 5 médias les plus récents avec le meilleur rating
-        return mediaDAO.findFeatured();
+        // Top 5 by average rating
+        return MediaDAO.getAllMediaWithViews().stream()
+                .sorted((a, b) -> Double.compare(b.getAverageRating(), a.getAverageRating()))
+                .limit(5)
+                .collect(java.util.stream.Collectors.toList());
     }
 
     @Override
     public List<Media> getTop5MostWatched() {
-        return mediaDAO.findTop5ByViews();
+        return MediaDAO.getTopViews().stream()
+                .limit(5)
+                .collect(java.util.stream.Collectors.toList());
     }
 
     @Override
     public Map<String, Long> getMediaCountByGenre() {
-        return mediaDAO.countByGenre();
+        Map<String, Long> genreCountMap = new HashMap<>();
+        List<Media> allMedia = MediaDAO.getAllMediaWithViews();
+
+        for (Media media : allMedia) {
+            if (media.getGenres() == null) continue;
+            media.getGenres().forEach(g -> {
+                if (g != null && g.getName() != null) {
+                    String name = g.toString();
+                    genreCountMap.put(name, genreCountMap.getOrDefault(name, 0L) + 1);
+                }
+            });
+        }
+        return genreCountMap;
     }
 
     @Override
     public boolean addMovie(Movie movie) {
         if (movie == null || movie.getTitle() == null || movie.getTitle().isBlank())
             return false;
-        return mediaDAO.insertMovie(movie);
+        return MediaDAO.addMedia(movie);
     }
 
     @Override
     public boolean addSerie(Serie serie) {
         if (serie == null || serie.getTitle() == null || serie.getTitle().isBlank())
             return false;
-        return mediaDAO.insertSerie(serie);
+        return MediaDAO.addMedia(serie);
     }
 
     @Override
     public boolean updateMedia(Media media) {
         if (media == null) return false;
-        return mediaDAO.update(media);
+        return MediaDAO.updateMedia(media);
     }
 
     @Override
     public boolean deleteMedia(int id) {
-        return mediaDAO.delete(id);
+        return MediaDAO.deleteMedia(id);
     }
 
     @Override
     public double calculateAverageRating(int idMedia) {
-        List<Rating> ratings = ratingDAO.findByMedia(idMedia);
+        List<org.netflix.Models.Rating> ratings = RatingDAO.findByMedia(idMedia);
         if (ratings == null || ratings.isEmpty()) return 0.0;
-        double sum = 0;
-        for (Rating r : ratings) sum += r.getScore();
-        double avg = sum / ratings.size();
-        // Mise à jour en BDD
-        mediaDAO.updateAverageRating(idMedia, avg);
+
+        double avg = ratings.stream()
+                .mapToDouble(r -> r.getScore())
+                .average()
+                .orElse(0.0);
+
+        // Persist the recalculated average back to the media row
+        MediaDAO.updateMedia(
+                MediaDAO.getAllMedia().stream()
+                        .filter(m -> m.getIdMedia() == idMedia)
+                        .findFirst()
+                        .map(m -> { m.setAverageRating(avg); return m; })
+                        .orElse(null)
+        );
         return avg;
     }
-}*/
+}

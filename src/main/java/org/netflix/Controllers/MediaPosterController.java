@@ -72,7 +72,6 @@ public class MediaPosterController {
         hideDelay = new PauseTransition(Duration.millis(200));
         hideDelay.setOnFinished(e -> hoverPopup.hide());
 
-        // Keep popup alive when mouse is over it
         hoverPopup.addEventFilter(MouseEvent.MOUSE_ENTERED, e -> hideDelay.stop());
         hoverPopup.addEventFilter(MouseEvent.MOUSE_EXITED,  e -> hideDelay.playFromStart());
 
@@ -115,6 +114,7 @@ public class MediaPosterController {
         int match = 80 + (Math.abs(media.getTitle().hashCode()) % 19);
         Label matchLbl = new Label(match + "% Match");
         matchLbl.setStyle("-fx-text-fill: #46d369; -fx-font-weight: bold; -fx-font-size: 14;");
+
 
         // Buttons
         String outlineBtn = "-fx-background-color: transparent; -fx-border-color: white; " +
@@ -166,6 +166,17 @@ public class MediaPosterController {
         String imageUrl = media.getCoverImageUrl();
         Image image = new Image(imageUrl, true);
         posterImageView.setImage(image);
+
+        rootPane.getChildren().removeIf(n -> "typeBadge".equals(n.getId()));
+        Label badge = new Label("Movie".equalsIgnoreCase(media.getType()) ? "Movie" : "Tv Show");
+        badge.setId("typeBadge");
+        badge.getStyleClass().add("type-badge");
+        badge.getStyleClass().add(
+                "Movie".equalsIgnoreCase(media.getType()) ? "type-badge-film" : "type-badge-serie"
+        );
+        StackPane.setAlignment(badge, javafx.geometry.Pos.TOP_LEFT);
+        StackPane.setMargin(badge, new javafx.geometry.Insets(10, 0, 0, 10));
+        rootPane.getChildren().add(badge);
     }
 
     //
@@ -199,7 +210,7 @@ public class MediaPosterController {
         rootPane.getChildren().clear();
     }
 
-        @FXML private ImageView posterImage;
+       /* @FXML private ImageView posterImage;
         @FXML private Label     titleLabel;
         @FXML private Label     typeBadge;   // "FILM" ou "SÉRIE"
         @FXML private Button    favoriteBtn; // ❤ sur le poster au survol
@@ -254,5 +265,5 @@ public class MediaPosterController {
             boolean isFav = favoriteService.isFavorite(
                     currentUser.getId(), currentMedia.getIdMedia());
             favoriteBtn.setText(isFav ? "❤" : "🤍");
-        }
+        }*/
     }

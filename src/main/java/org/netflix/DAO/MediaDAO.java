@@ -44,18 +44,14 @@ public class MediaDAO {
             pstmt.setInt(1, genreId);
             try (ResultSet rs = pstmt.executeQuery()) {
                 while (rs.next()) {
-                    Media m = ResultToMedia(rs);
-                    // On charge les genres APRES avoir fini avec le ResultSet si nécessaire
-                    // ou on utilise une méthode qui ne boucle pas sur la connexion
-                    medias.add(m);
+                    medias.add(ResultToMedia(rs));
                 }
             }
         } catch (SQLException e) {
             System.out.println(e);
         }
 
-        // Charger les genres pour chaque média pour éviter la récursion SQL
-        for(Media m : medias) {
+        for (Media m : medias) {
             m.setGenres(getGenresByMediaId(m.getIdMedia()));
         }
 
@@ -97,13 +93,12 @@ public class MediaDAO {
             e.printStackTrace();
         }
 
-        for(Media m : results) {
+        for (Media m : results) {
             m.setGenres(getGenresByMediaId(m.getIdMedia()));
         }
         return results;
     }
 
-    // Version allégée pour éviter le StackOverflow
     static Media ResultToMedia(ResultSet rs) throws SQLException {
         return new Media(
                 rs.getInt("id_Media"),
@@ -114,12 +109,13 @@ public class MediaDAO {
                 rs.getString("coverImageUrl"),
                 rs.getString("backdrop_path"),
                 rs.getString("director"),
-                new ArrayList<>(),          // genres (loaded separately to avoid recursion)
-                new ArrayList<>(),          // casting
-                rs.getInt("views"),         // ← views
-                rs.getString("type")        // ← type LAST
+                new ArrayList<>(),
+                new ArrayList<>(),
+                rs.getInt("views"),
+                rs.getString("type")
         );
     }
+
     public static List<Media> getAllMediaWithViews() {
         List<Media> mediaList = new ArrayList<>();
         String sql = "SELECT id_Media, title, description, releaseYear, averageRating, " +
@@ -138,12 +134,12 @@ public class MediaDAO {
                         rs.getInt("releaseYear"),
                         rs.getDouble("averageRating"),
                         rs.getString("coverImageUrl"),
-                        rs.getString("backdrop_path"),  // backdropImageUrl
+                        rs.getString("backdrop_path"),
                         rs.getString("director"),
-                        genres,                          // ← genres before casting
-                        new ArrayList<>(),               // casting
-                        rs.getInt("views"),              // ← views
-                        rs.getString("type")             // ← type LAST, not duplicated
+                        genres,
+                        new ArrayList<>(),
+                        rs.getInt("views"),
+                        rs.getString("type")
                 ));
             }
         } catch (SQLException e) {
@@ -152,6 +148,7 @@ public class MediaDAO {
         }
         return mediaList;
     }
+
     public static boolean addMedia(Media media) {
         String sql = "INSERT INTO media (title, description, releaseYear, averageRating, coverImageUrl, director, type, views) " +
                 "VALUES (?, ?, ?, ?, ?, ?, ?, 0)";
@@ -245,11 +242,12 @@ public class MediaDAO {
             e.printStackTrace();
         }
 
-        for(Media m : mediaList) {
+        for (Media m : mediaList) {
             m.setGenres(getGenresByMediaId(m.getIdMedia()));
         }
         return mediaList;
     }
+
     public static List<Media> getTopViews() {
         List<Media> medias = new ArrayList<>();
         String sql = "SELECT * FROM media ORDER BY views DESC LIMIT 10";
@@ -257,7 +255,6 @@ public class MediaDAO {
         try (PreparedStatement pstmt = conn.prepareStatement(sql);
              ResultSet rs = pstmt.executeQuery()) {
             while (rs.next()) {
-
                 medias.add(ResultToMedia(rs));
             }
         } catch (SQLException e) {
@@ -266,84 +263,50 @@ public class MediaDAO {
         return medias;
     }
 
-    public static void saveRating(int id_User, int id_Media, int rating) {
-        String sql = """
-        INSERT INTO rating (id_User, id_Media, score)
-        VALUES (?, ?, ?)
-        ON DUPLICATE KEY UPDATE score = ?
-        """;
-        try (PreparedStatement ps = conn.prepareStatement(sql)) {
-            ps.setInt(1, id_User);
-            ps.setInt(2, id_Media);
-            ps.setInt(3, rating);
-            ps.setInt(4, rating);
-            ps.executeUpdate();
-        } catch (SQLException e) {
-            e.printStackTrace();
-        }
-    }
-    public static int getRating(int id_User, int id_Media) {
-        String sql = "SELECT score FROM rating WHERE id_User = ? AND id_Media = ?";
-        try (PreparedStatement ps = conn.prepareStatement(sql)) {
-            ps.setInt(1, id_User);
-            ps.setInt(2, id_Media);
-            ResultSet rs = ps.executeQuery();
-            if (rs.next()) return rs.getInt("score");
-        } catch (SQLException e) {
-            e.printStackTrace();
-        }
-        return 0;
-    }
-    public static void saveRating(int id, int idMedia, int rating) {
-        String checkSql = "SELECT COUNT(*) FROM rating WHERE id_user = ? AND id_media = ?";
-        String insertSql = "INSERT INTO rating (id_user, id_media, score, rating_date) VALUES (?, ?, ?, ?)";
-        String updateSql = "UPDATE rating SET score = ?, rating_date = ? WHERE id_user = ? AND id_media = ?";
+    // Single canonical saveRating — uses the shared connection from config.properties
+    public static void saveRating(int userId, int mediaId, int rating) {
+        String checkSql  = "SELECT COUNT(*) FROM rating WHERE id_user = ? AND id_media = ?";
+        String insertSql = "INSERT INTO rating (id_user, id_media, score, ratingDate) VALUES (?, ?, ?, ?)";
+        String updateSql = "UPDATE rating SET score = ?, ratingDate = ? WHERE id_user = ? AND id_media = ?";
 
-        try (Connection conn = ConxDB.getConnection()) {
-
-            // Vérifier si une note existe déjà
+        try {
             PreparedStatement checkPs = conn.prepareStatement(checkSql);
-            checkPs.setInt(1, id);
-            checkPs.setInt(2, idMedia);
+            checkPs.setInt(1, userId);
+            checkPs.setInt(2, mediaId);
             ResultSet rs = checkPs.executeQuery();
             rs.next();
             int count = rs.getInt(1);
 
             if (count > 0) {
-                // UPDATE
                 PreparedStatement updatePs = conn.prepareStatement(updateSql);
                 updatePs.setInt(1, rating);
                 updatePs.setDate(2, java.sql.Date.valueOf(java.time.LocalDate.now()));
-                updatePs.setInt(3, id);
-                updatePs.setInt(4, idMedia);
+                updatePs.setInt(3, userId);
+                updatePs.setInt(4, mediaId);
                 updatePs.executeUpdate();
             } else {
-                // INSERT
                 PreparedStatement insertPs = conn.prepareStatement(insertSql);
-                insertPs.setInt(1, id);
-                insertPs.setInt(2, idMedia);
+                insertPs.setInt(1, userId);
+                insertPs.setInt(2, mediaId);
                 insertPs.setInt(3, rating);
                 insertPs.setDate(4, java.sql.Date.valueOf(java.time.LocalDate.now()));
                 insertPs.executeUpdate();
             }
-
         } catch (SQLException e) {
             System.err.println("MediaDAO.saveRating : " + e.getMessage());
         }
     }
-    public static int getRating(int userId, int idMedia) {
+
+    // Single canonical getRating — uses the shared connection from config.properties
+    public static int getRating(int userId, int mediaId) {
         String sql = "SELECT score FROM rating WHERE id_user = ? AND id_media = ?";
-        try (Connection conn = ConxDB.getConnection();
-             PreparedStatement ps = conn.prepareStatement(sql)) {
-
+        try (PreparedStatement ps = conn.prepareStatement(sql)) {
             ps.setInt(1, userId);
-            ps.setInt(2, idMedia);
+            ps.setInt(2, mediaId);
             ResultSet rs = ps.executeQuery();
-
             if (rs.next()) {
                 return rs.getInt("score");
             }
-
         } catch (SQLException e) {
             System.err.println("MediaDAO.getRating : " + e.getMessage());
         }
