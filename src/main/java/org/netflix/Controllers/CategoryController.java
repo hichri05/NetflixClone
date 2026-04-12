@@ -150,6 +150,7 @@ public class CategoryController {
         categoryListView.getSelectionModel().clearSelection();
     }
 
+
     private void showError(String msg) {
         new Alert(Alert.AlertType.ERROR, msg).show();
     }

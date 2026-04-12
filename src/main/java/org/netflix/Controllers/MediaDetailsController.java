@@ -45,6 +45,7 @@ public class MediaDetailsController {
     private List<Label> stars;
     private int currentRating = 0;
     Media media;
+
     @FXML
     public void initialize() {
         media = TransferData.getMedia();
