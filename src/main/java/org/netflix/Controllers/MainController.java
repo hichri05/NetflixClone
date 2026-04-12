@@ -118,6 +118,7 @@ public class MainController implements Initializable {
         loadRow("Crime",       MediaDAO.getMediasByGenre("Crime"));
     }
 
+
     private void setupSearch() {
         searchField.textProperty().addListener((obs, oldVal, newVal) -> {
             if (newVal.length() >= 2) {

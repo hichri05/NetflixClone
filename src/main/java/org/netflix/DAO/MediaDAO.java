@@ -263,53 +263,32 @@ public class MediaDAO {
         return medias;
     }
 
-
-    // Single canonical saveRating — uses the shared connection from config.properties
-    public static void saveRating(int userId, int mediaId, int rating) {
-        String checkSql  = "SELECT COUNT(*) FROM rating WHERE id_user = ? AND id_media = ?";
-        String insertSql = "INSERT INTO rating (id_user, id_media, score, ratingDate) VALUES (?, ?, ?, ?)";
-        String updateSql = "UPDATE rating SET score = ?, ratingDate = ? WHERE id_user = ? AND id_media = ?";
-
-        try {
-            PreparedStatement checkPs = conn.prepareStatement(checkSql);
-            checkPs.setInt(1, userId);
-            checkPs.setInt(2, mediaId);
-            ResultSet rs = checkPs.executeQuery();
-            rs.next();
-            int count = rs.getInt(1);
-
-            if (count > 0) {
-                PreparedStatement updatePs = conn.prepareStatement(updateSql);
-                updatePs.setInt(1, rating);
-                updatePs.setDate(2, java.sql.Date.valueOf(java.time.LocalDate.now()));
-                updatePs.setInt(3, userId);
-                updatePs.setInt(4, mediaId);
-                updatePs.executeUpdate();
-            } else {
-                PreparedStatement insertPs = conn.prepareStatement(insertSql);
-                insertPs.setInt(1, userId);
-                insertPs.setInt(2, mediaId);
-                insertPs.setInt(3, rating);
-                insertPs.setDate(4, java.sql.Date.valueOf(java.time.LocalDate.now()));
-                insertPs.executeUpdate();
-            }
+    public static void saveRating(int id_User, int id_Media, int rating) {
+        String sql = """
+        INSERT INTO rating (id_User, id_Media, score)
+        VALUES (?, ?, ?)
+        ON DUPLICATE KEY UPDATE score = ?
+        """;
+        try (PreparedStatement ps = conn.prepareStatement(sql)) {
+            ps.setInt(1, id_User);
+            ps.setInt(2, id_Media);
+            ps.setInt(3, rating);
+            ps.setInt(4, rating);
+            ps.executeUpdate();
         } catch (SQLException e) {
-            System.err.println("MediaDAO.saveRating : " + e.getMessage());
+            e.printStackTrace();
         }
     }
 
-    // Single canonical getRating — uses the shared connection from config.properties
-    public static int getRating(int userId, int mediaId) {
-        String sql = "SELECT score FROM rating WHERE id_user = ? AND id_media = ?";
+    public static int getRating(int id_User, int id_Media) {
+        String sql = "SELECT score FROM rating WHERE id_User = ? AND id_Media = ?";
         try (PreparedStatement ps = conn.prepareStatement(sql)) {
-            ps.setInt(1, userId);
-            ps.setInt(2, mediaId);
+            ps.setInt(1, id_User);
+            ps.setInt(2, id_Media);
             ResultSet rs = ps.executeQuery();
-            if (rs.next()) {
-                return rs.getInt("score");
-            }
+            if (rs.next()) return rs.getInt("score");
         } catch (SQLException e) {
-            System.err.println("MediaDAO.getRating : " + e.getMessage());
+            e.printStackTrace();
         }
         return 0;
     }
