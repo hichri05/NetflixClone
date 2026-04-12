@@ -20,6 +20,7 @@ public class AdminMainController {
     private static final String ACTIVE_STYLE   = "-fx-text-fill: white;-fx-background-color: transparent;";
     private static final String INACTIVE_STYLE = "-fx-text-fill: #aaa;-fx-background-color: transparent;";
 
+
     @FXML
     public void initialize() {
 

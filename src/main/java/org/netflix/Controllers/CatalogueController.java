@@ -39,6 +39,7 @@ public class CatalogueController {
     private Media selectedMedia;
     private Connection conn = ConxDB.getInstance();
 
+
     @FXML
     public void initialize() {
         colTitle.setCellValueFactory(new PropertyValueFactory<>("title"));
