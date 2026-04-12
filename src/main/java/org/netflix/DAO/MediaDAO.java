@@ -262,6 +262,7 @@ public class MediaDAO {
         }
         return medias;
     }
+    
 
     // Single canonical saveRating — uses the shared connection from config.properties
     public static void saveRating(int userId, int mediaId, int rating) {
