@@ -294,4 +294,59 @@ public class MediaDAO {
         }
         return 0;
     }
+    public static void saveRating(int id, int idMedia, int rating) {
+        String checkSql = "SELECT COUNT(*) FROM rating WHERE id_user = ? AND id_media = ?";
+        String insertSql = "INSERT INTO rating (id_user, id_media, score, rating_date) VALUES (?, ?, ?, ?)";
+        String updateSql = "UPDATE rating SET score = ?, rating_date = ? WHERE id_user = ? AND id_media = ?";
+
+        try (Connection conn = ConxDB.getConnection()) {
+
+            // Vérifier si une note existe déjà
+            PreparedStatement checkPs = conn.prepareStatement(checkSql);
+            checkPs.setInt(1, id);
+            checkPs.setInt(2, idMedia);
+            ResultSet rs = checkPs.executeQuery();
+            rs.next();
+            int count = rs.getInt(1);
+
+            if (count > 0) {
+                // UPDATE
+                PreparedStatement updatePs = conn.prepareStatement(updateSql);
+                updatePs.setInt(1, rating);
+                updatePs.setDate(2, java.sql.Date.valueOf(java.time.LocalDate.now()));
+                updatePs.setInt(3, id);
+                updatePs.setInt(4, idMedia);
+                updatePs.executeUpdate();
+            } else {
+                // INSERT
+                PreparedStatement insertPs = conn.prepareStatement(insertSql);
+                insertPs.setInt(1, id);
+                insertPs.setInt(2, idMedia);
+                insertPs.setInt(3, rating);
+                insertPs.setDate(4, java.sql.Date.valueOf(java.time.LocalDate.now()));
+                insertPs.executeUpdate();
+            }
+
+        } catch (SQLException e) {
+            System.err.println("MediaDAO.saveRating : " + e.getMessage());
+        }
+    }
+    public static int getRating(int userId, int idMedia) {
+        String sql = "SELECT score FROM rating WHERE id_user = ? AND id_media = ?";
+        try (Connection conn = ConxDB.getConnection();
+             PreparedStatement ps = conn.prepareStatement(sql)) {
+
+            ps.setInt(1, userId);
+            ps.setInt(2, idMedia);
+            ResultSet rs = ps.executeQuery();
+
+            if (rs.next()) {
+                return rs.getInt("score");
+            }
+
+        } catch (SQLException e) {
+            System.err.println("MediaDAO.getRating : " + e.getMessage());
+        }
+        return 0;
+    }
 }

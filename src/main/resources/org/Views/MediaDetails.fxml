@@ -5,6 +5,7 @@
 <?import javafx.scene.control.ChoiceBox?>
 <?import javafx.scene.control.Label?>
 <?import javafx.scene.control.ScrollPane?>
+<?import javafx.scene.control.TextArea?>
 <?import javafx.scene.image.ImageView?>
 <?import javafx.scene.layout.FlowPane?>
 <?import javafx.scene.layout.HBox?>
@@ -76,7 +77,40 @@
                     </children>
                 </VBox>
 
-            </children>
+
+                <!-- ✅ COMMENTAIRES — à l'intérieur du VBox principal -->
+                <VBox spacing="15.0" style="-fx-padding: 0 50 50 50;">
+                    <children>
+                        <Label styleClass="genre-title" text="Commentaires" />
+                        <VBox fx:id="commentsListContainer" spacing="10.0" />
+                        <VBox spacing="8.0">
+                            <children>
+                                <TextArea fx:id="newCommentField"
+                                          prefRowCount="3"
+                                          promptText="Écrire un commentaire..."
+                                          wrapText="true"
+                                          style="-fx-background-color: #1f1f1f;
+                                                 -fx-text-fill: white;
+                                                 -fx-prompt-text-fill: #555;
+                                                 -fx-border-color: #333;
+                                                 -fx-border-radius: 4;
+                                                 -fx-background-radius: 4;" />
+                                <HBox alignment="CENTER_RIGHT">
+                                    <children>
+                                        <Button text="Publier"
+                                                onAction="#handlePublishComment"
+                                                style="-fx-background-color: #e50914;
+                                                       -fx-text-fill: white;
+                                                       -fx-background-radius: 4;
+                                                       -fx-cursor: hand;" />
+                                    </children>
+                                </HBox>
+                            </children>
+                        </VBox>
+                    </children>
+                </VBox>
+
+            </children>  <!-- ✅ fermeture du VBox principal -->
         </VBox>
     </content>
 </ScrollPane>

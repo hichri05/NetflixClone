@@ -19,10 +19,12 @@ import javafx.scene.shape.Rectangle;
 import javafx.stage.Popup;
 import javafx.stage.Stage;
 import javafx.util.Duration;
+import org.netflix.DAO.FavoriteDAO;
 import org.netflix.DAO.MediaDAO;
 import org.netflix.DAO.UserDAO;
 import org.netflix.Models.Media;
 import org.netflix.Models.User;
+import org.netflix.Services.FavoriteServiceImpl;
 import org.netflix.Utils.SceneSwitcher;
 import org.netflix.Utils.Session;
 import org.netflix.Utils.TransferData;
@@ -195,5 +197,63 @@ public class MediaPosterController {
         MediaDAO.removeFromFavorites(user.getId(), media.getIdMedia());
         List<Media> favorites = UserDAO.getUserFavorites(user.getId());
         rootPane.getChildren().clear();
+    }
+
+        @FXML private ImageView posterImage;
+        @FXML private Label     titleLabel;
+        @FXML private Label     typeBadge;   // "FILM" ou "SÉRIE"
+        @FXML private Button    favoriteBtn; // ❤ sur le poster au survol
+
+        private Media currentMedia;
+        private User  currentUser;
+
+        private final FavoriteServiceImpl favoriteService =
+                new FavoriteServiceImpl(new FavoriteDAO());
+
+        public void initData(Media media) {
+            this.currentMedia = media;
+            this.currentUser  =
+                    SessionManager.getInstance().getCurrentUser();
+
+            titleLabel.setText(media.getTitle());
+
+            typeBadge.setText(media.getType());
+            typeBadge.setStyle(
+                    "MOVIE".equals(media.getType())
+                            ? "-fx-background-color: #1565C0; -fx-text-fill: white;"
+                            : "-fx-background-color: #e50914; -fx-text-fill: white;"
+            );
+
+            if (media.getCoverImageUrl() != null) {
+                posterImage.setImage(new Image(media.getCoverImageUrl(), true));
+            }
+
+            refreshFavoriteBtn();
+        }
+        @FXML
+        public void handlePosterClick() {
+            MediaDetailsController dc =
+                    SceneNavigator.navigateTo("media_details.fxml");
+            dc.initData(currentMedia);
+        }
+        @FXML
+        public void handleFavoriteToggle() {
+            int userId  = currentUser.getId();
+            int mediaId = currentMedia.getIdMedia();
+
+            if (favoriteService.isFavorite(userId, mediaId)) {
+                favoriteService.removeFromFavorites(userId, mediaId);
+            } else {
+                favoriteService.addToFavorites(userId, mediaId);
+            }
+
+            refreshFavoriteBtn();
+        }
+
+        private void refreshFavoriteBtn() {
+            boolean isFav = favoriteService.isFavorite(
+                    currentUser.getId(), currentMedia.getIdMedia());
+            favoriteBtn.setText(isFav ? "❤" : "🤍");
+        }
     }
 }

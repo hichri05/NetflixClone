@@ -4,6 +4,7 @@ import org.netflix.DAO.UserDAO;
 import org.netflix.Models.User;
 import org.mindrot.jbcrypt.BCrypt;
 import java.util.List;
+import java.util.Optional;
 
 public class UserServiceImpl implements IUserService {
 
@@ -47,7 +48,7 @@ public class UserServiceImpl implements IUserService {
     }
 
     @Override
-    public User getUserById(int id) {
+    public Optional<User> getUserById(int id) {
         return userDAO.findById(id);
     }
 
