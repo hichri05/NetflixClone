@@ -74,6 +74,7 @@ public class MainController implements Initializable {
         loadRow("Historique", MediaDAO.getMediasByGenre("Historique"));
     }
 
+
     private void setupSearch() {
         searchField.textProperty().addListener((obs, oldVal, newVal) -> {
             if (newVal.length() >= 2) {

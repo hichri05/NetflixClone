@@ -132,6 +132,7 @@ public class MediaDetailsController {
         }
     }
 
+
     private void fillStars(int count) {
         for (int i = 0; i < stars.size(); i++) {
             if (i < count) {

@@ -249,6 +249,7 @@ public class MediaDAO {
             e.printStackTrace();
         }
     }
+
     public static int getRating(int id_User, int id_Media) {
         String sql = "SELECT score FROM rating WHERE id_User = ? AND id_Media = ?";
         try (PreparedStatement ps = conn.prepareStatement(sql)) {
