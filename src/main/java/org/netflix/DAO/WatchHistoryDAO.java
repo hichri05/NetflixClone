@@ -72,4 +72,43 @@ public class WatchHistoryDAO {
             return false;
         }
     }
+
+
+    public boolean isEpisodeCompleted(int userId, int id) {
+    return true;}
+
+    public List<WatchHistory> findByUser(int userId) {
+        List<WatchHistory> historyList = new ArrayList<>();
+        String sql = "SELECT * FROM watch_history WHERE id_User = ? ORDER BY last_watched DESC";
+
+        try (PreparedStatement pstmt = conn.prepareStatement(sql)) {
+            pstmt.setInt(1, userId);
+
+            try (ResultSet rs = pstmt.executeQuery()) {
+                while (rs.next()) {
+                    // Get these as Objects first to handle potential NULLs from the DB
+                    Integer mediaId = (Integer) rs.getObject("id_Media");
+                    Integer episodeId = (Integer) rs.getObject("id_Episode");
+
+                    // Using your first constructor:
+                    // (userId, mediaId, episodeId, stoppedAtTime, lastWatched, completed)
+                    WatchHistory h = new WatchHistory(
+                            rs.getInt("id_User"),
+                            mediaId,
+                            episodeId,
+                            rs.getDouble("stopped_at_time"),
+                            rs.getTimestamp("last_watched"),
+                            rs.getInt("completed")
+                    );
+
+                    historyList.add(h);
+                }
+            }
+        } catch (SQLException e) {
+            System.err.println("Database error in findByUser:");
+            e.printStackTrace();
+        }
+
+        return historyList;
+    }
 }
