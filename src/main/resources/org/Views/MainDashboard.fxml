@@ -19,6 +19,10 @@
             <Button fx:id="btnCategories" onAction="#showCategories" prefWidth="210" alignment="BASELINE_LEFT"
                     text="🏷️  Categories" style="-fx-background-color: transparent; -fx-text-fill: #aaa; -fx-font-size: 15; -fx-cursor: hand;"/>
 
+            <Button fx:id="btnDashboard" onAction="#showDashboard" prefWidth="210" alignment="BASELINE_LEFT"
+                    text="📊  Dashboard Analysis" style="-fx-background-color: transparent; -fx-text-fill: #aaa; -fx-font-size: 15; -fx-cursor: hand;"/>
+
+
             <Button fx:id="btnUsers" onAction="#showUsers" prefWidth="210" alignment="BASELINE_LEFT"
                     text="👥  Users" style="-fx-background-color: transparent; -fx-text-fill: #aaa; -fx-font-size: 15; -fx-cursor: hand;"/>
 

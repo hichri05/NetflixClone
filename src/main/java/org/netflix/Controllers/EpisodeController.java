@@ -26,51 +26,54 @@ public class EpisodeController {
 
     @FXML private Text seriesTitleHeader;
 
-
     @FXML private Spinner<Integer> seasonSpinner;
     @FXML private Spinner<Integer> episodeSpinner;
+    @FXML private TextField epTitle;
     @FXML private TextField epVideoUrl;
-
 
     @FXML private TableView<Episode> episodeTable;
     @FXML private TableColumn<Episode, Integer> colSeason;
     @FXML private TableColumn<Episode, Integer> colNumber;
+    @FXML private TableColumn<Episode, String>  colTitle;
     @FXML private TableColumn<Episode, String>  colUrl;
 
-    private ObservableList<Episode> episodes = FXCollections.observableArrayList();
+    private final ObservableList<Episode> episodes = FXCollections.observableArrayList();
     private Media currentMedia;
-    private SeasonDAO seasonDAO = new SeasonDAO();
-    private Connection conn = ConxDB.getInstance();
+    private final SeasonDAO seasonDAO = new SeasonDAO();
+    private final Connection conn = ConxDB.getInstance();
 
     @FXML
     public void initialize() {
         currentMedia = TransferData.getMedia();
 
         if (currentMedia != null) {
-            seriesTitleHeader.setText("Manage Episodes — " + currentMedia.getTitle());
+            seriesTitleHeader.setText(currentMedia.getTitle());
         }
-
 
         seasonSpinner.setValueFactory(new SpinnerValueFactory.IntegerSpinnerValueFactory(1, 50, 1));
         episodeSpinner.setValueFactory(new SpinnerValueFactory.IntegerSpinnerValueFactory(1, 200, 1));
 
-
         colSeason.setCellValueFactory(new PropertyValueFactory<>("seasonId"));
         colNumber.setCellValueFactory(new PropertyValueFactory<>("episodeNumber"));
+        colTitle.setCellValueFactory(new PropertyValueFactory<>("title"));
         colUrl.setCellValueFactory(new PropertyValueFactory<>("filePath"));
 
-
+        // Resolve season number from ID
         colSeason.setCellFactory(col -> new TableCell<>() {
             @Override
             protected void updateItem(Integer item, boolean empty) {
                 super.updateItem(item, empty);
-                if (empty || getTableRow().getItem() == null) {
-                    setText(null);
-                    return;
-                }
+                if (empty || getTableRow().getItem() == null) { setText(null); return; }
+                setText("S" + resolveSeasonNumber(getTableRow().getItem().getSeasonId()));
+            }
+        });
 
-                Episode ep = getTableRow().getItem();
-                setText(resolveSeasonNumber(ep.getSeasonId()));
+        // Format episode number nicely
+        colNumber.setCellFactory(col -> new TableCell<>() {
+            @Override
+            protected void updateItem(Integer item, boolean empty) {
+                super.updateItem(item, empty);
+                setText(empty || item == null ? null : String.format("E%02d", item));
             }
         });
 
@@ -92,57 +95,40 @@ public class EpisodeController {
     private void loadAllEpisodes() {
         episodes.clear();
         if (currentMedia == null) return;
-
-
         List<Season> seasons = seasonDAO.getSeasonsBySerie(currentMedia.getIdMedia());
         for (Season s : seasons) {
-            List<Episode> eps = EpisodeDAO.getEpisodesBySeason(s.getIdSeason());
-            episodes.addAll(eps);
+            episodes.addAll(EpisodeDAO.getEpisodesBySeason(s.getIdSeason()));
         }
         episodeTable.setItems(episodes);
     }
 
     @FXML
     public void handleAddEpisode(ActionEvent actionEvent) {
-        if (currentMedia == null) {
-            showError("No series selected.");
-            return;
-        }
+        if (currentMedia == null) { showError("No series selected."); return; }
 
         String videoUrl = epVideoUrl.getText().trim();
-        if (videoUrl.isEmpty()) {
-            showError("Please enter a video URL.");
-            return;
-        }
+        if (videoUrl.isEmpty()) { showError("Please enter a video URL."); return; }
 
         int seasonNumber  = seasonSpinner.getValue();
         int episodeNumber = episodeSpinner.getValue();
 
-
         int seasonId = getOrCreateSeason(currentMedia.getIdMedia(), seasonNumber);
-        if (seasonId == -1) {
-            showError("Failed to find or create season " + seasonNumber + ".");
-            return;
-        }
-
+        if (seasonId == -1) { showError("Failed to find or create season " + seasonNumber + "."); return; }
 
         if (episodeExistsInSeason(seasonId, episodeNumber)) {
             showError("Episode " + episodeNumber + " already exists in Season " + seasonNumber + ".");
             return;
         }
 
-        Episode episode = new Episode(
-                0,
-                seasonId,
-                episodeNumber,
-                "S" + seasonNumber + "E" + episodeNumber, // default title
-                videoUrl,
-                null
-        );
+        String titleText = epTitle.getText().trim();
+        if (titleText.isEmpty()) titleText = "S" + seasonNumber + "E" + episodeNumber;
+
+        Episode episode = new Episode(0, seasonId, episodeNumber, titleText, videoUrl, null);
 
         boolean ok = EpisodeDAO.addEpisode(episode);
         if (ok) {
             epVideoUrl.clear();
+            epTitle.clear();
             loadAllEpisodes();
             showInfo("Episode S" + seasonNumber + "E" + episodeNumber + " added.");
         } else {
@@ -164,7 +150,6 @@ public class EpisodeController {
     }
 
     private int getOrCreateSeason(int serieId, int seasonNumber) {
-
         String sql = "SELECT id_Saison FROM saison WHERE id_Serie = ? AND saisonNumber = ?";
         try (PreparedStatement ps = conn.prepareStatement(sql)) {
             ps.setInt(1, serieId);
@@ -175,15 +160,10 @@ public class EpisodeController {
             System.err.println("Season lookup failed: " + e.getMessage());
         }
 
+        Season newSeason = new Season(0, serieId, seasonNumber, "Season " + seasonNumber, "");
+        if (!SeasonDAO.addSeason(newSeason)) return -1;
 
-        Season newSeason = new Season(0, serieId, seasonNumber,
-                "Season " + seasonNumber, "");
-        boolean created = SeasonDAO.addSeason(newSeason);
-        if (!created) return -1;
-
-        // Retrieve the new ID
-        String getId = "SELECT id_Saison FROM saison WHERE id_Serie = ? AND saisonNumber = ?";
-        try (PreparedStatement ps = conn.prepareStatement(getId)) {
+        try (PreparedStatement ps = conn.prepareStatement(sql)) {
             ps.setInt(1, serieId);
             ps.setInt(2, seasonNumber);
             ResultSet rs = ps.executeQuery();
@@ -197,37 +177,24 @@ public class EpisodeController {
     @FXML
     public void handleDeleteEpisode(ActionEvent actionEvent) {
         Episode selected = episodeTable.getSelectionModel().getSelectedItem();
-        if (selected == null) {
-            showError("Please select an episode to remove.");
-            return;
-        }
+        if (selected == null) { showError("Please select an episode to remove."); return; }
 
         Alert confirm = new Alert(Alert.AlertType.CONFIRMATION,
-                "Delete " + selected.getTitle() + "?");
-        confirm.showAndWait().ifPresent(response -> {
-            if (response == ButtonType.OK) {
-                boolean ok = EpisodeDAO.deleteEpisode(selected.getId());
-                if (ok) {
-                    loadAllEpisodes();
-                } else {
-                    showError("Failed to delete episode.");
-                }
+                "Delete \"" + selected.getTitle() + "\"?", ButtonType.OK, ButtonType.CANCEL);
+        confirm.setHeaderText(null);
+        confirm.showAndWait().ifPresent(r -> {
+            if (r == ButtonType.OK) {
+                if (EpisodeDAO.deleteEpisode(selected.getId())) loadAllEpisodes();
+                else showError("Failed to delete episode.");
             }
         });
     }
 
     @FXML
     public void handleClose(ActionEvent actionEvent) {
-        Stage stage = (Stage) episodeTable.getScene().getWindow();
-        stage.close();
+        ((Stage) episodeTable.getScene().getWindow()).close();
     }
 
-
-    private void showError(String msg) {
-        new Alert(Alert.AlertType.ERROR, msg).show();
-    }
-
-    private void showInfo(String msg) {
-        new Alert(Alert.AlertType.INFORMATION, msg).show();
-    }
+    private void showError(String msg) { new Alert(Alert.AlertType.ERROR, msg).show(); }
+    private void showInfo(String msg)  { new Alert(Alert.AlertType.INFORMATION, msg).show(); }
 }

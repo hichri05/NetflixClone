@@ -58,8 +58,6 @@ public class MediaDetailsController {
             fillStars(saved);
             ratingLabel.setText("Your rating: " + saved + "/5");
         }
-
-
         titleLabel.setText(media.getTitle());
         descriptionLabel.setText(media.getDescription());
         String imgUrl = media.getBackdropImageUrl();
@@ -113,11 +111,6 @@ public class MediaDetailsController {
             mylistbtn.setText("+ My List");
         }
     }
-
-    public void handleBack(ActionEvent event) {
-        SceneSwitcher.goTo(event, "/org/Views/main.fxml");
-    }
-
     @FXML
     private void handleRate(MouseEvent event) {
         Label clicked = (Label) event.getSource();
@@ -149,7 +142,7 @@ public class MediaDetailsController {
             star.setOnMouseExited(e -> fillStars(currentRating));
         }
     }
-
-    public void handlePublishComment(ActionEvent actionEvent) {
+    public void handleBack(ActionEvent event) {
+        SceneSwitcher.goTo(event, "/org/Views/main.fxml");
     }
 }

@@ -19,13 +19,10 @@ import javafx.scene.shape.Rectangle;
 import javafx.stage.Popup;
 import javafx.stage.Stage;
 import javafx.util.Duration;
-import org.netflix.DAO.FavoriteDAO;
 import org.netflix.DAO.MediaDAO;
 import org.netflix.DAO.UserDAO;
 import org.netflix.Models.Media;
 import org.netflix.Models.User;
-import org.netflix.Services.FavoriteServiceImpl;
-import org.netflix.Utils.SceneSwitcher;
 import org.netflix.Utils.Session;
 import org.netflix.Utils.TransferData;
 
@@ -34,20 +31,18 @@ import java.util.List;
 
 public class MediaPosterController {
 
-    //
     @FXML private StackPane rootPane;
     @FXML private ImageView posterImageView;
     @FXML private Button removeBtn;
 
-    //
     private Media media;
-
-    // Hover
-    private Popup           hoverPopup;
+    private Popup hoverPopup;
     private PauseTransition showDelay;
     private PauseTransition hideDelay;
 
-    //
+    // Safety placeholder
+    private final String PLACEHOLDER = "https://via.placeholder.com/300x450?text=No+Image";
+
     @FXML
     public void initialize() {
         applyRoundedCorners();
@@ -61,7 +56,17 @@ public class MediaPosterController {
         posterImageView.setClip(clip);
     }
 
-    // ── HOVER SETUP ──────────────────────────────────────────────────
+    // Safety helper to prevent the "Invalid URL" crash
+    private Image safeLoadImage(String url) {
+        if (url == null || url.trim().isEmpty()) {
+            return new Image(PLACEHOLDER, true);
+        }
+        try {
+            return new Image(url, true);
+        } catch (Exception e) {
+            return new Image(PLACEHOLDER, true);
+        }
+    }
 
     private void setupHover() {
         hoverPopup = new Popup();
@@ -81,9 +86,7 @@ public class MediaPosterController {
                 if (media == null) return;
                 hoverPopup.getContent().setAll(buildHoverPopup());
                 javafx.geometry.Point2D p = rootPane.localToScreen(0, 0);
-                hoverPopup.show(rootPane,
-                        p.getX() - 70,
-                        p.getY() + rootPane.getHeight() + 5);
+                hoverPopup.show(rootPane, p.getX() - 70, p.getY() + rootPane.getHeight() + 5);
             });
             showDelay.playFromStart();
         });
@@ -100,9 +103,8 @@ public class MediaPosterController {
                 "-fx-border-color: #333; -fx-border-radius: 10; -fx-padding: 0;");
         preview.setPrefWidth(300);
 
-        // Backdrop image
-        String imgUrl = media.getBackDropImageUrl();
-        ImageView img = new ImageView(new Image(imgUrl, true));
+        // Backdrop image (Safely loaded)
+        ImageView img = new ImageView(safeLoadImage(media.getBackDropImageUrl()));
         img.setFitWidth(300);
         img.setFitHeight(160);
         img.setPreserveRatio(false);
@@ -115,7 +117,6 @@ public class MediaPosterController {
         Label matchLbl = new Label(match + "% Match");
         matchLbl.setStyle("-fx-text-fill: #46d369; -fx-font-weight: bold; -fx-font-size: 14;");
 
-
         // Buttons
         String outlineBtn = "-fx-background-color: transparent; -fx-border-color: white; " +
                 "-fx-border-radius: 50; -fx-text-fill: white; -fx-cursor: hand;";
@@ -123,20 +124,11 @@ public class MediaPosterController {
         Button playBtn = new Button("▶");
         playBtn.setStyle("-fx-background-color: white; -fx-text-fill: black; " +
                 "-fx-background-radius: 50; -fx-padding: 5 12; -fx-cursor: hand;");
-        playBtn.setOnAction(e -> {
-            hoverPopup.hide();
-            TransferData.setMedia(media);
-            // reuse existing navigation
-            rootPane.fireEvent(new MouseEvent(MouseEvent.MOUSE_CLICKED,
-                    0, 0, 0, 0, javafx.scene.input.MouseButton.PRIMARY,
-                    1, false, false, false, false,
-                    true, false, false, true, false, false, null));
-        });
+        playBtn.setOnAction(e -> handlePosterClick(null));
 
         Button addBtn  = new Button("+"); addBtn.setStyle(outlineBtn);
         Button likeBtn = new Button("♥"); likeBtn.setStyle(outlineBtn);
 
-        // Add to list from popup
         addBtn.setOnAction(e -> {
             User user = Session.getUser();
             if (user != null) MediaDAO.addToFavorites(user.getId(), media.getIdMedia());
@@ -148,6 +140,7 @@ public class MediaPosterController {
         Label titleLbl = new Label(media.getTitle());
         titleLbl.setStyle("-fx-text-fill: white; -fx-font-weight: bold; -fx-font-size: 18;");
 
+        // Description Restored
         Label desc = new Label(media.getDescription());
         desc.setStyle("-fx-text-fill: #d2d2d2; -fx-font-size: 12;");
         desc.setWrapText(true);
@@ -159,33 +152,28 @@ public class MediaPosterController {
         return preview;
     }
 
-    //
     public void setData(Media media) {
         if (media == null) return;
         this.media = media;
-        String imageUrl = media.getCoverImageUrl();
-        Image image = new Image(imageUrl, true);
-        posterImageView.setImage(image);
+
+        // Poster (Safely loaded)
+        posterImageView.setImage(safeLoadImage(media.getCoverImageUrl()));
 
         rootPane.getChildren().removeIf(n -> "typeBadge".equals(n.getId()));
-        Label badge = new Label("Movie".equalsIgnoreCase(media.getType()) ? "Movie" : "Tv Show");
+        Label badge = new Label(media.getType());
         badge.setId("typeBadge");
         badge.getStyleClass().add("type-badge");
-        badge.getStyleClass().add(
-                "Movie".equalsIgnoreCase(media.getType()) ? "type-badge-film" : "type-badge-serie"
-        );
-        StackPane.setAlignment(badge, javafx.geometry.Pos.TOP_LEFT);
-        StackPane.setMargin(badge, new javafx.geometry.Insets(10, 0, 0, 10));
+        badge.getStyleClass().add("Movie".equalsIgnoreCase(media.getType()) ? "type-badge-film" : "type-badge-serie");
+        StackPane.setAlignment(badge, Pos.TOP_LEFT);
+        StackPane.setMargin(badge, new Insets(10, 0, 0, 10));
         rootPane.getChildren().add(badge);
     }
 
-    //
     public void showRemoveButton(boolean show) {
         removeBtn.setVisible(show);
         removeBtn.setManaged(show);
     }
 
-    //
     @FXML
     private void handlePosterClick(MouseEvent event) {
         if (media == null) return;
@@ -203,67 +191,8 @@ public class MediaPosterController {
     @FXML
     private void handleRemoveFromList(ActionEvent event) {
         if (media == null) return;
-        System.out.println("Removing: " + media.getTitle());
         User user = Session.getUser();
         MediaDAO.removeFromFavorites(user.getId(), media.getIdMedia());
-        List<Media> favorites = UserDAO.getUserFavorites(user.getId());
-        rootPane.getChildren().clear();
+        rootPane.setOpacity(0.5);
     }
-
-       /* @FXML private ImageView posterImage;
-        @FXML private Label     titleLabel;
-        @FXML private Label     typeBadge;   // "FILM" ou "SÉRIE"
-        @FXML private Button    favoriteBtn; // ❤ sur le poster au survol
-
-        private Media currentMedia;
-        private User  currentUser;
-
-        private final FavoriteServiceImpl favoriteService =
-                new FavoriteServiceImpl(new FavoriteDAO());
-
-        public void initData(Media media) {
-            this.currentMedia = media;
-            this.currentUser  =
-                    SessionManager.getInstance().getCurrentUser();
-
-            titleLabel.setText(media.getTitle());
-
-            typeBadge.setText(media.getType());
-            typeBadge.setStyle(
-                    "MOVIE".equals(media.getType())
-                            ? "-fx-background-color: #1565C0; -fx-text-fill: white;"
-                            : "-fx-background-color: #e50914; -fx-text-fill: white;"
-            );
-
-            if (media.getCoverImageUrl() != null) {
-                posterImage.setImage(new Image(media.getCoverImageUrl(), true));
-            }
-
-            refreshFavoriteBtn();
-        }
-        @FXML
-        public void handlePosterClick() {
-            MediaDetailsController dc =
-                    SceneNavigator.navigateTo("media_details.fxml");
-            dc.initData(currentMedia);
-        }
-        @FXML
-        public void handleFavoriteToggle() {
-            int userId  = currentUser.getId();
-            int mediaId = currentMedia.getIdMedia();
-
-            if (favoriteService.isFavorite(userId, mediaId)) {
-                favoriteService.removeFromFavorites(userId, mediaId);
-            } else {
-                favoriteService.addToFavorites(userId, mediaId);
-            }
-
-            refreshFavoriteBtn();
-        }
-
-        private void refreshFavoriteBtn() {
-            boolean isFav = favoriteService.isFavorite(
-                    currentUser.getId(), currentMedia.getIdMedia());
-            favoriteBtn.setText(isFav ? "❤" : "🤍");
-        }*/
-    }
+}
