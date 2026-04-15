@@ -213,7 +213,7 @@ public class MediaPosterController {
         public void initData(Media media) {
             this.currentMedia = media;
             this.currentUser  =
-                    SessionManager.getInstance().getCurrentUser();
+                    this.currentUser = Session.getUser();
 
             titleLabel.setText(media.getTitle());
 
@@ -233,7 +233,8 @@ public class MediaPosterController {
         @FXML
         public void handlePosterClick() {
             MediaDetailsController dc =
-                    SceneNavigator.navigateTo("media_details.fxml");
+                    TransferData.setMedia(currentMedia);
+            SceneSwitcher.goTo(event, "/org/Views/MediaDetails.fxml");
             dc.initData(currentMedia);
         }
         @FXML

@@ -186,4 +186,6 @@ public class UserDAO {
     }
 
 
+    public User findByEmail(String email) {
+    }
 }

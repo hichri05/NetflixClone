@@ -20,12 +20,14 @@ import javafx.stage.Stage;
 import org.netflix.DAO.MediaDAO;
 import org.netflix.DAO.MovieDAO;
 import org.netflix.DAO.UserDAO;
+import org.netflix.Models.Comment;
 import org.netflix.Models.Media;
 import org.netflix.Models.User;
 import org.netflix.Utils.SceneSwitcher;
 import org.netflix.Utils.Session;
 import org.netflix.Utils.TransferData;
 
+import java.awt.event.MouseEvent;
 import java.io.IOException;
 import java.util.List;
 
@@ -101,5 +103,49 @@ public class MediaDetailsController {
 
     public void handleBack(ActionEvent event) {
         SceneSwitcher.goTo(event, "/org/Views/main.fxml");
+    }
+
+
+    @FXML
+    private void handleRate(MouseEvent event) {
+        Label clicked = (Label) event.getSource();
+        int rating = Integer.parseInt((String) clicked.getUserData());
+        int currentRating = rating;
+        fillStars(rating);
+        ratingLabel.setText("Your rating: " + rating + "/5");
+
+        User user = Session.getUser();
+        if (user != null) {
+            MediaDAO.saveRating(user.getId(), media.getIdMedia(), rating);
+        }
+    }
+
+    @FXML
+    public void handlePublishComment(ActionEvent actionEvent) {
+        String content = newCommentField.getText().trim();
+
+        if (content.isEmpty()) {
+            newCommentField.setStyle(
+                    "-fx-background-color: #1f1f1f; -fx-text-fill: white;" +
+                            "-fx-border-color: #e50914; -fx-border-radius: 4; -fx-background-radius: 4;"
+            );
+            return;
+        }
+
+        User user = Session.getUser();
+        if (user == null) return;
+
+        Comment comment = new Comment(user.getId(), media.getIdMedia(), content);
+        boolean ok = commentDAO.insert(comment);
+
+        if (ok) {
+            newCommentField.clear();
+            newCommentField.setStyle(
+                    "-fx-background-color: #1f1f1f; -fx-text-fill: white;" +
+                            "-fx-prompt-text-fill: #555; -fx-border-color: #333;" +
+                            "-fx-border-radius: 4; -fx-background-radius: 4;"
+            );
+            loadComments();
+        }
     }
 }
