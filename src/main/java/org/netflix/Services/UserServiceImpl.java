@@ -4,6 +4,7 @@ import org.netflix.DAO.UserDAO;
 import org.netflix.Models.User;
 import org.mindrot.jbcrypt.BCrypt;
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
 
 public class UserServiceImpl implements IUserService {
@@ -39,7 +40,7 @@ public class UserServiceImpl implements IUserService {
         String hashed = hashPassword(password);
         User newUser = new User(username, email, hashed);
         newUser.setRole("USER");
-        return userDAO.insert(newUser);
+        return userDAO.AddUser(newUser);
     }
 
     @Override
@@ -54,18 +55,22 @@ public class UserServiceImpl implements IUserService {
 
     @Override
     public List<User> getAllUsers() {
-        return userDAO.findAll();
+        return userDAO.getAllUsers();
     }
 
     @Override
     public boolean updateUser(User user) {
+        return false;
+    }
+
+    @Override
+    /*public boolean updateUser(User user) {
         if (user == null) return false;
         return userDAO.update(user);
     }
 
-    @Override
     public boolean deleteUser(int id) {
-        return userDAO.delete(id);
+        return userDAO.deleteUser(id);
     }
 
     @Override
@@ -79,7 +84,7 @@ public class UserServiceImpl implements IUserService {
     }
 
     @Override
-    public int countNewUsersPerDay() {
-        return userDAO.countRegistrationsToday();
+    public Map<String, Long> countNewUsersPerDay() {
+        return userDAO.getUsersGroupedByDate();
     }
 }*/

@@ -1,4 +1,5 @@
 package org.netflix.DAO;
+
 import org.netflix.Models.Comment;
 import org.netflix.Utils.ConxDB;
 
@@ -6,8 +7,21 @@ import java.sql.*;
 import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
+
 public class CommentDAO {
     private static Connection conn = ConxDB.getInstance();
+
+    // Classe interne pour transporter le commentaire ET le nom de l'utilisateur
+    public static class CommentDTO {
+        public Comment comment;
+        public String username;
+
+        public CommentDTO(Comment comment, String username) {
+            this.comment = comment;
+            this.username = username;
+        }
+    }
+
     public static boolean addComment(Comment comment) {
         String sql = "INSERT INTO Comment (id_User, id_Media, content, created_at, is_reported) VALUES (?, ?, ?, ?, ?)";
         try (PreparedStatement pstmt = conn.prepareStatement(sql)) {
@@ -23,22 +37,30 @@ public class CommentDAO {
             return false;
         }
     }
-    public static List<Comment> getCommentsByMedia(int id_Media) {
-        List<Comment> comments = new ArrayList<>();
-        String sql = "SELECT * FROM Comment WHERE id_Media = ? ORDER BY created_at DESC";
+
+    // ✅ MÉTHODE MODIFIÉE AVEC JOINTURE
+    public static List<CommentDTO> getCommentsByMedia(int id_Media) {
+        List<CommentDTO> comments = new ArrayList<>();
+        // Requête avec JOIN pour récupérer le nom de l'utilisateur (username)
+        String sql = "SELECT c.*, u.username FROM Comment c " +
+                "JOIN User u ON c.id_User = u.id_User " +
+                "WHERE c.id_Media = ? ORDER BY c.created_at DESC";
 
         try (PreparedStatement pstmt = conn.prepareStatement(sql)) {
             pstmt.setInt(1, id_Media);
             try (ResultSet rs = pstmt.executeQuery()) {
                 while (rs.next()) {
-                    comments.add(new Comment(
+                    Comment c = new Comment(
                             rs.getInt("id_Comment"),
                             rs.getInt("id_User"),
                             rs.getInt("id_Media"),
                             rs.getString("content"),
                             rs.getDate("created_at").toLocalDate(),
                             rs.getInt("is_reported")
-                    ));
+                    );
+                    // On récupère le nom depuis la colonne de la jointure
+                    String name = rs.getString("username");
+                    comments.add(new CommentDTO(c, name));
                 }
             }
         } catch (SQLException e) {
@@ -46,6 +68,7 @@ public class CommentDAO {
         }
         return comments;
     }
+
     public static boolean reportComment(int id_Comment) {
         String sql = "UPDATE Comment SET is_reported = 1 WHERE id_Comment = ?";
         try (PreparedStatement pstmt = conn.prepareStatement(sql)) {
@@ -56,6 +79,7 @@ public class CommentDAO {
             return false;
         }
     }
+
     public static List<Comment> getReportedComments() {
         List<Comment> reportedComments = new ArrayList<>();
         String sql = "SELECT * FROM Comment WHERE is_reported = 1";
@@ -65,7 +89,6 @@ public class CommentDAO {
                 reportedComments.add(new Comment(
                         rs.getInt("id_Comment"),
                         rs.getInt("id_User"),
-
                         rs.getInt("id_Media"),
                         rs.getString("content"),
                         rs.getDate("created_at").toLocalDate(),
@@ -77,6 +100,7 @@ public class CommentDAO {
         }
         return reportedComments;
     }
+
     public static boolean deleteComment(int id_Comment) {
         String sql = "DELETE FROM Comment WHERE id_Comment = ?";
         try (PreparedStatement pstmt = conn.prepareStatement(sql)) {
@@ -87,48 +111,20 @@ public class CommentDAO {
             return false;
         }
     }
-    // Dans CommentDAO.java - Ajouter cette méthode
 
     public int countAll() {
-        String sql = "SELECT COUNT(*) FROM comments";
-
+        String sql = "SELECT COUNT(*) FROM Comment"; // Corrigé 'comments' en 'Comment' pour cohérence
         try (Statement stmt = conn.createStatement();
              ResultSet rs = stmt.executeQuery(sql)) {
-
-            if (rs.next()) {
-                return rs.getInt(1);
-            }
-
-        } catch (SQLException e) {
-            e.printStackTrace();
-        }
+            if (rs.next()) return rs.getInt(1);
+        } catch (SQLException e) { e.printStackTrace(); }
         return 0;
     }
-    // ✅ NOUVEAUX AJOUTS dans CommentDAO
 
-    public boolean insert(Comment comment) {
-        String sql = "INSERT INTO comment (id_user, id_media, content, created_at, is_reported) VALUES (?,?,?,?,?)";
-        return false;
-    }
-
-    public List<Comment> findByMedia(int mediaId) {
-        String sql = "SELECT * FROM comment WHERE id_media=? ORDER BY created_at DESC";
-        return null;
-    }
-
-    public boolean delete(int commentId) {
-        String sql = "DELETE FROM comment WHERE id_comment=?";
-        return false;
-    }
-
-    public boolean markAsReported(int commentId) {
-        String sql = "UPDATE comment SET is_reported=1 WHERE id_comment=?";
-        return false;
-    }
-
-    public List<Comment> findReported() {
-        String sql = "SELECT * FROM comment WHERE is_reported=1";
-        return null;
-    }
+    // Les méthodes vides ci-dessous sont conservées selon ton code original
+    public boolean insert(Comment comment) { return false; }
+    public List<Comment> findByMedia(int mediaId) { return null; }
+    public boolean delete(int commentId) { return false; }
+    public boolean markAsReported(int commentId) { return false; }
+    public List<Comment> findReported() { return null; }
 }
-
