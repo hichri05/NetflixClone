@@ -93,7 +93,7 @@ public class SerieDAO {
         }
         return series;
     }
-    // Dans SerieDAO.java - Ajouter cette méthode
+
 
     public boolean updateSeasonCount(int serieId, int seasonCount) {
         String sql = "UPDATE series SET number_of_seasons = ? WHERE id = ?";
