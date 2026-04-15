@@ -26,10 +26,12 @@ public class EpisodeController {
 
     @FXML private Text seriesTitleHeader;
 
+
     @FXML private Spinner<Integer> seasonSpinner;
     @FXML private Spinner<Integer> episodeSpinner;
     @FXML private TextField epTitle;
     @FXML private TextField epVideoUrl;
+
 
     @FXML private TableView<Episode> episodeTable;
     @FXML private TableColumn<Episode, Integer> colSeason;
@@ -39,26 +41,28 @@ public class EpisodeController {
 
     private final ObservableList<Episode> episodes = FXCollections.observableArrayList();
     private Media currentMedia;
-    private final SeasonDAO seasonDAO = new SeasonDAO();
-    private final Connection conn = ConxDB.getInstance();
+    private SeasonDAO seasonDAO = new SeasonDAO();
+    private Connection conn = ConxDB.getInstance();
 
     @FXML
     public void initialize() {
         currentMedia = TransferData.getMedia();
 
         if (currentMedia != null) {
-            seriesTitleHeader.setText(currentMedia.getTitle());
+            seriesTitleHeader.setText("Manage Episodes — " + currentMedia.getTitle());
         }
+
 
         seasonSpinner.setValueFactory(new SpinnerValueFactory.IntegerSpinnerValueFactory(1, 50, 1));
         episodeSpinner.setValueFactory(new SpinnerValueFactory.IntegerSpinnerValueFactory(1, 200, 1));
+
 
         colSeason.setCellValueFactory(new PropertyValueFactory<>("seasonId"));
         colNumber.setCellValueFactory(new PropertyValueFactory<>("episodeNumber"));
         colTitle.setCellValueFactory(new PropertyValueFactory<>("title"));
         colUrl.setCellValueFactory(new PropertyValueFactory<>("filePath"));
 
-        // Resolve season number from ID
+
         colSeason.setCellFactory(col -> new TableCell<>() {
             @Override
             protected void updateItem(Integer item, boolean empty) {
@@ -95,6 +99,8 @@ public class EpisodeController {
     private void loadAllEpisodes() {
         episodes.clear();
         if (currentMedia == null) return;
+
+
         List<Season> seasons = seasonDAO.getSeasonsBySerie(currentMedia.getIdMedia());
         for (Season s : seasons) {
             episodes.addAll(EpisodeDAO.getEpisodesBySeason(s.getIdSeason()));
@@ -111,6 +117,7 @@ public class EpisodeController {
 
         int seasonNumber  = seasonSpinner.getValue();
         int episodeNumber = episodeSpinner.getValue();
+
 
         int seasonId = getOrCreateSeason(currentMedia.getIdMedia(), seasonNumber);
         if (seasonId == -1) { showError("Failed to find or create season " + seasonNumber + "."); return; }
@@ -150,6 +157,7 @@ public class EpisodeController {
     }
 
     private int getOrCreateSeason(int serieId, int seasonNumber) {
+
         String sql = "SELECT id_Saison FROM saison WHERE id_Serie = ? AND saisonNumber = ?";
         try (PreparedStatement ps = conn.prepareStatement(sql)) {
             ps.setInt(1, serieId);

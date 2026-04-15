@@ -10,7 +10,6 @@ import java.util.*;
 public class WatchHistoryDAO {
     private static Connection conn = ConxDB.getInstance();
 
-    // ── EXISTING METHODS ─────────────────────────────────────────────
 
     public static List<Object[]> getTopViewedMovies(int limit) {
         String sql = "SELECT id_Media, COUNT(*) as view_count FROM watch_history " +
