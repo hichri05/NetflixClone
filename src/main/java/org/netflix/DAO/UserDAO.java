@@ -1,36 +1,31 @@
 package org.netflix.DAO;
 
 import org.netflix.Models.Media;
-import org.netflix.Models.Movie;
-import org.netflix.Models.Serie;
 import org.netflix.Models.User;
 import org.netflix.Utils.ConxDB;
 
-import java.sql.Connection;
-import java.sql.ResultSet;
-import java.sql.SQLException;
-import java.sql.PreparedStatement;
-import java.sql.Statement;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Optional;
+import java.sql.*;
+import java.util.*;
 
 public class UserDAO {
     private static Connection conn = ConxDB.getInstance();
 
     public static List<User> getAllUsers() {
         List<User> users = new ArrayList<>();
-        String SQL = "SELECT id_User, userName, email FROM user";
+        // Fixed: added role column so UserManagementController can read it
+        String SQL = "SELECT id_User, userName, email, role FROM user";
 
         try (Statement stmt = conn.createStatement();
              ResultSet rs = stmt.executeQuery(SQL)) {
 
             while (rs.next()) {
-                int id = rs.getInt("id_User");
-                String username = rs.getString("userName");
-                String email = rs.getString("email");
+                int id           = rs.getInt("id_User");
+                String username  = rs.getString("userName");
+                String email     = rs.getString("email");
+                String role      = rs.getString("role");
 
-                User user = new User(id, username, email);
+                // Use the constructor that includes role
+                User user = new User(id, username, email, role, null, new ArrayList<>());
                 users.add(user);
             }
 
@@ -46,36 +41,17 @@ public class UserDAO {
     public static List<Media> getUserFavorites(int userId) {
         List<Media> favorites = new ArrayList<>();
         String sql = "SELECT m.* FROM media m " +
-                "Inner JOIN favorite f ON m.id_Media = f.id_Media " +
+                "INNER JOIN favorite f ON m.id_Media = f.id_Media " +
                 "WHERE f.id_User = ?";
 
         try (PreparedStatement pstmt = conn.prepareStatement(sql)) {
             pstmt.setInt(1, userId);
             try (ResultSet rs = pstmt.executeQuery()) {
                 while (rs.next()) {
-                    int idMedia = rs.getInt("id_Media");
-                    String title = rs.getString("title");
-                    String description = rs.getString("description");
-                    int releaseYear = rs.getInt("releaseYear");
-                    double averageRating = rs.getDouble("averageRating");
-                    String coverImageUrl = rs.getString("coverImageUrl");
-                    String backdropImageUrl = rs.getString("backdrop_path");
-                    String director = rs.getString("director");
-                    favorites.add(MediaDAO.ResultToMedia(rs));
-
-                    if ("movie".equalsIgnoreCase(type)) {
-
-                        favorites.add(new Movie(
-                                idMedia, title, description, releaseYear, averageRating,
-                                coverImageUrl, backdropImageUrl, director, null, 0, new ArrayList<>(), new ArrayList<>()
-                        ));
-                    } else if ("serie".equalsIgnoreCase(type)) {
-                        int nbrSaison = rs.getInt("nbrSaison");
-                        favorites.add(new Serie(
-                                idMedia, title, description, releaseYear, averageRating,
-                                coverImageUrl, backdropImageUrl, director, nbrSaison, new ArrayList<>(), new ArrayList<>()
-                        ));
-                    }
+                    // Fixed: single call to ResultToMedia — no duplicate adds, no undefined 'type' variable
+                    Media media = MediaDAO.ResultToMedia(rs);
+                    media.setGenres(MediaDAO.getGenresByMediaId(media.getIdMedia()));
+                    favorites.add(media);
                 }
             }
         } catch (SQLException e) {
@@ -84,17 +60,35 @@ public class UserDAO {
         return favorites;
     }
 
-
     public static String getHashedPass(String email) {
         String sql = "SELECT password FROM user WHERE email = ?";
         try (PreparedStatement pstmt = conn.prepareStatement(sql)) {
-
             pstmt.setString(1, email);
             ResultSet rs = pstmt.executeQuery();
-
-
             if (rs.next()) {
                 return rs.getString("password");
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return null;
+    }
+
+    public static User findByEmail(String email) {
+        String sql = "SELECT id_User, userName, email, role FROM user WHERE email = ?";
+        try (PreparedStatement pstmt = conn.prepareStatement(sql)) {
+            pstmt.setString(1, email);
+            try (ResultSet rs = pstmt.executeQuery()) {
+                if (rs.next()) {
+                    return new User(
+                            rs.getInt("id_User"),
+                            rs.getString("userName"),
+                            rs.getString("email"),
+                            rs.getString("role"),
+                            null,
+                            new ArrayList<>()
+                    );
+                }
             }
         } catch (SQLException e) {
             e.printStackTrace();
@@ -108,7 +102,6 @@ public class UserDAO {
             pstmt.setString(1, newUser.getUsername());
             pstmt.setString(2, newUser.getEmail());
             pstmt.setString(3, newUser.getPassword());
-
             return pstmt.executeUpdate() > 0;
         } catch (SQLException e) {
             e.printStackTrace();
@@ -118,13 +111,10 @@ public class UserDAO {
 
     public static boolean isFavorite(int userId, int mediaId) {
         String sql = "SELECT COUNT(*) FROM favorite WHERE id_user = ? AND id_media = ?";
-
         try (PreparedStatement pstmt = conn.prepareStatement(sql)) {
-
             pstmt.setInt(1, userId);
             pstmt.setInt(2, mediaId);
             ResultSet rs = pstmt.executeQuery();
-
             if (rs.next()) {
                 return rs.getInt(1) > 0;
             }
@@ -136,22 +126,18 @@ public class UserDAO {
 
     public static boolean updateRole(int idUser, String newRole) {
         String sql = "UPDATE user SET role = ? WHERE id_User = ?";
-
         try (PreparedStatement pstmt = conn.prepareStatement(sql)) {
             pstmt.setString(1, newRole);
             pstmt.setInt(2, idUser);
-
             return pstmt.executeUpdate() > 0;
         } catch (SQLException e) {
             System.err.println("Erreur lors de la mise à jour du rôle : " + e.getMessage());
-
         }
         return false;
     }
 
     public static boolean deleteUser(int idUser) {
         String sql = "DELETE FROM user WHERE id_User = ?";
-
         try (PreparedStatement pstmt = conn.prepareStatement(sql)) {
             pstmt.setInt(1, idUser);
             return pstmt.executeUpdate() > 0;
@@ -162,28 +148,48 @@ public class UserDAO {
     }
 
     public Optional<User> findById(int id) {
-        String sql = "SELECT id, username, email FROM user WHERE id = ?";
-
+        String sql = "SELECT id_User, userName, email, role FROM user WHERE id_User = ?";
         try (PreparedStatement pstmt = conn.prepareStatement(sql)) {
-
             pstmt.setInt(1, id);
-
             try (ResultSet rs = pstmt.executeQuery()) {
                 if (rs.next()) {
                     return Optional.of(new User(
-                            rs.getInt("id"),
-                            rs.getString("username"),
-                            rs.getString("email")
+                            rs.getInt("id_User"),
+                            rs.getString("userName"),
+                            rs.getString("email"),
+                            rs.getString("role"),
+                            null,
+                            new ArrayList<>()
                     ));
                 }
             }
             return Optional.empty();
-
         } catch (SQLException e) {
             e.printStackTrace();
             return Optional.empty();
         }
     }
+    public static Map<String, Long> getUsersGroupedByDate() {
+        Map<String, Long> result = new LinkedHashMap<>();
+        String sql = "SELECT DATE(createdAt) AS reg_date, COUNT(*) AS cnt " +
+                "FROM user " +
+                "WHERE createdAt IS NOT NULL " +
+                "GROUP BY DATE(createdAt) " +
+                "ORDER BY reg_date ASC";
 
+        try (Statement stmt = conn.createStatement();
+             ResultSet rs   = stmt.executeQuery(sql)) {
 
+            while (rs.next()) {
+                String date = rs.getString("reg_date");
+                long   count = rs.getLong("cnt");
+                result.put(date, count);
+            }
+
+        } catch (SQLException e) {
+            System.err.println("Error in getUsersGroupedByDate: " + e.getMessage());
+            e.printStackTrace();
+        }
+        return result;
+    }
 }

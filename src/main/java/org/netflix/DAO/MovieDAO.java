@@ -147,25 +147,25 @@ public class MovieDAO {
         }
     }
 
-        public List<Movie> findTopRated(int limit) {
-            String sql = "SELECT * FROM movies ORDER BY average_rating DESC LIMIT ?";
-            List<Movie> movies = new ArrayList<>();
+    public List<Movie> findTopRated(int limit) {
+        String sql = "SELECT * FROM movies ORDER BY average_rating DESC LIMIT ?";
+        List<Movie> movies = new ArrayList<>();
 
-            try (PreparedStatement pstmt = conn.prepareStatement(sql)) {
+        try (PreparedStatement pstmt = conn.prepareStatement(sql)) {
 
-                pstmt.setInt(1, limit);
+            pstmt.setInt(1, limit);
 
-                try (ResultSet rs = pstmt.executeQuery()) {
-                    while (rs.next()) {
-                        //movies.add(ResultSetToMovie(rs));
-                    }
+            try (ResultSet rs = pstmt.executeQuery()) {
+                while (rs.next()) {
+                    //movies.add(ResultSetToMovie(rs));
                 }
-
-            } catch (SQLException e) {
-                e.printStackTrace();
             }
-            return movies;
+
+        } catch (SQLException e) {
+            e.printStackTrace();
         }
+        return movies;
+    }
     public static Movie getMovieById(int id) {
         Movie movie = null;
         List<Acteur> casting = new ArrayList<>();

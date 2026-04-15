@@ -74,7 +74,7 @@ public class WatchHistoryDAO {
 
 
     public boolean isEpisodeCompleted(int userId, int id) {
-    return true;}
+        return true;}
 
     public List<WatchHistory> findByUser(int userId) {
         List<WatchHistory> historyList = new ArrayList<>();

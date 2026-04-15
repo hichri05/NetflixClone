@@ -3,16 +3,18 @@ package org.netflix.Services;
 
 import org.netflix.Models.User;
 import java.util.List;
+import java.util.Map;
+import java.util.Optional;
 
 public interface IUserService {
     User login(String email, String password);
     boolean register(String username, String email, String password);
     boolean emailExists(String email);
-    User getUserById(int id);
+    Optional<User> getUserById(int id);
     List<User> getAllUsers();
     boolean updateUser(User user);
     boolean deleteUser(int id);
     String hashPassword(String rawPassword);
     boolean checkPassword(String rawPassword, String hashedPassword);
-    int countNewUsersPerDay(); // Dashboard analytique
+    Map<String, Long> countNewUsersPerDay(); // Dashboard analytique
 }

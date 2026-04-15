@@ -2,7 +2,6 @@
 
 <?import javafx.geometry.Insets?>
 <?import javafx.scene.control.Button?>
-<?import javafx.scene.control.ChoiceBox?>
 <?import javafx.scene.control.Label?>
 <?import javafx.scene.control.ScrollPane?>
 <?import javafx.scene.control.TextArea?>
@@ -21,22 +20,22 @@
                         <ImageView fx:id="backgroundImage" pickOnBounds="true" preserveRatio="true" />
                         <VBox alignment="BOTTOM_LEFT" spacing="15.0" style="-fx-background-color: linear-gradient(to top, #141414, transparent);">
                             <children>
-                                <Button fx:id="backButton" alignment="TOP_LEFT" onAction="#handleBack" style="-fx-background-color: transparent; -fx-text-fill: white; -fx-font-size: 16px; -fx-cursor: hand;" text="← Back" />
-                                <Label fx:id="titleLabel" styleClass="hero-title" text="SERIES TITLE" />
+                                <Button fx:id="backButton" onAction="#handleBack" styleClass="btn-back" text="← Back" />
+                                <Label fx:id="titleLabel" styleClass="hero-title" text="TITLE" />
                                 <HBox spacing="15.0">
                                     <children>
                                         <Button fx:id="playbtn" onAction="#handlePlay" styleClass="btn-play" text="▶ Play" />
                                         <Button fx:id="mylistbtn" onAction="#handleAddToMyList" styleClass="btn-mylist" text="+ My List" />
                                     </children>
                                 </HBox>
-                                <Label fx:id="descriptionLabel" maxWidth="600.0" styleClass="hero-description" text="Summary of the show ..." wrapText="true" />
+                                <Label fx:id="descriptionLabel" maxWidth="600.0" styleClass="hero-description" wrapText="true" />
                                 <HBox fx:id="ratingBox" alignment="CENTER_LEFT" spacing="5.0">
-                                    <Label fx:id="star1" styleClass="star-btn" text="★" onMouseClicked="#handleRate" userData="1" />
-                                    <Label fx:id="star2" styleClass="star-btn" text="★" onMouseClicked="#handleRate" userData="2" />
-                                    <Label fx:id="star3" styleClass="star-btn" text="★" onMouseClicked="#handleRate" userData="3" />
-                                    <Label fx:id="star4" styleClass="star-btn" text="★" onMouseClicked="#handleRate" userData="4" />
-                                    <Label fx:id="star5" styleClass="star-btn" text="★" onMouseClicked="#handleRate" userData="5" />
-                                    <Label fx:id="ratingLabel" style="-fx-text-fill: #aaa; -fx-font-size: 13px;" text="" />
+                                    <Label fx:id="star1" onMouseClicked="#handleRate" styleClass="star-btn" text="★" userData="1" />
+                                    <Label fx:id="star2" onMouseClicked="#handleRate" styleClass="star-btn" text="★" userData="2" />
+                                    <Label fx:id="star3" onMouseClicked="#handleRate" styleClass="star-btn" text="★" userData="3" />
+                                    <Label fx:id="star4" onMouseClicked="#handleRate" styleClass="star-btn" text="★" userData="4" />
+                                    <Label fx:id="star5" onMouseClicked="#handleRate" styleClass="star-btn" text="★" userData="5" />
+                                    <Label fx:id="ratingLabel" style="-fx-text-fill: #aaa;" text="" />
                                 </HBox>
                             </children>
                             <padding><Insets bottom="40.0" left="50.0" /></padding>
@@ -44,73 +43,39 @@
                     </children>
                 </StackPane>
 
-                <!-- CASTING -->
                 <VBox spacing="10.0" style="-fx-padding: 0 50 0 50;">
                     <children>
-                        <Label styleClass="genre-title" text="Cast" />
+                        <Label styleClass="section-title" text="Cast" />
                         <ScrollPane hbarPolicy="NEVER" vbarPolicy="NEVER" style="-fx-background-color: transparent; -fx-background: transparent;">
                             <content>
-                                <HBox fx:id="castingContainer" spacing="20.0" style="-fx-padding: 10 0 10 0;" />
+                                <HBox fx:id="castingContainer" spacing="25.0" />
                             </content>
                         </ScrollPane>
                     </children>
                 </VBox>
 
-                <!-- EPISODES — only visible for series -->
-                <VBox fx:id="episodesSection" spacing="10.0" style="-fx-padding: 0 50 0 50;" visible="false" managed="false">
+                <VBox spacing="10.0" style="-fx-padding: 0 50 20 50;">
                     <children>
-                        <HBox alignment="CENTER_LEFT" spacing="20.0">
-                            <children>
-                                <Label styleClass="genre-title" text="Episodes" />
-                                <ChoiceBox fx:id="seasonSelector" style="-fx-background-color: #333; -fx-text-fill: white;" />
-                            </children>
-                        </HBox>
-                        <VBox fx:id="episodeListContainer" spacing="10.0" />
-                    </children>
-                </VBox>
-
-                <!-- MORE LIKE THIS -->
-                <VBox spacing="10.0" style="-fx-padding: 0 50 40 50;">
-                    <children>
-                        <Label styleClass="genre-title" text="More Like This" />
+                        <Label styleClass="section-title" text="More Like This" />
                         <FlowPane fx:id="relatedGrid" hgap="15.0" vgap="15.0" />
                     </children>
                 </VBox>
 
-
-                <!-- ✅ COMMENTAIRES — à l'intérieur du VBox principal -->
                 <VBox spacing="15.0" style="-fx-padding: 0 50 50 50;">
                     <children>
-                        <Label styleClass="genre-title" text="Commentaires" />
-                        <VBox fx:id="commentsListContainer" spacing="10.0" />
-                        <VBox spacing="8.0">
+                        <Label styleClass="section-title" text="Commentaires" />
+                        <VBox fx:id="commentsListContainer" spacing="15.0" />
+                        <VBox spacing="10.0" styleClass="comment-input-area">
                             <children>
-                                <TextArea fx:id="newCommentField"
-                                          prefRowCount="3"
-                                          promptText="Écrire un commentaire..."
-                                          wrapText="true"
-                                          style="-fx-background-color: #1f1f1f;
-                                                 -fx-text-fill: white;
-                                                 -fx-prompt-text-fill: #555;
-                                                 -fx-border-color: #333;
-                                                 -fx-border-radius: 4;
-                                                 -fx-background-radius: 4;" />
+                                <TextArea fx:id="newCommentField" prefRowCount="3" promptText="Écrire un commentaire..." styleClass="comment-text-area" wrapText="true" />
                                 <HBox alignment="CENTER_RIGHT">
-                                    <children>
-                                        <Button text="Publier"
-
-                                                style="-fx-background-color: #e50914;
-                                                       -fx-text-fill: white;
-                                                       -fx-background-radius: 4;
-                                                       -fx-cursor: hand;" />
-                                    </children>
+                                    <Button onAction="#handlePublishComment" styleClass="btn-publish" text="Publier" />
                                 </HBox>
                             </children>
                         </VBox>
                     </children>
                 </VBox>
-
-            </children>  <!-- ✅ fermeture du VBox principal -->
+            </children>
         </VBox>
     </content>
 </ScrollPane>

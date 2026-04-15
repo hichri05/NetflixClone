@@ -1,4 +1,4 @@
-package org.netflix.Services;
+/*package org.netflix.Services;
 
 import org.netflix.DAO.WatchHistoryDAO;
 import org.netflix.Models.WatchHistory;
@@ -45,4 +45,4 @@ public class WatchHistoryServiceImpl implements IWatchHistoryService {
     public boolean isCompleted(int userId, Integer episodeId) {
         return watchHistoryDAO.isEpisodeCompleted(userId, episodeId);
     }
-}
+}*/
