@@ -36,7 +36,7 @@
 
     <HBox alignment="CENTER_LEFT" spacing="15" style="-fx-background-color: #1b1b1b; -fx-padding: 10; -fx-background-radius: 5; -fx-border-color: #333;">
         <Label style="-fx-text-fill: #aaa;" text="Quick Search:" />
-        <TextField fx:id="searchField"  onAction="#handelSearch" promptText="Enter title..." style="-fx-background-color: #333; -fx-text-fill: white; -fx-border-color: #444;" HBox.hgrow="ALWAYS" />
+        <TextField fx:id="searchField" promptText="Enter title..." style="-fx-background-color: #333; -fx-text-fill: white; -fx-border-color: #444;" HBox.hgrow="ALWAYS" />
 
         <Separator orientation="VERTICAL" style="-fx-opacity: 0.2;" />
 

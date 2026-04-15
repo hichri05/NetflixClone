@@ -360,4 +360,5 @@ public class CatalogueController {
     private void showInfo(String msg) {
         new Alert(Alert.AlertType.INFORMATION, msg).show();
     }
+
 }

@@ -36,20 +36,6 @@ public class ConxDB {
      }
 
 
-
-    /*
-    private ConxDB() {
-        try {
-            Class.forName("com.mysql.cj.jdbc.Driver");
-            // Test direct avec le port 3307
-            String url = "jdbc:mysql://localhost:3307/netflix?serverTimezone=UTC";
-            connexion = DriverManager.getConnection(url, "root", "");
-            System.out.println("Connexion forcée réussie !");
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-    }*/
-
     public static Connection getInstance() {
         if(connexion == null)
             try {
