@@ -151,4 +151,9 @@ public class SerieDAO {
         return series;
     }
 
-}
+    private void insertSerieRow(int id) {
+        try (PreparedStatement ps = con.prepareStatement(
+                "INSERT IGNORE INTO serie (id_Media, nbrSaison) VALUES (?,0)")) {
+            ps.setInt(1,id); ps.executeUpdate();
+        } catch (SQLException e) { System.err.println(e.getMessage()); }
+    }}

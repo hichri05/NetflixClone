@@ -7,6 +7,18 @@ public class Episode {
     private String title;
     private String filePath;
     private String thumbnailPath;
+    private int duration;
+    private String desription;
+    public Episode(int id, int seasonId, int episodeNumber, String title, String filePath, String thumbnailPath,int duration, String desription) {
+        this.id = id;
+        this.seasonId = seasonId;
+        this.episodeNumber = episodeNumber;
+        this.title = title;
+        this.filePath = filePath;
+        this.thumbnailPath = thumbnailPath;
+        this.duration=duration;
+        this.desription=desription;
+    }
     public Episode(int id, int seasonId, int episodeNumber, String title, String filePath, String thumbnailPath) {
         this.id = id;
         this.seasonId = seasonId;
@@ -14,6 +26,8 @@ public class Episode {
         this.title = title;
         this.filePath = filePath;
         this.thumbnailPath = thumbnailPath;
+    }
+    public Episode() {
     }
     public int getId() {
         return id;
@@ -50,5 +64,21 @@ public class Episode {
     }
     public void setThumbnailPath(String thumbnailPath) {
         this.thumbnailPath = thumbnailPath;
+    }
+
+    public int getDuration() {
+        return duration;
+    }
+
+    public void setDuration(int duration) {
+        this.duration = duration;
+    }
+
+    public void setDesription(String desription) {
+        this.desription = desription;
+    }
+
+    public String getDescription() {
+        return desription;
     }
 }
