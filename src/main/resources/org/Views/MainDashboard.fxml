@@ -25,6 +25,8 @@
 
             <Button fx:id="btnUsers" onAction="#showUsers" prefWidth="210" alignment="BASELINE_LEFT"
                     text="👥  Users" style="-fx-background-color: transparent; -fx-text-fill: #aaa; -fx-font-size: 15; -fx-cursor: hand;"/>
+            <Button fx:id="btnComments" onAction="#showcomments" prefWidth="210" alignment="BASELINE_LEFT"
+                    text="💬  Comments" style="-fx-background-color: transparent; -fx-text-fill: #aaa; -fx-font-size: 15; -fx-cursor: hand;"/>
 
             <Region VBox.vgrow="ALWAYS" />
 

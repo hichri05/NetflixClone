@@ -34,7 +34,7 @@ public class AdminMainController {
         btnCategories.setStyle(INACTIVE_STYLE);
         btnUsers.setStyle(INACTIVE_STYLE);
         btnDashboard.setStyle(INACTIVE_STYLE);
-        //btnComments.setStyle(INACTIVE_STYLE);
+        btnComments.setStyle(INACTIVE_STYLE);
     }
 
     public void showCategories(ActionEvent actionEvent) {
@@ -43,7 +43,7 @@ public class AdminMainController {
         btnCategories.setStyle(ACTIVE_STYLE);
         btnUsers.setStyle(INACTIVE_STYLE);
         btnDashboard.setStyle(INACTIVE_STYLE);
-        //btnComments.setStyle(INACTIVE_STYLE);
+        btnComments.setStyle(INACTIVE_STYLE);
     }
 
     public void showUsers(ActionEvent actionEvent) {
@@ -52,7 +52,7 @@ public class AdminMainController {
         btnCategories.setStyle(INACTIVE_STYLE);
         btnUsers.setStyle(ACTIVE_STYLE);
         btnDashboard.setStyle(INACTIVE_STYLE);
-       // btnComments.setStyle(INACTIVE_STYLE);
+        btnComments.setStyle(INACTIVE_STYLE);
     }
     public void showDashboard(ActionEvent actionEvent) {
         loadView("/org/Views/Dashboard.fxml");
@@ -60,7 +60,7 @@ public class AdminMainController {
         btnCategories.setStyle(INACTIVE_STYLE);
         btnUsers.setStyle(INACTIVE_STYLE);
         btnDashboard.setStyle(ACTIVE_STYLE);
-        //btnComments.setStyle(INACTIVE_STYLE);
+        btnComments.setStyle(INACTIVE_STYLE);
     }
 
     private void loadView(String fxmlPath) {
@@ -78,15 +78,15 @@ public class AdminMainController {
     }
     @FXML
     private Button btnDashboard;
-    /*@FXML
+    @FXML
     private Button btnComments;
     public void showcomments(ActionEvent actionEvent) {
-        loadView("/org/Views/Dashboard.fxml");
+        loadView("/org/Views/AdminComments.fxml");
         btnCatalogue.setStyle(INACTIVE_STYLE);
         btnCategories.setStyle(INACTIVE_STYLE);
         btnUsers.setStyle(INACTIVE_STYLE);
         btnDashboard.setStyle(INACTIVE_STYLE);
         btnComments.setStyle(ACTIVE_STYLE);
-    }*/
+    }
 
 }
