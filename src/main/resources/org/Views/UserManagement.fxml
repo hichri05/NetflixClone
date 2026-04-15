@@ -3,30 +3,119 @@
 <?import javafx.scene.control.*?>
 <?import javafx.scene.layout.*?>
 <?import javafx.geometry.Insets?>
-<?import javafx.scene.text.Text?>
+<?import javafx.scene.text.*?>
+<?import javafx.scene.shape.*?>
 
-<VBox spacing="20" style="-fx-background-color: #141414;" xmlns="http://javafx.com/javafx/17" xmlns:fx="http://javafx.com/fxml/1" fx:controller="org.netflix.Controllers.UserManagementController">
-    <padding>
-        <Insets top="30" right="30" bottom="30" left="30"/>
-    </padding>
+<VBox spacing="0"
+      style="-fx-background-color: #141414;"
+      xmlns="http://javafx.com/javafx/17"
+      xmlns:fx="http://javafx.com/fxml/1"
+      fx:controller="org.netflix.Controllers.UserManagementController">
 
-    <HBox alignment="CENTER_LEFT" spacing="20">
-        <Text text="User Moderation" style="-fx-fill: white; -fx-font-size: 24; -fx-font-weight: bold;"/>
-        <Region HBox.hgrow="ALWAYS" />
-        <TextField fx:id="userSearch" promptText="Search users..." style="-fx-background-color: #333; -fx-text-fill: white; -fx-pref-width: 250;"/>
+    <!-- ── TOP BAR ─────────────────────────────────────────────────────────── -->
+    <HBox alignment="CENTER_LEFT" spacing="16"
+          style="-fx-background-color: #0a0a0a; -fx-padding: 18 30 18 30; -fx-border-color: #2a2a2a; -fx-border-width: 0 0 1 0;">
+
+        <!-- Netflix-red accent bar -->
+        <Rectangle width="4" height="28" fill="#e50914" arcWidth="2" arcHeight="2"/>
+
+        <Label text="User Moderation"
+               style="-fx-text-fill: white; -fx-font-size: 22px; -fx-font-weight: bold; -fx-font-family: 'Georgia';"/>
+
+        <Region HBox.hgrow="ALWAYS"/>
+
+        <!-- Search -->
+        <HBox alignment="CENTER_LEFT" spacing="0"
+              style="-fx-background-color: #1f1f1f; -fx-border-color: #333; -fx-border-radius: 6; -fx-background-radius: 6;">
+            <Label text="🔍" style="-fx-padding: 0 8 0 12; -fx-text-fill: #777; -fx-font-size: 13px;"/>
+            <TextField fx:id="userSearch"
+                       promptText="Search by name or email…"
+                       style="-fx-background-color: transparent; -fx-text-fill: white;
+                              -fx-prompt-text-fill: #555; -fx-pref-width: 240;
+                              -fx-border-width: 0; -fx-padding: 9 12 9 0; -fx-font-size: 13px;"/>
+        </HBox>
     </HBox>
 
-    <TableView fx:id="userTable" VBox.vgrow="ALWAYS" style="-fx-background-color: #1b1b1b;">
-        <columns>
-            <TableColumn fx:id="colUserEmail"  text="Email / Username"  prefWidth="300" />
-            <TableColumn fx:id="colUserRole"   text="Role (Admin/User)" prefWidth="150" />
-            <TableColumn fx:id="colUserStatus" text="Status"            prefWidth="150" />
-            <TableColumn fx:id="colActions"    text="Quick Actions"     prefWidth="200" />
-        </columns>
-    </TableView>
+    <!-- ── STAT CARDS ──────────────────────────────────────────────────────── -->
+    <HBox spacing="16" style="-fx-padding: 20 30 4 30;">
+        <!-- Total Users -->
+        <VBox spacing="4" style="-fx-background-color: #1a1a1a; -fx-padding: 14 20;
+                                  -fx-background-radius: 8; -fx-border-color: #2a2a2a;
+                                  -fx-border-radius: 8;" HBox.hgrow="ALWAYS">
+            <Label text="TOTAL USERS"
+                   style="-fx-text-fill: #777; -fx-font-size: 10px; -fx-font-weight: bold; -fx-letter-spacing: 1;"/>
+            <Label fx:id="totalUsersLabel" text="—"
+                   style="-fx-text-fill: white; -fx-font-size: 28px; -fx-font-weight: bold;"/>
+        </VBox>
 
-    <HBox spacing="15" alignment="CENTER_RIGHT">
-        <Button text="Ban User"         onAction="#handleBanSelected"     style="-fx-background-color: transparent; -fx-text-fill: #ff4444; -fx-border-color: #ff4444;"/>
-        <Button text="Promote to Admin" onAction="#handlePromoteSelected" style="-fx-background-color: #333; -fx-text-fill: white;"/>
+        <!-- Admins -->
+        <VBox spacing="4" style="-fx-background-color: #1a1a1a; -fx-padding: 14 20;
+                                  -fx-background-radius: 8; -fx-border-color: #2a2a2a;
+                                  -fx-border-radius: 8;" HBox.hgrow="ALWAYS">
+            <Label text="ADMINS"
+                   style="-fx-text-fill: #777; -fx-font-size: 10px; -fx-font-weight: bold; -fx-letter-spacing: 1;"/>
+            <Label fx:id="adminUsersLabel" text="—"
+                   style="-fx-text-fill: #e50914; -fx-font-size: 28px; -fx-font-weight: bold;"/>
+        </VBox>
+
+        <!-- Banned -->
+        <VBox spacing="4" style="-fx-background-color: #1a1a1a; -fx-padding: 14 20;
+                                  -fx-background-radius: 8; -fx-border-color: #2a2a2a;
+                                  -fx-border-radius: 8;" HBox.hgrow="ALWAYS">
+            <Label text="BANNED"
+                   style="-fx-text-fill: #777; -fx-font-size: 10px; -fx-font-weight: bold; -fx-letter-spacing: 1;"/>
+            <Label fx:id="bannedUsersLabel" text="—"
+                   style="-fx-text-fill: #ff4444; -fx-font-size: 28px; -fx-font-weight: bold;"/>
+        </VBox>
     </HBox>
+
+    <!-- ── TABLE ───────────────────────────────────────────────────────────── -->
+    <VBox VBox.vgrow="ALWAYS" style="-fx-padding: 16 30 0 30;">
+        <TableView fx:id="userTable" VBox.vgrow="ALWAYS"
+                   style="-fx-background-color: #1a1a1a;
+                          -fx-border-color: #2a2a2a;
+                          -fx-border-radius: 8;
+                          -fx-background-radius: 8;
+                          -fx-table-cell-border-color: #222;">
+            <columns>
+                <TableColumn fx:id="colUserEmail"  text="Email / Username"  prefWidth="290"
+                             style="-fx-alignment: CENTER-LEFT;"/>
+                <TableColumn fx:id="colUserRole"   text="Role"              prefWidth="130"
+                             style="-fx-alignment: CENTER-LEFT;"/>
+                <TableColumn fx:id="colUserStatus" text="Status"            prefWidth="130"
+                             style="-fx-alignment: CENTER-LEFT;"/>
+                <TableColumn fx:id="colActions"    text="Quick Actions"     prefWidth="210"
+                             style="-fx-alignment: CENTER-LEFT;"/>
+            </columns>
+            <placeholder>
+                <Label text="No users found."
+                       style="-fx-text-fill: #555; -fx-font-size: 14px;"/>
+            </placeholder>
+        </TableView>
+    </VBox>
+
+    <!-- ── BOTTOM ACTION BAR ───────────────────────────────────────────────── -->
+    <HBox spacing="12" alignment="CENTER_RIGHT"
+          style="-fx-padding: 16 30 20 30; -fx-background-color: #0a0a0a;
+                 -fx-border-color: #2a2a2a; -fx-border-width: 1 0 0 0;">
+
+        <Label text="Selection actions:"
+               style="-fx-text-fill: #555; -fx-font-size: 12px;"/>
+        <Region HBox.hgrow="ALWAYS"/>
+
+        <Button text="⬆  Promote / Demote"
+                onAction="#handlePromoteSelected"
+                style="-fx-background-color: #2a2a2a; -fx-text-fill: white;
+                       -fx-border-color: #444; -fx-border-radius: 6;
+                       -fx-background-radius: 6; -fx-cursor: hand;
+                       -fx-padding: 8 18; -fx-font-size: 12px;"/>
+
+        <Button text="🚫  Ban / Unban"
+                onAction="#handleBanSelected"
+                style="-fx-background-color: transparent; -fx-text-fill: #ff4444;
+                       -fx-border-color: #ff4444; -fx-border-radius: 6;
+                       -fx-background-radius: 6; -fx-cursor: hand;
+                       -fx-padding: 8 18; -fx-font-size: 12px;"/>
+    </HBox>
+
 </VBox>
