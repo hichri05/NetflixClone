@@ -4,6 +4,7 @@ import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Node;
+import javafx.scene.Parent;
 import javafx.scene.control.Button;
 import javafx.scene.layout.StackPane;
 import org.netflix.Utils.SceneSwitcher;
@@ -16,8 +17,10 @@ public class AdminMainController {
     @FXML private StackPane contentArea;
     @FXML private Button btnCatalogue, btnCategories, btnUsers, logoutbtn;
 
+
     private static final String ACTIVE_STYLE   = "-fx-text-fill: white;-fx-background-color: transparent;";
     private static final String INACTIVE_STYLE = "-fx-text-fill: #aaa;-fx-background-color: transparent;";
+
 
     @FXML
     public void initialize() {
@@ -30,6 +33,7 @@ public class AdminMainController {
         btnCatalogue.setStyle(ACTIVE_STYLE);
         btnCategories.setStyle(INACTIVE_STYLE);
         btnUsers.setStyle(INACTIVE_STYLE);
+        btnDashboard.setStyle(INACTIVE_STYLE);
     }
 
     public void showCategories(ActionEvent actionEvent) {
@@ -37,6 +41,7 @@ public class AdminMainController {
         btnCatalogue.setStyle(INACTIVE_STYLE);
         btnCategories.setStyle(ACTIVE_STYLE);
         btnUsers.setStyle(INACTIVE_STYLE);
+        btnDashboard.setStyle(INACTIVE_STYLE);
     }
 
     public void showUsers(ActionEvent actionEvent) {
@@ -44,6 +49,14 @@ public class AdminMainController {
         btnCatalogue.setStyle(INACTIVE_STYLE);
         btnCategories.setStyle(INACTIVE_STYLE);
         btnUsers.setStyle(ACTIVE_STYLE);
+        btnDashboard.setStyle(INACTIVE_STYLE);
+    }
+    public void showDashboard(ActionEvent actionEvent) {
+        loadView("/org/Views/Dashboard.fxml");
+        btnCatalogue.setStyle(INACTIVE_STYLE);
+        btnCategories.setStyle(INACTIVE_STYLE);
+        btnUsers.setStyle(INACTIVE_STYLE);
+        btnDashboard.setStyle(ACTIVE_STYLE);
     }
 
     private void loadView(String fxmlPath) {
@@ -59,4 +72,7 @@ public class AdminMainController {
         Session.logout();
         SceneSwitcher.goTo(actionEvent, "/org/Views/SignIn.fxml");
     }
+    @FXML
+    private Button btnDashboard;
+
 }

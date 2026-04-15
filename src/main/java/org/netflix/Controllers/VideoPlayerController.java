@@ -70,6 +70,7 @@ public class VideoPlayerController implements Initializable {
         });
 
 
+
         mediaPlayer.currentTimeProperty().addListener((obs, oldTime, newTime) -> {
             if (!timeSlider.isValueChanging()) {
                 timeSlider.setValue(newTime.toSeconds());

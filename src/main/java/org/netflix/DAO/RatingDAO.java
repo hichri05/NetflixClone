@@ -87,7 +87,7 @@ public class RatingDAO {
         return null;
     }
 
-    public List<Rating> findByMedia(int mediaId) {
+    public static List<Rating> findByMedia(int mediaId) {
         String sql = "SELECT * FROM rating WHERE id_media=?";
         return null;
     }

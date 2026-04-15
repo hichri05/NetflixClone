@@ -1,6 +1,7 @@
 package org.netflix.Controllers;
 
 import javafx.animation.KeyFrame;
+import javafx.animation.PauseTransition;
 import javafx.animation.Timeline;
 import javafx.event.ActionEvent;
 import javafx.fxml.*;
@@ -12,6 +13,7 @@ import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.*;
+import javafx.stage.Popup;
 import javafx.stage.Stage;
 import javafx.util.Duration;
 import org.netflix.DAO.*;
@@ -22,42 +24,62 @@ import java.io.IOException;
 import java.net.URL;
 import java.util.List;
 import java.util.ResourceBundle;
+import java.util.stream.Collectors;
 
 public class MainController implements Initializable {
 
     @FXML private ScrollPane searchContent, mainScrollList, mainScroll;
+    @FXML private ScrollPane moviesScroll, seriesScroll;
     @FXML private FlowPane   searchGrid;
     @FXML private FlowPane   listGrid;
+    @FXML private VBox       moviesRows, seriesRows;
     @FXML private TextField  searchField;
     @FXML private Label      mvTrendName, mvTrendDesc, userinf;
     @FXML private StackPane  heroStack;
     @FXML private VBox       mediaRows;
     @FXML private Button     playbtn, mylistbtn, adminBtn;
 
-    User user;
+    private User user;
 
     private List<Media> heroMedias;
     private int         currentHeroIndex = 0;
     private Timeline    heroTimeline;
     private Media       currentHeroMedia;
 
+    private boolean moviesLoaded = false;
+    private boolean seriesLoaded = false;
+
+    // Shared popup for movies tab
+    private Popup           moviesPopup;
+    private PauseTransition moviesShowDelay;
+    private PauseTransition moviesHideDelay;
+
+    // Shared popup for series tab
+    private Popup           seriesPopup;
+    private PauseTransition seriesShowDelay;
+    private PauseTransition seriesHideDelay;
+
     @Override
     public void initialize(URL url, ResourceBundle resourceBundle) {
         searchField.setFocusTraversable(false);
         user = Session.getUser();
 
-        // Auth guard — redirect to sign-in if not logged in
-        /*if (user == null) {
-            javafx.application.Platform.runLater(() -> {
-                AuthGuard.requireLogin(searchField);
-            });
-            return;
-        }*/
-
-
         boolean isAdmin = "ADMIN".equalsIgnoreCase(user.getRole());
         adminBtn.setVisible(isAdmin);
         adminBtn.setManaged(isAdmin);
+
+        // Setup shared popups for movies and series tabs
+        moviesPopup = buildSharedPopup(moviesHideDelay = new PauseTransition(Duration.millis(200)));
+        moviesShowDelay = new PauseTransition(Duration.millis(300));
+        moviesHideDelay.setOnFinished(ev -> moviesPopup.hide());
+        moviesPopup.addEventFilter(MouseEvent.MOUSE_ENTERED, e -> moviesHideDelay.stop());
+        moviesPopup.addEventFilter(MouseEvent.MOUSE_EXITED,  e -> moviesHideDelay.playFromStart());
+
+        seriesPopup = buildSharedPopup(seriesHideDelay = new PauseTransition(Duration.millis(200)));
+        seriesShowDelay = new PauseTransition(Duration.millis(300));
+        seriesHideDelay.setOnFinished(ev -> seriesPopup.hide());
+        seriesPopup.addEventFilter(MouseEvent.MOUSE_ENTERED, e -> seriesHideDelay.stop());
+        seriesPopup.addEventFilter(MouseEvent.MOUSE_EXITED,  e -> seriesHideDelay.playFromStart());
 
         setupHeroSize();
         loadMediaRows();
@@ -66,6 +88,15 @@ public class MainController implements Initializable {
         setupInitialView();
         getTrendMovie();
     }
+
+    private Popup buildSharedPopup(PauseTransition hideDelay) {
+        Popup popup = new Popup();
+        popup.setAutoHide(false);
+        popup.setHideOnEscape(true);
+        return popup;
+    }
+
+    // ── SETUP ────────────────────────────────────────────────────────
 
     private void setupHeroSize() {
         heroStack.sceneProperty().addListener((obs, oldScene, newScene) -> {
@@ -87,6 +118,7 @@ public class MainController implements Initializable {
         loadRow("Crime",       MediaDAO.getMediasByGenre("Crime"));
     }
 
+
     private void setupSearch() {
         searchField.textProperty().addListener((obs, oldVal, newVal) -> {
             if (newVal.length() >= 2) {
@@ -96,6 +128,7 @@ public class MainController implements Initializable {
                 showHomeView();
             }
         });
+
     }
 
     private void setupUser() {
@@ -105,8 +138,307 @@ public class MainController implements Initializable {
     private void setupInitialView() {
         searchContent.setVisible(false);
         mainScrollList.setVisible(false);
+        moviesScroll.setVisible(false);
+        seriesScroll.setVisible(false);
         mainScroll.setVisible(true);
     }
+
+    // ── VIEW SWITCHING ───────────────────────────────────────────────
+
+    private void hideAll() {
+        mainScroll.setVisible(false);
+        searchContent.setVisible(false);
+        mainScrollList.setVisible(false);
+        moviesScroll.setVisible(false);
+        seriesScroll.setVisible(false);
+    }
+
+    private void showHomeView()   { hideAll(); mainScroll.setVisible(true); }
+    private void showSearchView() { hideAll(); searchContent.setVisible(true); }
+    private void showMyListView() { hideAll(); mainScrollList.setVisible(true); }
+
+    private void showMoviesView() {
+        hideAll();
+        moviesScroll.setVisible(true);
+        if (!moviesLoaded) {
+            moviesLoaded = true;
+            for (MediaGenre genre : MediaGenre.values()) {
+                List<Movie> movies = MovieDAO.findbyGenre(genre.name());
+                if (movies != null && !movies.isEmpty()) {
+                    addMovieGenreRow(genre.toString().replace("_", " "), movies);
+                }
+            }
+        }
+    }
+
+    private void showSeriesView() {
+        hideAll();
+        seriesScroll.setVisible(true);
+        if (!seriesLoaded) {
+            seriesLoaded = true;
+            for (MediaGenre genre : MediaGenre.values()) {
+                List<Serie> series = SerieDAO.findbyGenre(genre.name());
+                if (series != null && !series.isEmpty()) {
+                    addSerieGenreRow(genre.toString().replace("_", " "), series);
+                }
+            }
+        }
+    }
+
+    // ── MOVIES TAB — exact FilmPageController logic ──────────────────
+
+    private void addMovieGenreRow(String title, List<Movie> movies) {
+        Label label = new Label(title);
+        label.setStyle("-fx-text-fill: white; -fx-font-size: 22; -fx-font-weight: bold;");
+        label.setPadding(new Insets(0, 0, 10, 50));
+
+        HBox movieRow = new HBox(10);
+        movieRow.setPadding(new Insets(0, 50, 0, 20));
+        movieRow.setAlignment(Pos.CENTER_LEFT);
+
+        for (Movie movie : movies) {
+            movieRow.getChildren().add(createMovieCard(movie));
+        }
+
+        ScrollPane hScroll = new ScrollPane(movieRow);
+        hScroll.setHbarPolicy(ScrollPane.ScrollBarPolicy.NEVER);
+        hScroll.setVbarPolicy(ScrollPane.ScrollBarPolicy.NEVER);
+        hScroll.setStyle("-fx-background-color: transparent; -fx-background: transparent; -fx-border-color: transparent;");
+
+        moviesRows.getChildren().add(new VBox(label, hScroll));
+    }
+
+    private VBox createMovieCard(Movie movie) {
+        ImageView poster = new ImageView();
+        try {
+            String url = movie.getBackDropImageUrl();
+            if (url != null && !url.isEmpty())
+                poster.setImage(new Image(url, true));
+        } catch (Exception ignored) {}
+        poster.setFitWidth(200);
+        poster.setFitHeight(112);
+        poster.setPreserveRatio(false);
+
+        poster.setOnMouseEntered(e -> {
+            moviesHideDelay.stop();
+            poster.setScaleX(1.1);
+            poster.setScaleY(1.1);
+            poster.setStyle("-fx-border-color: white; -fx-border-width: 2;");
+            moviesShowDelay.setOnFinished(ev -> {
+                moviesPopup.getContent().setAll(buildMovieHoverPopup(movie));
+                javafx.geometry.Point2D p = poster.localToScreen(0, 0);
+                moviesPopup.show(poster, p.getX() - 50, p.getY() + poster.getFitHeight() + 5);
+            });
+            moviesShowDelay.playFromStart();
+        });
+        poster.setOnMouseExited(e -> {
+            moviesShowDelay.stop();
+            poster.setScaleX(1.0);
+            poster.setScaleY(1.0);
+            poster.setStyle("-fx-border-width: 0;");
+            moviesHideDelay.playFromStart();
+        });
+        poster.setOnMouseClicked(e -> {
+            if (moviesPopup != null) moviesPopup.hide();
+            moviesShowDelay.stop();
+            openMediaDetails(movie);
+        });
+
+        Label title = new Label(movie.getTitle());
+        title.setStyle("-fx-text-fill: #b3b3b3; -fx-font-size: 12;");
+        title.setMaxWidth(200);
+        title.setAlignment(Pos.CENTER);
+
+        VBox card = new VBox(5, poster, title);
+        card.setAlignment(Pos.CENTER);
+        card.setCursor(javafx.scene.Cursor.HAND);
+        card.setOnMouseClicked(e -> {
+            if (moviesPopup != null) moviesPopup.hide();
+            moviesShowDelay.stop();
+            openMediaDetails(movie);
+        });
+
+        return card;
+    }
+
+    private VBox buildMovieHoverPopup(Movie movie) {
+        VBox preview = new VBox(10);
+        preview.setStyle("-fx-background-color: #181818; -fx-background-radius: 10; " +
+                "-fx-border-color: #333; -fx-border-radius: 10; -fx-padding: 0;");
+        preview.setPrefWidth(300);
+
+        ImageView img = new ImageView(new Image(movie.getBackDropImageUrl(), true));
+        img.setFitWidth(300);
+        img.setFitHeight(160);
+        img.setPreserveRatio(false);
+
+        VBox info = new VBox(8);
+        info.setPadding(new Insets(15));
+
+        int match = 80 + (Math.abs(movie.getTitle().hashCode()) % 19);
+        Label matchLbl = new Label(match + "% Match");
+        matchLbl.setStyle("-fx-text-fill: #46d369; -fx-font-weight: bold; -fx-font-size: 14;");
+
+        String outlineBtn = "-fx-background-color: transparent; -fx-border-color: white; " +
+                "-fx-border-radius: 50; -fx-text-fill: white; -fx-cursor: hand;";
+        Button playBtn = new Button("▶");
+        playBtn.setStyle("-fx-background-color: white; -fx-text-fill: black; " +
+                "-fx-background-radius: 50; -fx-padding: 5 12; -fx-cursor: hand;");
+        playBtn.setOnAction(e -> { moviesPopup.hide(); openMediaDetails(movie); });
+
+        Button addBtn  = new Button("+"); addBtn.setStyle(outlineBtn);
+        Button likeBtn = new Button("♥"); likeBtn.setStyle(outlineBtn);
+        HBox buttons = new HBox(10, playBtn, addBtn, likeBtn);
+        buttons.setAlignment(Pos.CENTER_LEFT);
+
+        Label titleLbl = new Label(movie.getTitle());
+        titleLbl.setStyle("-fx-text-fill: white; -fx-font-weight: bold; -fx-font-size: 18;");
+
+        Label desc = new Label(movie.getDescription());
+        desc.setStyle("-fx-text-fill: #d2d2d2; -fx-font-size: 12;");
+        desc.setWrapText(true);
+        desc.setMaxWidth(270);
+        desc.setMaxHeight(60);
+
+        info.getChildren().addAll(matchLbl, buttons, titleLbl, desc);
+        preview.getChildren().addAll(img, info);
+        return preview;
+    }
+
+    // ── SERIES TAB — exact SeriePageController logic ─────────────────
+
+    private void addSerieGenreRow(String title, List<Serie> series) {
+        Label label = new Label(title);
+        label.setStyle("-fx-text-fill: white; -fx-font-size: 22; -fx-font-weight: bold;");
+        label.setPadding(new Insets(0, 0, 10, 50));
+
+        HBox serieRow = new HBox(10);
+        serieRow.setPadding(new Insets(0, 50, 0, 20));
+        serieRow.setAlignment(Pos.CENTER_LEFT);
+
+        for (Serie serie : series) {
+            serieRow.getChildren().add(createSerieCard(serie));
+        }
+
+        ScrollPane hScroll = new ScrollPane(serieRow);
+        hScroll.setHbarPolicy(ScrollPane.ScrollBarPolicy.NEVER);
+        hScroll.setVbarPolicy(ScrollPane.ScrollBarPolicy.NEVER);
+        hScroll.setStyle("-fx-background-color: transparent; -fx-background: transparent; -fx-border-color: transparent;");
+
+        seriesRows.getChildren().add(new VBox(label, hScroll));
+    }
+
+    private VBox createSerieCard(Serie serie) {
+        ImageView poster = new ImageView();
+        try {
+            String url = serie.getBackDropImageUrl();
+            if (url != null && !url.isEmpty())
+                poster.setImage(new Image(url, true));
+        } catch (Exception ignored) {}
+        poster.setFitWidth(200);
+        poster.setFitHeight(112);
+        poster.setPreserveRatio(false);
+
+        poster.setOnMouseEntered(e -> {
+            seriesHideDelay.stop();
+            poster.setScaleX(1.1);
+            poster.setScaleY(1.1);
+            poster.setStyle("-fx-border-color: white; -fx-border-width: 2;");
+            seriesShowDelay.setOnFinished(ev -> {
+                seriesPopup.getContent().setAll(buildSerieHoverPopup(serie));
+                javafx.geometry.Point2D p = poster.localToScreen(0, 0);
+                seriesPopup.show(poster, p.getX() - 50, p.getY() + poster.getFitHeight() + 5);
+            });
+            seriesShowDelay.playFromStart();
+        });
+        poster.setOnMouseExited(e -> {
+            seriesShowDelay.stop();
+            poster.setScaleX(1.0);
+            poster.setScaleY(1.0);
+            poster.setStyle("-fx-border-width: 0;");
+            seriesHideDelay.playFromStart();
+        });
+        poster.setOnMouseClicked(e -> {
+            if (seriesPopup != null) seriesPopup.hide();
+            seriesShowDelay.stop();
+            openMediaDetails(serie);
+        });
+
+        Label title = new Label(serie.getTitle());
+        title.setStyle("-fx-text-fill: #b3b3b3; -fx-font-size: 12;");
+        title.setMaxWidth(200);
+        title.setAlignment(Pos.CENTER);
+
+        VBox card = new VBox(5, poster, title);
+        card.setAlignment(Pos.CENTER);
+        card.setCursor(javafx.scene.Cursor.HAND);
+        card.setOnMouseClicked(e -> {
+            if (seriesPopup != null) seriesPopup.hide();
+            seriesShowDelay.stop();
+            openMediaDetails(serie);
+        });
+
+        return card;
+    }
+
+    private VBox buildSerieHoverPopup(Serie serie) {
+        VBox preview = new VBox(10);
+        preview.setStyle("-fx-background-color: #181818; -fx-background-radius: 10; " +
+                "-fx-border-color: #333; -fx-border-radius: 10; -fx-padding: 0;");
+        preview.setPrefWidth(300);
+
+        ImageView img = new ImageView(new Image(serie.getBackDropImageUrl(), true));
+        img.setFitWidth(300);
+        img.setFitHeight(160);
+        img.setPreserveRatio(false);
+
+        VBox info = new VBox(8);
+        info.setPadding(new Insets(15));
+
+        int match = 80 + (Math.abs(serie.getTitle().hashCode()) % 19);
+        Label matchLbl = new Label(match + "% Match");
+        matchLbl.setStyle("-fx-text-fill: #46d369; -fx-font-weight: bold; -fx-font-size: 14;");
+
+        String outlineBtn = "-fx-background-color: transparent; -fx-border-color: white; " +
+                "-fx-border-radius: 50; -fx-text-fill: white; -fx-cursor: hand;";
+        Button playBtn = new Button("▶");
+        playBtn.setStyle("-fx-background-color: white; -fx-text-fill: black; " +
+                "-fx-background-radius: 50; -fx-padding: 5 12; -fx-cursor: hand;");
+        playBtn.setOnAction(e -> { seriesPopup.hide(); openMediaDetails(serie); });
+
+        Button addBtn  = new Button("+"); addBtn.setStyle(outlineBtn);
+        Button likeBtn = new Button("♥"); likeBtn.setStyle(outlineBtn);
+        HBox buttons = new HBox(10, playBtn, addBtn, likeBtn);
+        buttons.setAlignment(Pos.CENTER_LEFT);
+
+        Label titleLbl = new Label(serie.getTitle());
+        titleLbl.setStyle("-fx-text-fill: white; -fx-font-weight: bold; -fx-font-size: 18;");
+
+        Label desc = new Label(serie.getDescription());
+        desc.setStyle("-fx-text-fill: #d2d2d2; -fx-font-size: 12;");
+        desc.setWrapText(true);
+        desc.setMaxWidth(270);
+        desc.setMaxHeight(60);
+
+        info.getChildren().addAll(matchLbl, buttons, titleLbl, desc);
+        preview.getChildren().addAll(img, info);
+        return preview;
+    }
+
+    // ── SHARED NAVIGATION ────────────────────────────────────────────
+
+    private void openMediaDetails(Media media) {
+        TransferData.setMedia(media);
+        try {
+            Parent root = FXMLLoader.load(getClass().getResource("/org/Views/MediaDetails.fxml"));
+            Stage stage = (Stage) mediaRows.getScene().getWindow();
+            stage.getScene().setRoot(root);
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
+
+    // ── HOME ROW LOADER ──────────────────────────────────────────────
 
     private void loadRow(String title, List<Media> medias) {
         if (medias == null || medias.isEmpty()) return;
@@ -212,29 +544,11 @@ public class MainController implements Initializable {
         }
     }
 
-    // ── VIEW SWITCHING ───────────────────────────────────────────────
-
-    private void showHomeView() {
-        searchContent.setVisible(false);
-        mainScroll.setVisible(true);
-        mainScrollList.setVisible(false);
-    }
-
-    private void showSearchView() {
-        searchContent.setVisible(true);
-        mainScroll.setVisible(false);
-        mainScrollList.setVisible(false);
-    }
-
-    private void showMyListView() {
-        searchContent.setVisible(false);
-        mainScroll.setVisible(false);
-        mainScrollList.setVisible(true);
-    }
-
     // ── HANDLERS ─────────────────────────────────────────────────────
 
-    @FXML private void handleHomeClick(MouseEvent event)    { showHomeView(); }
+    @FXML private void handleHomeClick(MouseEvent event)  { showHomeView(); }
+    @FXML private void handleMoviesClick(MouseEvent event) { showMoviesView(); }
+    @FXML private void handleSerieClick(MouseEvent event)  { showSeriesView(); }
 
     @FXML
     private void handleMyListClick(MouseEvent event) {
@@ -253,7 +567,6 @@ public class MainController implements Initializable {
     @FXML
     public void handleAddToMyList(ActionEvent event) {
         if (user == null || currentHeroMedia == null) return;
-
         if (UserDAO.isFavorite(user.getId(), currentHeroMedia.getIdMedia())) {
             MediaDAO.removeFromFavorites(user.getId(), currentHeroMedia.getIdMedia());
         } else {
@@ -263,69 +576,7 @@ public class MainController implements Initializable {
     }
 
     @FXML
-    private void RemoveFromList(Media media) {
-        if (media == null || user == null) return;
-        MediaDAO.removeFromFavorites(user.getId(), media.getIdMedia());
-    }
-
-    @FXML
     public void handleOpenDashboard(ActionEvent event) {
         SceneSwitcher.goTo(event, "/org/Views/MainDashboard.fxml");
-    }
-
-    @FXML
-    private void handleMoviesClick(MouseEvent event) {
-        try {
-            Parent root = FXMLLoader.load(getClass().getResource("/org/Views/FilmPage.fxml"));
-            Stage stage = (Stage) mediaRows.getScene().getWindow();
-            stage.getScene().setRoot(root);
-        } catch (IOException e) { e.printStackTrace(); }
-    }
-
-    @FXML
-    private void handleSerieClick(MouseEvent event) {
-        try {
-            Parent root = FXMLLoader.load(getClass().getResource("/org/Views/SeriePage.fxml"));
-            Stage stage = (Stage) mediaRows.getScene().getWindow();
-            stage.getScene().setRoot(root);
-        } catch (IOException e) { e.printStackTrace(); }
-    }
-
-    // kept for internal use — not used in UI directly
-    private VBox buildHoverPopup(Serie serie) {
-        VBox preview = new VBox(10);
-        preview.setStyle("-fx-background-color: #181818; -fx-background-radius: 10; " +
-                "-fx-border-color: #333; -fx-border-radius: 10; -fx-padding: 0;");
-        preview.setPrefWidth(300);
-
-        ImageView img = new ImageView(new Image(serie.getBackDropImageUrl(), true));
-        img.setFitWidth(300); img.setFitHeight(160); img.setPreserveRatio(false);
-
-        VBox info = new VBox(8);
-        info.setPadding(new Insets(15));
-
-        int match = 80 + (Math.abs(serie.getTitle().hashCode()) % 19);
-        Label matchLbl = new Label(match + "% Match");
-        matchLbl.setStyle("-fx-text-fill: #46d369; -fx-font-weight: bold; -fx-font-size: 14;");
-
-        String outlineBtn = "-fx-background-color: transparent; -fx-border-color: white; " +
-                "-fx-border-radius: 50; -fx-text-fill: white; -fx-cursor: hand;";
-        Button playBtn = new Button("▶");
-        playBtn.setStyle("-fx-background-color: white; -fx-text-fill: black; " +
-                "-fx-background-radius: 50; -fx-padding: 5 12; -fx-cursor: hand;");
-        Button addBtn  = new Button("+"); addBtn.setStyle(outlineBtn);
-        Button likeBtn = new Button("♥"); likeBtn.setStyle(outlineBtn);
-        HBox buttons = new HBox(10, playBtn, addBtn, likeBtn);
-        buttons.setAlignment(Pos.CENTER_LEFT);
-
-        Label titleLbl = new Label(serie.getTitle());
-        titleLbl.setStyle("-fx-text-fill: white; -fx-font-weight: bold; -fx-font-size: 18;");
-        Label desc = new Label(serie.getDescription());
-        desc.setStyle("-fx-text-fill: #d2d2d2; -fx-font-size: 12;");
-        desc.setWrapText(true); desc.setMaxWidth(270); desc.setMaxHeight(60);
-
-        info.getChildren().addAll(matchLbl, buttons, titleLbl, desc);
-        preview.getChildren().addAll(img, info);
-        return preview;
     }
 }
