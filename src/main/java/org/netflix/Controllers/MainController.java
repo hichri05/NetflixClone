@@ -7,7 +7,9 @@ import javafx.collections.FXCollections;
 import javafx.event.ActionEvent;
 import javafx.fxml.*;
 import javafx.geometry.Insets;
+import javafx.geometry.Point2D;
 import javafx.geometry.Pos;
+import javafx.scene.Cursor;
 import javafx.scene.Parent;
 import javafx.scene.control.*;
 import javafx.scene.image.Image;
@@ -158,15 +160,15 @@ public class MainController implements Initializable {
             heading = new StringBuilder(selectedYear);
         filterHeadingLabel.setText(heading.toString());
 
-        // Fetch and filter media
-        List<Media> results = MediaDAO.getAllMediaWithViews();
 
+
+        List<Media> results = List.of();
         if (genreActive) {
             String genreKey = selectedGenre.replace(" ", "_");
+            results = MediaDAO.getMediasByGenre(genreKey);
             results = results.stream()
                     .filter(m -> m.getGenres() != null && m.getGenres().stream()
-                            .anyMatch(g -> g.toString().replace("_", " ").equalsIgnoreCase(selectedGenre)
-                                    || g.toString().equalsIgnoreCase(genreKey)))
+                            .anyMatch(g -> g.toString().equalsIgnoreCase(genreKey)))
                     .collect(Collectors.toList());
         }
 
@@ -359,7 +361,7 @@ public class MainController implements Initializable {
             poster.setStyle("-fx-border-color: white; -fx-border-width: 2;");
             moviesShowDelay.setOnFinished(ev -> {
                 moviesPopup.getContent().setAll(buildMovieHoverPopup(movie));
-                javafx.geometry.Point2D p = poster.localToScreen(0, 0);
+                Point2D p = poster.localToScreen(0, 0);
                 moviesPopup.show(poster, p.getX() - 50, p.getY() + poster.getFitHeight() + 5);
             });
             moviesShowDelay.playFromStart();
@@ -384,7 +386,7 @@ public class MainController implements Initializable {
 
         VBox card = new VBox(5, poster, title);
         card.setAlignment(Pos.CENTER);
-        card.setCursor(javafx.scene.Cursor.HAND);
+        card.setCursor(Cursor.HAND);
         card.setOnMouseClicked(e -> {
             if (moviesPopup != null) moviesPopup.hide();
             moviesShowDelay.stop();
@@ -479,7 +481,7 @@ public class MainController implements Initializable {
             poster.setStyle("-fx-border-color: white; -fx-border-width: 2;");
             seriesShowDelay.setOnFinished(ev -> {
                 seriesPopup.getContent().setAll(buildSerieHoverPopup(serie));
-                javafx.geometry.Point2D p = poster.localToScreen(0, 0);
+                Point2D p = poster.localToScreen(0, 0);
                 seriesPopup.show(poster, p.getX() - 50, p.getY() + poster.getFitHeight() + 5);
             });
             seriesShowDelay.playFromStart();
@@ -504,7 +506,7 @@ public class MainController implements Initializable {
 
         VBox card = new VBox(5, poster, title);
         card.setAlignment(Pos.CENTER);
-        card.setCursor(javafx.scene.Cursor.HAND);
+        card.setCursor(Cursor.HAND);
         card.setOnMouseClicked(e -> {
             if (seriesPopup != null) seriesPopup.hide();
             seriesShowDelay.stop();
