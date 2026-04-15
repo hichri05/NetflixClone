@@ -98,7 +98,7 @@
                                 <HBox alignment="CENTER_RIGHT">
                                     <children>
                                         <Button text="Publier"
-                                                onAction="#handlePublishComment"
+
                                                 style="-fx-background-color: #e50914;
                                                        -fx-text-fill: white;
                                                        -fx-background-radius: 4;

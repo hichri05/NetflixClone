@@ -5,9 +5,7 @@ import org.netflix.Models.User;
 import org.netflix.Utils.ConxDB;
 
 import java.sql.*;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Optional;
+import java.util.*;
 
 public class UserDAO {
     private static Connection conn = ConxDB.getInstance();
@@ -170,5 +168,28 @@ public class UserDAO {
             e.printStackTrace();
             return Optional.empty();
         }
+    }
+    public static Map<String, Long> getUsersGroupedByDate() {
+        Map<String, Long> result = new LinkedHashMap<>();
+        String sql = "SELECT DATE(createdAt) AS reg_date, COUNT(*) AS cnt " +
+                "FROM user " +
+                "WHERE createdAt IS NOT NULL " +
+                "GROUP BY DATE(createdAt) " +
+                "ORDER BY reg_date ASC";
+
+        try (Statement stmt = conn.createStatement();
+             ResultSet rs   = stmt.executeQuery(sql)) {
+
+            while (rs.next()) {
+                String date = rs.getString("reg_date");
+                long   count = rs.getLong("cnt");
+                result.put(date, count);
+            }
+
+        } catch (SQLException e) {
+            System.err.println("Error in getUsersGroupedByDate: " + e.getMessage());
+            e.printStackTrace();
+        }
+        return result;
     }
 }
