@@ -3,155 +3,216 @@
 <?import java.lang.String?>
 <?import javafx.geometry.Insets?>
 <?import javafx.scene.control.Button?>
+<?import javafx.scene.control.ComboBox?>
 <?import javafx.scene.control.Label?>
 <?import javafx.scene.control.ScrollPane?>
 <?import javafx.scene.control.TextField?>
 <?import javafx.scene.layout.BorderPane?>
 <?import javafx.scene.layout.FlowPane?>
 <?import javafx.scene.layout.HBox?>
+<?import javafx.scene.layout.Pane?>
 <?import javafx.scene.layout.StackPane?>
 <?import javafx.scene.layout.VBox?>
 <?import javafx.scene.text.Font?>
 
-<?import javafx.scene.layout.Pane?>
 <BorderPane style="-fx-background-color: #222222;" stylesheets="@../Styles/style.css" xmlns="http://javafx.com/javafx/25" xmlns:fx="http://javafx.com/fxml/1" fx:controller="org.netflix.Controllers.MainController">
-   <center>
-      <StackPane>
-         <children>
-            <ScrollPane fx:id="mainScroll" fitToWidth="true" hbarPolicy="NEVER" style="-fx-background-color: #333333;" styleClass="main-scroll-pane" vbarPolicy="NEVER">
-               <content>
-                  <VBox fx:id="mediaRows" fillWidth="true" style="-fx-background-color: #141414;">
-                     <children>
-                        <StackPane id="heroStack" fx:id="heroStack" maxWidth="Infinity" prefHeight="400" styleClass="heroStack" VBox.vgrow="NEVER">
-                           <children>
-                               <Pane mouseTransparent="true">
-                                   <style>
-                                       -fx-background-color: linear-gradient(
-                                       to bottom,
-                                       rgba(0,0,0,0.2),
-                                       rgba(0,0,0,0.85)
-                                       );
-                                   </style>
-                               </Pane>
-                              <VBox alignment="BOTTOM_LEFT" prefHeight="200.0" prefWidth="100.0" spacing="15.0" style="-fx-padding: 0 0 40 40;">
-                                 <children>
-                                    <Label fx:id="mvTrendName" styleClass="hero-title" text="Label">
-                                       <VBox.margin>
-                                          <Insets bottom="50.0" />
-                                       </VBox.margin>
-                                    </Label>
-                                    <Label fx:id="mvTrendDesc" styleClass="hero-description" text="Label">
-                                       <VBox.margin>
-                                          <Insets bottom="50.0" />
-                                       </VBox.margin>
-                                    </Label>
-                                    <HBox prefHeight="100.0" prefWidth="200.0" spacing="10.0">
-                                       <children>
-                                          <Button fx:id="playbtn" mnemonicParsing="false" onAction="#handlePlay" styleClass="btn-play" text="▶ Play" />
-                                          <Button fx:id="mylistbtn" mnemonicParsing="false" onAction="#handleAddToMyList" styleClass="btn-mylist" text="+ My List" />
-                                       </children>
-                                    </HBox>
-                                 </children>
-                                 <StackPane.margin>
-                                    <Insets />
-                                 </StackPane.margin>
-                                 <padding>
-                                    <Insets bottom="10.0" left="10.0" right="10.0" top="10.0" />
-                                 </padding>
-                              </VBox>
-                           </children>
-                        </StackPane>
-                     </children>
-                     <padding>
-                        <Insets bottom="5.0" left="5.0" right="5.0" top="5.0" />
-                     </padding>
-                  </VBox>
-               </content>
-            </ScrollPane>
-             <ScrollPane fx:id="searchContent" style="-fx-background-color: #141414;" visible="false">
-                 <FlowPane fx:id="searchGrid" hgap="15" vgap="15">
-                     <padding>
-                     <Insets left="50" right="50" top="100" />
-                  </padding>
-                 </FlowPane>
-             </ScrollPane>
-             <ScrollPane fx:id="mainScrollList" fitToWidth="true" hbarPolicy="NEVER" style="-fx-background-color: #141414;" stylesheets="@../Styles/style.css" vbarPolicy="NEVER" xmlns="http://javafx.com/javafx/25" xmlns:fx="http://javafx.com/fxml/1">
-                 <content>
-                     <VBox minHeight="800" spacing="20.0" style="-fx-background-color: #141414;">
-                         <children>
+    <center>
+        <StackPane>
+            <children>
+                <ScrollPane fx:id="mainScroll" fitToWidth="true" hbarPolicy="NEVER" style="-fx-background-color: #333333;" styleClass="main-scroll-pane" vbarPolicy="NEVER">
+                    <content>
+                        <VBox fx:id="mediaRows" fillWidth="true" style="-fx-background-color: #141414;">
+                            <children>
+                                <StackPane id="heroStack" fx:id="heroStack" maxWidth="Infinity" prefHeight="400" styleClass="heroStack" VBox.vgrow="NEVER">
+                                    <children>
+                                        <Pane mouseTransparent="true">
+                                            <style>
+                                                -fx-background-color: linear-gradient(
+                                                to bottom,
+                                                rgba(0,0,0,0.2),
+                                                rgba(0,0,0,0.85)
+                                                );
+                                            </style>
+                                        </Pane>
+                                        <VBox alignment="BOTTOM_LEFT" prefHeight="200.0" prefWidth="100.0" spacing="15.0" style="-fx-padding: 0 0 40 40;">
+                                            <children>
+                                                <Label fx:id="mvTrendName" styleClass="hero-title" text="Label">
+                                                    <VBox.margin>
+                                                        <Insets bottom="50.0" />
+                                                    </VBox.margin>
+                                                </Label>
+                                                <Label fx:id="mvTrendDesc" styleClass="hero-description" text="Label">
+                                                    <VBox.margin>
+                                                        <Insets bottom="50.0" />
+                                                    </VBox.margin>
+                                                </Label>
+                                                <HBox prefHeight="100.0" prefWidth="200.0" spacing="10.0">
+                                                    <children>
+                                                        <Button fx:id="playbtn" mnemonicParsing="false" onAction="#handlePlay" styleClass="btn-play" text="▶ Play" />
+                                                        <Button fx:id="mylistbtn" mnemonicParsing="false" onAction="#handleAddToMyList" styleClass="btn-mylist" text="+ My List" />
+                                                    </children>
+                                                </HBox>
+                                            </children>
+                                            <StackPane.margin>
+                                                <Insets />
+                                            </StackPane.margin>
+                                            <padding>
+                                                <Insets bottom="10.0" left="10.0" right="10.0" top="10.0" />
+                                            </padding>
+                                        </VBox>
+                                    </children>
+                                </StackPane>
+                            </children>
+                            <padding>
+                                <Insets bottom="5.0" left="5.0" right="5.0" top="5.0" />
+                            </padding>
+                        </VBox>
+                    </content>
+                </ScrollPane>
 
-                             <VBox spacing="10.0" style="-fx-padding: 0 40 0 40;">
-                                 <children>
-                                     <Label style="-fx-font-size: 32;" styleClass="hero-title" text="My List" />
-                                     <FlowPane fx:id="listGrid" hgap="15.0" vgap="25.0">
-                                     </FlowPane>
-                                 </children>
-                             </VBox>
-                         </children>
-                     </VBox>
-                 </content>
-             </ScrollPane>
-             <ScrollPane fx:id="moviesScroll" fitToWidth="true" hbarPolicy="NEVER"
-                         style="-fx-background-color: #141414;" visible="false"
-                         stylesheets="@../Styles/style.css" vbarPolicy="NEVER">
-                 <content>
-                     <VBox fx:id="moviesRows" fillWidth="true" spacing="0"
-                           style="-fx-background-color: #141414;" />
-                 </content>
-             </ScrollPane>
+                <!-- SEARCH RESULTS VIEW -->
+                <ScrollPane fx:id="searchContent" style="-fx-background-color: #141414;" visible="false">
+                    <FlowPane fx:id="searchGrid" hgap="15" vgap="15">
+                        <padding>
+                            <Insets left="50" right="50" top="100" />
+                        </padding>
+                    </FlowPane>
+                </ScrollPane>
 
-             <ScrollPane fx:id="seriesScroll" fitToWidth="true" hbarPolicy="NEVER"
-                         style="-fx-background-color: #141414;" visible="false"
-                         stylesheets="@../Styles/style.css" vbarPolicy="NEVER">
-                 <content>
-                     <VBox fx:id="seriesRows" fillWidth="true" spacing="0"
-                           style="-fx-background-color: #141414;" />
-                 </content>
-             </ScrollPane>
-         </children>
-      </StackPane>
-   </center>
-   <top>
-      <BorderPane fx:id="navbar" styleClass="navbar" BorderPane.alignment="CENTER">
-         <left>
-            <Label styleClass="logo" text="NETFLIX" textFill="#e50914" BorderPane.alignment="CENTER">
-               <font>
-                  <Font name="System Bold" size="32.0" />
-               </font>
-            </Label>
-         </left>
-         <center>
-             <HBox id="main-header" alignment="CENTER" spacing="5.0" styleClass="nav-container"
-                   stylesheets="@../Styles/style.css" BorderPane.alignment="CENTER">
-                 <children>
-                     <Label onMouseClicked="#handleHomeClick" text="Home">
-                         <styleClass>
-                             <String fx:value="nav-link" />
-                             <String fx:value="nav-link-active" />
-                         </styleClass>
-                     </Label>
-                     <Label onMouseClicked="#handleMoviesClick" styleClass="nav-link"
-                            text="Movies" style="-fx-cursor: hand;" />
-                     <Label onMouseClicked="#handleSerieClick" styleClass="nav-link"
-                            text="TV Shows" style="-fx-cursor: hand;" />
-                     <Label fx:id="Mylist" onMouseClicked="#handleMyListClick"
-                            styleClass="nav-link" text="My List" />
-                 </children>
-             </HBox>
-         </center>
-          <right>
-              <HBox alignment="CENTER_LEFT" spacing="10.0" styleClass="search-container">
-                  <children>
-                      <Label style="-fx-text-fill: white; -fx-font-size: 18px;" text="🔍" />
-                      <TextField fx:id="searchField" promptText="Titles, people, genres" styleClass="search-input" />
-                  <Label fx:id="userinf" text="Label" />
-                      <Button fx:id="adminBtn" onAction="#handleOpenDashboard" styleClass="btn-play" text="Admin Dashboard" />
-                  </children>
-              </HBox>
-          </right>
-         <padding>
-            <Insets bottom="10.0" left="10.0" right="10.0" top="10.0" />
-         </padding>
-      </BorderPane>
-   </top>
+                <!-- FILTER RESULTS VIEW -->
+                <ScrollPane fx:id="filterContent" fitToWidth="true" hbarPolicy="NEVER"
+                            style="-fx-background-color: #141414;" visible="false"
+                            stylesheets="@../Styles/style.css" vbarPolicy="NEVER">
+                    <content>
+                        <VBox spacing="10" style="-fx-background-color: #141414;">
+                            <padding><Insets left="50" right="50" top="20" bottom="40" /></padding>
+                            <HBox alignment="CENTER_LEFT" spacing="12">
+                                <Label fx:id="filterHeadingLabel"
+                                       style="-fx-text-fill: white; -fx-font-size: 22px; -fx-font-weight: bold;" text="Results" />
+                                <Button onAction="#handleClearFilter"
+                                        style="-fx-background-color: transparent; -fx-text-fill: #aaa;
+                                           -fx-border-color: #555; -fx-border-radius: 20; -fx-background-radius: 20;
+                                           -fx-padding: 4 14; -fx-font-size: 12px; -fx-cursor: hand;" text="✕ Clear" />
+                            </HBox>
+                            <FlowPane fx:id="filterGrid" hgap="15" vgap="20" />
+                        </VBox>
+                    </content>
+                </ScrollPane>
+
+                <!-- MY LIST VIEW -->
+                <ScrollPane fx:id="mainScrollList" fitToWidth="true" hbarPolicy="NEVER" style="-fx-background-color: #141414;" stylesheets="@../Styles/style.css" vbarPolicy="NEVER" xmlns="http://javafx.com/javafx/25" xmlns:fx="http://javafx.com/fxml/1">
+                    <content>
+                        <VBox minHeight="800" spacing="20.0" style="-fx-background-color: #141414;">
+                            <children>
+                                <VBox spacing="10.0" style="-fx-padding: 0 40 0 40;">
+                                    <children>
+                                        <Label style="-fx-font-size: 32;" styleClass="hero-title" text="My List" />
+                                        <FlowPane fx:id="listGrid" hgap="15.0" vgap="25.0" />
+                                    </children>
+                                </VBox>
+                            </children>
+                        </VBox>
+                    </content>
+                </ScrollPane>
+
+                <!-- MOVIES TAB VIEW -->
+                <ScrollPane fx:id="moviesScroll" fitToWidth="true" hbarPolicy="NEVER"
+                            style="-fx-background-color: #141414;" visible="false"
+                            stylesheets="@../Styles/style.css" vbarPolicy="NEVER">
+                    <content>
+                        <VBox fx:id="moviesRows" fillWidth="true" spacing="0"
+                              style="-fx-background-color: #141414;" />
+                    </content>
+                </ScrollPane>
+
+                <!-- SERIES TAB VIEW -->
+                <ScrollPane fx:id="seriesScroll" fitToWidth="true" hbarPolicy="NEVER"
+                            style="-fx-background-color: #141414;" visible="false"
+                            stylesheets="@../Styles/style.css" vbarPolicy="NEVER">
+                    <content>
+                        <VBox fx:id="seriesRows" fillWidth="true" spacing="0"
+                              style="-fx-background-color: #141414;" />
+                    </content>
+                </ScrollPane>
+
+            </children>
+        </StackPane>
+    </center>
+
+    <top>
+        <VBox>
+            <!-- ── MAIN NAVBAR ── -->
+            <BorderPane fx:id="navbar" styleClass="navbar" BorderPane.alignment="CENTER">
+                <left>
+                    <Label styleClass="logo" text="NETFLIX" textFill="#e50914" BorderPane.alignment="CENTER">
+                        <font><Font name="System Bold" size="32.0" /></font>
+                    </Label>
+                </left>
+                <center>
+                    <HBox id="main-header" alignment="CENTER" spacing="5.0" styleClass="nav-container"
+                          stylesheets="@../Styles/style.css" BorderPane.alignment="CENTER">
+                        <children>
+                            <Label onMouseClicked="#handleHomeClick" text="Home">
+                                <styleClass>
+                                    <String fx:value="nav-link" />
+                                    <String fx:value="nav-link-active" />
+                                </styleClass>
+                            </Label>
+                            <Label onMouseClicked="#handleMoviesClick" styleClass="nav-link"
+                                   text="Movies" style="-fx-cursor: hand;" />
+                            <Label onMouseClicked="#handleSerieClick" styleClass="nav-link"
+                                   text="TV Shows" style="-fx-cursor: hand;" />
+                            <Label fx:id="Mylist" onMouseClicked="#handleMyListClick"
+                                   styleClass="nav-link" text="My List" />
+                        </children>
+                    </HBox>
+                </center>
+                <right>
+                    <HBox alignment="CENTER_LEFT" spacing="10.0" styleClass="search-container">
+                        <children>
+                            <Label style="-fx-text-fill: white; -fx-font-size: 18px;" text="🔍" />
+                            <TextField fx:id="searchField" promptText="Titles, people, genres" styleClass="search-input" />
+                            <Label fx:id="userinf" text="Label" />
+                            <Button fx:id="adminBtn" onAction="#handleOpenDashboard" styleClass="btn-play" text="Admin Dashboard" />
+                        </children>
+                    </HBox>
+                </right>
+                <padding>
+                    <Insets bottom="10.0" left="10.0" right="10.0" top="10.0" />
+                </padding>
+            </BorderPane>
+
+            <!-- ── FILTER BAR ── -->
+            <HBox fx:id="filterBar" alignment="CENTER_LEFT" spacing="12"
+                  style="-fx-background-color: rgba(0,0,0,0.92);
+                      -fx-border-color: #1f1f1f; -fx-border-width: 1 0 0 0;
+                      -fx-padding: 8 20 8 20;">
+                <children>
+                    <Label style="-fx-text-fill: #777; -fx-font-size: 11px; -fx-font-weight: bold; -fx-letter-spacing: 1;" text="FILTER" />
+
+                    <!-- Genre ComboBox -->
+                    <ComboBox fx:id="genreFilterCombo" promptText="All Genres"
+                              style="-fx-background-color: #1c1c1c; -fx-text-fill: white;
+                                  -fx-border-color: #333; -fx-border-radius: 6; -fx-background-radius: 6;
+                                  -fx-pref-width: 150; -fx-cursor: hand; -fx-font-size: 13px;" />
+
+                    <!-- Year ComboBox -->
+                    <ComboBox fx:id="yearFilterCombo" promptText="All Years"
+                              style="-fx-background-color: #1c1c1c; -fx-text-fill: white;
+                                  -fx-border-color: #333; -fx-border-radius: 6; -fx-background-radius: 6;
+                                  -fx-pref-width: 120; -fx-cursor: hand; -fx-font-size: 13px;" />
+
+                    <!-- Apply button -->
+                    <Button onAction="#handleApplyFilter"
+                            style="-fx-background-color: #e50914; -fx-text-fill: white;
+                                -fx-font-weight: bold; -fx-font-size: 12px;
+                                -fx-border-radius: 6; -fx-background-radius: 6;
+                                -fx-padding: 6 18; -fx-cursor: hand;" text="Apply" />
+
+                    <!-- Active filter chips area -->
+                    <HBox fx:id="activeFilterChips" alignment="CENTER_LEFT" spacing="8" />
+                </children>
+            </HBox>
+        </VBox>
+    </top>
 </BorderPane>
