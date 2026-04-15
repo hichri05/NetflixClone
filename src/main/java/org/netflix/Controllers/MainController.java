@@ -3,6 +3,7 @@ package org.netflix.Controllers;
 import javafx.animation.KeyFrame;
 import javafx.animation.PauseTransition;
 import javafx.animation.Timeline;
+import javafx.collections.FXCollections;
 import javafx.event.ActionEvent;
 import javafx.fxml.*;
 import javafx.geometry.Insets;
@@ -22,22 +23,29 @@ import org.netflix.Utils.*;
 
 import java.io.IOException;
 import java.net.URL;
-import java.util.List;
-import java.util.ResourceBundle;
+import java.util.*;
 import java.util.stream.Collectors;
 
 public class MainController implements Initializable {
 
     @FXML private ScrollPane searchContent, mainScrollList, mainScroll;
     @FXML private ScrollPane moviesScroll, seriesScroll;
+    @FXML private ScrollPane filterContent;
     @FXML private FlowPane   searchGrid;
     @FXML private FlowPane   listGrid;
+    @FXML private FlowPane   filterGrid;
     @FXML private VBox       moviesRows, seriesRows;
     @FXML private TextField  searchField;
     @FXML private Label      mvTrendName, mvTrendDesc, userinf;
     @FXML private StackPane  heroStack;
     @FXML private VBox       mediaRows;
     @FXML private Button     playbtn, mylistbtn, adminBtn;
+
+    // ── Filter bar controls ───────────────────────────────────────────
+    @FXML private ComboBox<String> genreFilterCombo;
+    @FXML private ComboBox<String> yearFilterCombo;
+    @FXML private HBox             activeFilterChips;
+    @FXML private Label            filterHeadingLabel;
 
     private User user;
 
@@ -86,6 +94,7 @@ public class MainController implements Initializable {
         setupSearch();
         setupUser();
         setupInitialView();
+        setupFilterBar();
         getTrendMovie();
     }
 
@@ -94,6 +103,129 @@ public class MainController implements Initializable {
         popup.setAutoHide(false);
         popup.setHideOnEscape(true);
         return popup;
+    }
+
+    // ── FILTER BAR SETUP ─────────────────────────────────────────────
+
+    private void setupFilterBar() {
+        // Populate genre combo
+        List<String> genres = new ArrayList<>();
+        genres.add("All Genres");
+        for (MediaGenre g : MediaGenre.values()) {
+            genres.add(g.toString().replace("_", " "));
+        }
+        genreFilterCombo.setItems(FXCollections.observableArrayList(genres));
+        genreFilterCombo.setValue("All Genres");
+
+        // Populate year combo — gather distinct years from DB, fallback to range
+        List<String> years = new ArrayList<>();
+        years.add("All Years");
+        List<Media> all = MediaDAO.getAllMedia();
+        Set<Integer> distinctYears = new TreeSet<>(Comparator.reverseOrder());
+        for (Media m : all) {
+            if (m.getReleaseYear() > 1900) distinctYears.add(m.getReleaseYear());
+        }
+        for (int y : distinctYears) years.add(String.valueOf(y));
+        // Fallback range if DB is empty
+        if (distinctYears.isEmpty()) {
+            for (int y = 2025; y >= 1980; y--) years.add(String.valueOf(y));
+        }
+        yearFilterCombo.setItems(FXCollections.observableArrayList(years));
+        yearFilterCombo.setValue("All Years");
+    }
+
+    @FXML
+    public void handleApplyFilter(ActionEvent event) {
+        String selectedGenre = genreFilterCombo.getValue();
+        String selectedYear  = yearFilterCombo.getValue();
+
+        boolean genreActive = selectedGenre != null && !selectedGenre.equals("All Genres");
+        boolean yearActive  = selectedYear  != null && !selectedYear.equals("All Years");
+
+        if (!genreActive && !yearActive) {
+            // Nothing selected — just go home
+            showHomeView();
+            return;
+        }
+
+        // Build filter heading
+        StringBuilder heading = new StringBuilder("Results");
+        if (genreActive && yearActive)
+            heading = new StringBuilder(selectedGenre + "  ·  " + selectedYear);
+        else if (genreActive)
+            heading = new StringBuilder(selectedGenre);
+        else
+            heading = new StringBuilder(selectedYear);
+        filterHeadingLabel.setText(heading.toString());
+
+        // Fetch and filter media
+        List<Media> results = MediaDAO.getAllMediaWithViews();
+
+        if (genreActive) {
+            String genreKey = selectedGenre.replace(" ", "_");
+            results = results.stream()
+                    .filter(m -> m.getGenres() != null && m.getGenres().stream()
+                            .anyMatch(g -> g.toString().replace("_", " ").equalsIgnoreCase(selectedGenre)
+                                    || g.toString().equalsIgnoreCase(genreKey)))
+                    .collect(Collectors.toList());
+        }
+
+        if (yearActive) {
+            int year = Integer.parseInt(selectedYear);
+            results = results.stream()
+                    .filter(m -> m.getReleaseYear() == year)
+                    .collect(Collectors.toList());
+        }
+
+        // Render chips showing active filters
+        renderFilterChips(genreActive ? selectedGenre : null, yearActive ? selectedYear : null);
+
+        // Show results
+        filterGrid.getChildren().clear();
+        if (results.isEmpty()) {
+            Label empty = new Label("No results found.");
+            empty.setStyle("-fx-text-fill: #666; -fx-font-size: 16px;");
+            filterGrid.getChildren().add(empty);
+        } else {
+            for (Media m : results) loadFilterCard(m);
+        }
+
+        showFilterView();
+    }
+
+    private void renderFilterChips(String genre, String year) {
+        activeFilterChips.getChildren().clear();
+        if (genre != null) activeFilterChips.getChildren().add(buildChip("🎭 " + genre));
+        if (year  != null) activeFilterChips.getChildren().add(buildChip("📅 " + year));
+    }
+
+    private Label buildChip(String text) {
+        Label chip = new Label(text);
+        chip.setStyle("-fx-background-color: #2a2a2a; -fx-text-fill: #e5e5e5; " +
+                "-fx-font-size: 11px; -fx-padding: 3 10; " +
+                "-fx-background-radius: 20; -fx-border-radius: 20; " +
+                "-fx-border-color: #444;");
+        return chip;
+    }
+
+    private void loadFilterCard(Media media) {
+        try {
+            FXMLLoader loader = new FXMLLoader(getClass().getResource("/org/Views/MediaPoster.fxml"));
+            Parent card = loader.load();
+            MediaPosterController controller = loader.getController();
+            controller.setData(media);
+            filterGrid.getChildren().add(card);
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
+
+    @FXML
+    public void handleClearFilter(ActionEvent event) {
+        genreFilterCombo.setValue("All Genres");
+        yearFilterCombo.setValue("All Years");
+        activeFilterChips.getChildren().clear();
+        showHomeView();
     }
 
     // ── SETUP ────────────────────────────────────────────────────────
@@ -118,7 +250,6 @@ public class MainController implements Initializable {
         loadRow("Crime",       MediaDAO.getMediasByGenre("Crime"));
     }
 
-
     private void setupSearch() {
         searchField.textProperty().addListener((obs, oldVal, newVal) -> {
             if (newVal.length() >= 2) {
@@ -128,7 +259,6 @@ public class MainController implements Initializable {
                 showHomeView();
             }
         });
-
     }
 
     private void setupUser() {
@@ -140,6 +270,7 @@ public class MainController implements Initializable {
         mainScrollList.setVisible(false);
         moviesScroll.setVisible(false);
         seriesScroll.setVisible(false);
+        filterContent.setVisible(false);
         mainScroll.setVisible(true);
     }
 
@@ -151,11 +282,13 @@ public class MainController implements Initializable {
         mainScrollList.setVisible(false);
         moviesScroll.setVisible(false);
         seriesScroll.setVisible(false);
+        filterContent.setVisible(false);
     }
 
     private void showHomeView()   { hideAll(); mainScroll.setVisible(true); }
     private void showSearchView() { hideAll(); searchContent.setVisible(true); }
     private void showMyListView() { hideAll(); mainScrollList.setVisible(true); }
+    private void showFilterView() { hideAll(); filterContent.setVisible(true); }
 
     private void showMoviesView() {
         hideAll();
@@ -185,7 +318,7 @@ public class MainController implements Initializable {
         }
     }
 
-    // ── MOVIES TAB — exact FilmPageController logic ──────────────────
+    // ── MOVIES TAB ──────────────────────────────────────────────────
 
     private void addMovieGenreRow(String title, List<Movie> movies) {
         Label label = new Label(title);
@@ -305,7 +438,7 @@ public class MainController implements Initializable {
         return preview;
     }
 
-    // ── SERIES TAB — exact SeriePageController logic ─────────────────
+    // ── SERIES TAB ──────────────────────────────────────────────────
 
     private void addSerieGenreRow(String title, List<Serie> series) {
         Label label = new Label(title);

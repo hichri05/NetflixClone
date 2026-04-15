@@ -361,4 +361,7 @@ public class CatalogueController {
         new Alert(Alert.AlertType.INFORMATION, msg).show();
     }
 
+    public void handelSearch(ActionEvent actionEvent) {
+
+    }
 }
