@@ -38,6 +38,15 @@
                     </padding>
                 </HBox>
             <Region prefHeight="557.0" prefWidth="1280.0" />
+            <HBox alignment="BOTTOM_RIGHT" prefHeight="100.0" prefWidth="200.0">
+               <children>
+                  <Button fx:id="nextBtn" alignment="BOTTOM_RIGHT" onAction="#handleNextEp" style="-fx-background-color: transparent; -fx-text-fill: white; -fx-cursor: hand;" text=" Next ep -&gt;">
+                     <font>
+                        <Font name="System Bold" size="18.0" />
+                     </font>
+                  </Button>
+               </children>
+            </HBox>
 
                 <Slider fx:id="timeSlider" style="-fx-cursor: hand;">
                     <padding>
@@ -48,7 +57,7 @@
                 <HBox alignment="CENTER_LEFT" spacing="20.0" style="-fx-padding: 0 20 20 20;">
                     <children>
                         <Button fx:id="playBtn" onAction="#togglePlay" style="-fx-background-color: transparent; -fx-text-fill: white; -fx-font-size: 18; -fx-cursor: hand;" text="▶" />
-                        <Label fx:id="timeLabel" id="timeLabel"  style="-fx-text-fill: white; -fx-font-family: 'Monospaced';" text="00:00 / 00:00">
+                        <Label id="timeLabel" fx:id="timeLabel" style="-fx-text-fill: white; -fx-font-family: 'Monospaced';" text="00:00 / 00:00">
                             <font>
                                 <Font size="14.0" />
                             </font>

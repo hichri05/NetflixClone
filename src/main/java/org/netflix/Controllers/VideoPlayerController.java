@@ -11,7 +11,10 @@ import javafx.scene.media.Media;
 import javafx.scene.media.MediaPlayer;
 import javafx.scene.media.MediaView;
 import javafx.util.Duration;
+import org.netflix.DAO.EpisodeDAO;
+import org.netflix.DAO.MediaDAO;
 import org.netflix.DAO.WatchHistoryDAO;
+import org.netflix.Models.Episode;
 import org.netflix.Models.Movie;
 import org.netflix.Models.User;
 import org.netflix.Models.WatchHistory;
@@ -26,6 +29,7 @@ import java.util.ResourceBundle;
 
 public class VideoPlayerController implements Initializable {
 
+    @FXML private Button nextBtn;
     @FXML private Label     timeLabel;
     @FXML private MediaView mediaView;
     @FXML private Button    playBtn;
@@ -141,8 +145,6 @@ public class VideoPlayerController implements Initializable {
         WatchHistoryDAO.addToHistory(wh);
     }
 
-
-
     @FXML
     public void handleBack(ActionEvent event) {
         if (mediaPlayer != null) {
@@ -198,5 +200,18 @@ public class VideoPlayerController implements Initializable {
                     elapsedMinutes, elapsedSeconds,
                     totalMinutes, totalSeconds);
         }
+    }
+
+    public void handleNextEp(ActionEvent actionEvent) {
+        /*if (currentMedia instanceof  Movie) {
+            nextBtn.setVisible(false);
+        }else{
+            Episode nextep = EpisodeDAO.getNextEp();
+            Media m = MediaDAO.getMediaByEp();
+            if (nextep != null) {
+                String url = nextep
+            }
+        }*/
+
     }
 }
