@@ -1,6 +1,5 @@
 package org.netflix.DAO;
 
-import org.netflix.Models.Media;
 import org.netflix.Models.WatchHistory;
 import org.netflix.Utils.ConxDB;
 
@@ -27,7 +26,7 @@ public class WatchHistoryDAO {
         return results;
     }
 
-    // Séries les plus vues (basé sur id_Episode)
+
     public static List<Object[]> getTopViewedSeries(int limit) {
         String sql = "SELECT id_Media, COUNT(*) as view_count FROM watch_history " +
                 "WHERE id_Episode IS NOT NULL GROUP BY id_Media " +
@@ -44,7 +43,7 @@ public class WatchHistoryDAO {
         return results;
     }
 
-    // Temps moyen par utilisateur (colonne stopped_at_time)
+
     public static double getAverageWatchTimePerUser() {
         String sql = "SELECT AVG(total) FROM (SELECT SUM(stopped_at_time) as total " +
                 "FROM watch_history GROUP BY id_User) as t";
@@ -74,7 +73,7 @@ public class WatchHistoryDAO {
 
 
     public boolean isEpisodeCompleted(int userId, int id) {
-    return true;}
+        return true;}
 
     public List<WatchHistory> findByUser(int userId) {
         List<WatchHistory> historyList = new ArrayList<>();
@@ -85,12 +84,11 @@ public class WatchHistoryDAO {
 
             try (ResultSet rs = pstmt.executeQuery()) {
                 while (rs.next()) {
-                    // Get these as Objects first to handle potential NULLs from the DB
+
                     Integer mediaId = (Integer) rs.getObject("id_Media");
                     Integer episodeId = (Integer) rs.getObject("id_Episode");
 
-                    // Using your first constructor:
-                    // (userId, mediaId, episodeId, stoppedAtTime, lastWatched, completed)
+
                     WatchHistory h = new WatchHistory(
                             rs.getInt("id_User"),
                             mediaId,

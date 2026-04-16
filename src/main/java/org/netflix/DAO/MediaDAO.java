@@ -44,14 +44,18 @@ public class MediaDAO {
             pstmt.setInt(1, genreId);
             try (ResultSet rs = pstmt.executeQuery()) {
                 while (rs.next()) {
-                    medias.add(ResultToMedia(rs));
+                    Media m = ResultToMedia(rs);
+                    // On charge les genres APRES avoir fini avec le ResultSet si nécessaire
+                    // ou on utilise une méthode qui ne boucle pas sur la connexion
+                    medias.add(m);
                 }
             }
         } catch (SQLException e) {
             System.out.println(e);
         }
 
-        for (Media m : medias) {
+        // Charger les genres pour chaque média pour éviter la récursion SQL
+        for(Media m : medias) {
             m.setGenres(getGenresByMediaId(m.getIdMedia()));
         }
 
@@ -110,13 +114,12 @@ public class MediaDAO {
                 rs.getString("coverImageUrl"),
                 rs.getString("backdrop_path"),
                 rs.getString("director"),
-                new ArrayList<>(),
-                new ArrayList<>(),
-                rs.getInt("views"),
-                rs.getString("type")
+                new ArrayList<>(),          // genres (loaded separately to avoid recursion)
+                new ArrayList<>(),          // casting
+                rs.getInt("views"),         // ← views
+                rs.getString("type")        // ← type LAST
         );
     }
-
     public static List<Media> getAllMediaWithViews() {
         List<Media> mediaList = new ArrayList<>();
         String sql = "SELECT id_Media, title, description, releaseYear, averageRating, " +
@@ -135,12 +138,12 @@ public class MediaDAO {
                         rs.getInt("releaseYear"),
                         rs.getDouble("averageRating"),
                         rs.getString("coverImageUrl"),
-                        rs.getString("backdrop_path"),
+                        rs.getString("backdrop_path"),  // backdropImageUrl
                         rs.getString("director"),
-                        genres,
-                        new ArrayList<>(),
-                        rs.getInt("views"),
-                        rs.getString("type")
+                        genres,                          // ← genres before casting
+                        new ArrayList<>(),               // casting
+                        rs.getInt("views"),              // ← views
+                        rs.getString("type")             // ← type LAST, not duplicated
                 ));
             }
         } catch (SQLException e) {
@@ -279,16 +282,21 @@ public class MediaDAO {
             e.printStackTrace();
         }
     }
+    public static int getRating(int userId, int idMedia) {
+        String sql = "SELECT score FROM rating WHERE id_user = ? AND id_media = ?";
+        try (Connection conn = ConxDB.getConnection();
+             PreparedStatement ps = conn.prepareStatement(sql)) {
 
-    public static int getRating(int id_User, int id_Media) {
-        String sql = "SELECT score FROM rating WHERE id_User = ? AND id_Media = ?";
-        try (PreparedStatement ps = conn.prepareStatement(sql)) {
-            ps.setInt(1, id_User);
-            ps.setInt(2, id_Media);
+            ps.setInt(1, userId);
+            ps.setInt(2, idMedia);
             ResultSet rs = ps.executeQuery();
-            if (rs.next()) return rs.getInt("score");
+
+            if (rs.next()) {
+                return rs.getInt("score");
+            }
+
         } catch (SQLException e) {
-            e.printStackTrace();
+            System.err.println("MediaDAO.getRating : " + e.getMessage());
         }
         return 0;
     }

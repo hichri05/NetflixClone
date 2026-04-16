@@ -14,8 +14,6 @@ public class MovieDAO {
 
     public static List<Movie> getAllMovies() {
         List<Movie> movies = new ArrayList<>();
-        // Note: I removed backdrop_path and views if they aren't in your media table screenshot
-        // Use averageRating as a placeholder if 'views' is missing, or add 'views' to your DB
         String sql = "SELECT m.*, v.videoUrl, v.duration_minutes " +
                 "FROM media m " +
                 "INNER JOIN movie v ON m.id_Media = v.id_Media";
@@ -33,12 +31,12 @@ public class MovieDAO {
                         rs.getInt("releaseYear"),
                         rs.getDouble("averageRating"),
                         rs.getString("coverImageUrl"),
-                        rs.getString("coverImageUrl"), // Using cover as backdrop if column missing
+                        rs.getString("coverImageUrl"),
                         rs.getString("director"),
                         "Movie",
                         genresList,
                         casting,
-                        0, // Default views to 0 if column is missing from schema
+                        0,
                         rs.getString("videoUrl"),
                         rs.getInt("duration_minutes")
                 ));
@@ -48,31 +46,28 @@ public class MovieDAO {
         }
         return movies;
     }
+
     public static Movie getTrendMovie() {
         Movie movie = null;
-        List<Acteur> casting=new ArrayList<Acteur>();
+        List<Acteur> casting = new ArrayList<>();
         String sql = "SELECT m.*, v.videoUrl, v.duration_minutes " +
                 "FROM Media m " +
                 "INNER JOIN Movie v ON m.id_Media = v.id_Media " +
-                "ORDER BY m.averageRating DESC LIMIT 1" ;
+                "ORDER BY m.averageRating DESC LIMIT 1";
 
         try (Statement stmt = conn.createStatement();
              ResultSet rs = stmt.executeQuery(sql)) {
-
             while (rs.next()) {
                 int currentId = rs.getInt("id_Media");
-
                 List<Genre> genreList = MediaDAO.getGenresByMediaId(currentId);
-
-
-                movie=(new Movie(
+                movie = new Movie(
                         currentId,
                         rs.getString("title"),
                         rs.getString("description"),
                         rs.getInt("releaseYear"),
                         rs.getDouble("averageRating"),
                         rs.getString("coverImageUrl"),
-                        rs.getString("backdrop_path"), // Nom colonne DB
+                        rs.getString("backdrop_path"),
                         rs.getString("director"),
                         rs.getString("type"),
                         genreList,
@@ -80,14 +75,15 @@ public class MovieDAO {
                         rs.getInt("views"),
                         rs.getString("videoUrl"),
                         rs.getInt("duration_minutes")
-                ));
+                );
             }
         } catch (SQLException e) {
             e.printStackTrace();
         }
-        return  movie;
+        return movie;
     }
 
+    // ✅ SINGLE findbyGenre - fixed, no duplicate
     public static List<Movie> findbyGenre(String genreName) {
         List<Movie> movies = new ArrayList<>();
 
@@ -106,6 +102,7 @@ public class MovieDAO {
                     int currentId = rs.getInt("id_Media");
                     List<Genre> genreList = MediaDAO.getGenresByMediaId(currentId);
                     List<Acteur> casting = new ArrayList<>();
+                    // ✅ movies.add() not movies = new Movie()
                     movies.add(new Movie(
                             currentId,
                             rs.getString("title"),
@@ -113,7 +110,7 @@ public class MovieDAO {
                             rs.getInt("releaseYear"),
                             rs.getDouble("averageRating"),
                             rs.getString("coverImageUrl"),
-                            rs.getString("backdrop_path"), // Nom colonne DB
+                            rs.getString("backdrop_path"),
                             rs.getString("director"),
                             rs.getString("type"),
                             genreList,
@@ -131,46 +128,9 @@ public class MovieDAO {
         return movies;
     }
 
-    public boolean updateRating(Movie movie) {
-        String sql = "UPDATE movies SET average_rating = ? WHERE id = ?";
-
-        try (PreparedStatement pstmt = conn.prepareStatement(sql)) {
-
-            pstmt.setDouble(1, movie.getAverageRating());
-            pstmt.setInt(2, movie.getIdMedia());
-
-            return pstmt.executeUpdate() > 0;
-
-        } catch (SQLException e) {
-            e.printStackTrace();
-            return false;
-        }
-    }
-
-        public List<Movie> findTopRated(int limit) {
-            String sql = "SELECT * FROM movies ORDER BY average_rating DESC LIMIT ?";
-            List<Movie> movies = new ArrayList<>();
-
-            try (PreparedStatement pstmt = conn.prepareStatement(sql)) {
-
-                pstmt.setInt(1, limit);
-
-                try (ResultSet rs = pstmt.executeQuery()) {
-                    while (rs.next()) {
-                        //movies.add(ResultSetToMovie(rs));
-                    }
-                }
-
-            } catch (SQLException e) {
-                e.printStackTrace();
-            }
-            return movies;
-        }
     public static Movie getMovieById(int id) {
         Movie movie = null;
         List<Acteur> casting = new ArrayList<>();
-
-        // Requête avec jointure pour récupérer les infos Media + Movie
         String sql = "SELECT m.*, v.videoUrl, v.duration_minutes " +
                 "FROM media m " +
                 "INNER JOIN movie v ON m.id_Media = v.id_Media " +
@@ -178,11 +138,9 @@ public class MovieDAO {
 
         try (PreparedStatement pstmt = conn.prepareStatement(sql)) {
             pstmt.setInt(1, id);
-
             try (ResultSet rs = pstmt.executeQuery()) {
                 if (rs.next()) {
                     List<Genre> genreList = MediaDAO.getGenresByMediaId(id);
-
                     movie = new Movie(
                             rs.getInt("id_Media"),
                             rs.getString("title"),
@@ -190,12 +148,12 @@ public class MovieDAO {
                             rs.getInt("releaseYear"),
                             rs.getDouble("averageRating"),
                             rs.getString("coverImageUrl"),
-                            rs.getString("backdrop_path"), // Nom exact de la colonne dans ta DB
+                            rs.getString("backdrop_path"),
                             rs.getString("director"),
                             rs.getString("type"),
                             genreList,
                             casting,
-                            rs.getInt("views"),            // Position 12 : views
+                            rs.getInt("views"),
                             rs.getString("videoUrl"),
                             rs.getInt("duration_minutes")
                     );
@@ -206,5 +164,31 @@ public class MovieDAO {
             e.printStackTrace();
         }
         return movie;
+    }
+
+    public boolean updateRating(Movie movie) {
+        String sql = "UPDATE movies SET average_rating = ? WHERE id = ?";
+        try (PreparedStatement pstmt = conn.prepareStatement(sql)) {
+            pstmt.setDouble(1, movie.getAverageRating());
+            pstmt.setInt(2, movie.getIdMedia());
+            return pstmt.executeUpdate() > 0;
+        } catch (SQLException e) {
+            e.printStackTrace();
+            return false;
+        }
+    }
+
+    public List<Movie> findTopRated(int limit) {
+        String sql = "SELECT * FROM movies ORDER BY average_rating DESC LIMIT ?";
+        List<Movie> movies = new ArrayList<>();
+        try (PreparedStatement pstmt = conn.prepareStatement(sql)) {
+            pstmt.setInt(1, limit);
+            try (ResultSet rs = pstmt.executeQuery()) {
+                while (rs.next()) { /* map here if needed */ }
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return movies;
     }
 }

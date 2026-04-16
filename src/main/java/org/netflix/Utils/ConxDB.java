@@ -9,9 +9,9 @@ import java.io.InputStream;
 public class ConxDB {
     private static Connection connexion;
     Properties prop = new Properties();
-    /*private final String DB_URL = "jdbc:mysql://localhost:3306/bingepanda";
+    private final String DB_URL = "jdbc:mysql://localhost:3306/netflix";
     private final String USER = "root";
-    private final String PASS = "";*/
+    private final String PASS = "";
 
     private ConxDB() throws SQLException{
         try {
@@ -26,29 +26,15 @@ public class ConxDB {
             }
             prop.load(input);
             String port = prop.getProperty("db.port");
-            String url = "jdbc:mysql://localhost:" + port + "/netflix1";
+            String url = "jdbc:mysql://localhost:" + port + "/netflix";
 
             connexion =  DriverManager.getConnection(url, prop.getProperty("db.user"), prop.getProperty("db.pass"));
 
         } catch (Exception ex) {
             ex.printStackTrace();
         }
-     }
+    }
 
-
-
-    /*
-    private ConxDB() {
-        try {
-            Class.forName("com.mysql.cj.jdbc.Driver");
-            // Test direct avec le port 3307
-            String url = "jdbc:mysql://localhost:3307/netflix?serverTimezone=UTC";
-            connexion = DriverManager.getConnection(url, "root", "");
-            System.out.println("Connexion forcée réussie !");
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-    }*/
 
     public static Connection getInstance() {
         if(connexion == null)

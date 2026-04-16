@@ -1,0 +1,157 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.layout.*?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.image.*?>
+<?import javafx.scene.shape.*?>
+<?import javafx.geometry.*?>
+<?import javafx.scene.text.*?>
+
+<BorderPane xmlns="http://javafx.com/javafx"
+            xmlns:fx="http://javafx.com/fxml"
+            fx:controller="org.netflix.Controllers.AdminCommentController"
+            style="-fx-background-color: #141414;"
+            prefWidth="1200" prefHeight="750">
+
+    <!-- ── TOP NAV ── -->
+    <top>
+        <HBox alignment="CENTER_LEFT" spacing="24"
+              style="-fx-background-color: #000000; -fx-padding: 0 32 0 32; -fx-min-height: 64; -fx-effect: dropshadow(gaussian, rgba(0,0,0,0.8), 10, 0, 0, 4);">
+
+            <!-- Netflix N logo -->
+            <Label text="N"
+                   style="-fx-text-fill: #e50914; -fx-font-size: 38px; -fx-font-weight: bold; -fx-font-family: 'Georgia';"/>
+
+            <Label text="ADMIN"
+                   style="-fx-text-fill: #aaaaaa; -fx-font-size: 13px; -fx-letter-spacing: 3px; -fx-font-family: 'Georgia';"/>
+
+            <Region HBox.hgrow="ALWAYS"/>
+
+            <!-- Nav pills -->
+            <Button text="Dashboard"
+                    style="-fx-background-color: transparent; -fx-text-fill: #aaa; -fx-font-size: 13px; -fx-cursor: hand; -fx-border-color: transparent;"/>
+            <Button text="Users"
+                    style="-fx-background-color: transparent; -fx-text-fill: #aaa; -fx-font-size: 13px; -fx-cursor: hand; -fx-border-color: transparent;"/>
+            <Button text="Media"
+                    style="-fx-background-color: transparent; -fx-text-fill: #aaa; -fx-font-size: 13px; -fx-cursor: hand; -fx-border-color: transparent;"/>
+            <Button text="Comments"
+                    style="-fx-background-color: transparent; -fx-text-fill: white; -fx-font-size: 13px; -fx-font-weight: bold; -fx-cursor: hand;
+                           -fx-border-color: #e50914; -fx-border-width: 0 0 2 0; -fx-padding: 4 0 4 0;"/>
+
+            <Region HBox.hgrow="ALWAYS"/>
+
+            <Label fx:id="adminNameLabel"
+                   style="-fx-text-fill: #aaa; -fx-font-size: 13px;"/>
+        </HBox>
+    </top>
+
+    <!-- ── MAIN CONTENT ── -->
+    <center>
+        <VBox spacing="0" style="-fx-background-color: #141414;">
+
+            <!-- Page header -->
+            <HBox alignment="CENTER_LEFT" spacing="16"
+                  style="-fx-padding: 32 40 20 40; -fx-background-color: #141414;">
+                <VBox spacing="4">
+                    <Label text="Comment Moderation"
+                           style="-fx-text-fill: white; -fx-font-size: 28px; -fx-font-weight: bold; -fx-font-family: 'Georgia';"/>
+                    <Label text="Review and remove inappropriate or reported comments"
+                           style="-fx-text-fill: #808080; -fx-font-size: 13px;"/>
+                </VBox>
+                <Region HBox.hgrow="ALWAYS"/>
+
+                <!-- Stats badges -->
+                <VBox alignment="CENTER" spacing="2"
+                      style="-fx-background-color: #1f1f1f; -fx-padding: 10 20 10 20; -fx-background-radius: 6;">
+                    <Label fx:id="reportedCountLabel" text="0"
+                           style="-fx-text-fill: #e50914; -fx-font-size: 22px; -fx-font-weight: bold;"/>
+                    <Label text="REPORTED"
+                           style="-fx-text-fill: #666; -fx-font-size: 10px; -fx-letter-spacing: 1px;"/>
+                </VBox>
+                <VBox alignment="CENTER" spacing="2"
+                      style="-fx-background-color: #1f1f1f; -fx-padding: 10 20 10 20; -fx-background-radius: 6;">
+                    <Label fx:id="totalCountLabel" text="0"
+                           style="-fx-text-fill: white; -fx-font-size: 22px; -fx-font-weight: bold;"/>
+                    <Label text="TOTAL"
+                           style="-fx-text-fill: #666; -fx-font-size: 10px; -fx-letter-spacing: 1px;"/>
+                </VBox>
+            </HBox>
+
+            <!-- Tab bar -->
+            <HBox spacing="0" style="-fx-padding: 0 40 0 40; -fx-border-color: #2a2a2a; -fx-border-width: 0 0 1 0;">
+                <Button fx:id="tabAllBtn" text="All Comments"
+                        onAction="#handleTabAll"
+                        style="-fx-background-color: transparent; -fx-text-fill: white; -fx-font-size: 14px;
+                               -fx-font-weight: bold; -fx-cursor: hand; -fx-padding: 12 24 12 0;
+                               -fx-border-color: #e50914; -fx-border-width: 0 0 3 0;"/>
+                <Button fx:id="tabReportedBtn" text="🚨  Reported Only"
+                        onAction="#handleTabReported"
+                        style="-fx-background-color: transparent; -fx-text-fill: #808080; -fx-font-size: 14px;
+                               -fx-font-weight: bold; -fx-cursor: hand; -fx-padding: 12 24 12 24;
+                               -fx-border-color: transparent; -fx-border-width: 0 0 3 0;"/>
+            </HBox>
+
+            <!-- Search bar -->
+            <HBox alignment="CENTER_LEFT" spacing="12"
+                  style="-fx-padding: 20 40 16 40;">
+                <TextField fx:id="searchField" promptText="Search by user, media or content..."
+                           onKeyReleased="#handleSearch"
+                           style="-fx-background-color: #2a2a2a; -fx-text-fill: white;
+                                  -fx-prompt-text-fill: #555; -fx-font-size: 13px;
+                                  -fx-padding: 10 16 10 16; -fx-background-radius: 4;
+                                  -fx-border-color: transparent; -fx-pref-width: 400;"/>
+                <Button text="🔄  Refresh" onAction="#handleRefresh"
+                        style="-fx-background-color: #2a2a2a; -fx-text-fill: #aaa; -fx-font-size: 13px;
+                               -fx-padding: 10 16 10 16; -fx-background-radius: 4; -fx-cursor: hand;
+                               -fx-border-color: transparent;"/>
+                <Region HBox.hgrow="ALWAYS"/>
+                <Label fx:id="statusLabel" text=""
+                       style="-fx-text-fill: #e50914; -fx-font-size: 12px;"/>
+            </HBox>
+
+            <!-- Table -->
+            <ScrollPane fitToWidth="true" hbarPolicy="NEVER" vbarPolicy="AS_NEEDED"
+                        style="-fx-background-color: transparent; -fx-background: transparent; -fx-padding: 0 40 24 40;"
+                        VBox.vgrow="ALWAYS">
+
+                <VBox spacing="0" fx:id="commentsTableContainer">
+
+                    <!-- Table header -->
+                    <HBox alignment="CENTER_LEFT" spacing="0"
+                          style="-fx-background-color: #1a1a1a; -fx-padding: 12 16 12 16;
+                                 -fx-border-color: #2a2a2a; -fx-border-width: 0 0 1 0;">
+                        <Label text="USER" minWidth="150"
+                               style="-fx-text-fill: #666; -fx-font-size: 11px; -fx-letter-spacing: 1px; -fx-font-weight: bold;"/>
+                        <Label text="MEDIA" minWidth="180"
+                               style="-fx-text-fill: #666; -fx-font-size: 11px; -fx-letter-spacing: 1px; -fx-font-weight: bold;"/>
+                        <Label text="COMMENT" HBox.hgrow="ALWAYS"
+                               style="-fx-text-fill: #666; -fx-font-size: 11px; -fx-letter-spacing: 1px; -fx-font-weight: bold;"/>
+                        <Label text="DATE" minWidth="110"
+                               style="-fx-text-fill: #666; -fx-font-size: 11px; -fx-letter-spacing: 1px; -fx-font-weight: bold;"/>
+                        <Label text="STATUS" minWidth="100"
+                               style="-fx-text-fill: #666; -fx-font-size: 11px; -fx-letter-spacing: 1px; -fx-font-weight: bold;"/>
+                        <Label text="ACTION" minWidth="100"
+                               style="-fx-text-fill: #666; -fx-font-size: 11px; -fx-letter-spacing: 1px; -fx-font-weight: bold;"/>
+                    </HBox>
+
+                    <!-- Rows injected by controller into this VBox -->
+                    <VBox fx:id="commentsRows" spacing="0"/>
+
+                    <!-- Empty state -->
+                    <VBox fx:id="emptyState" alignment="CENTER" spacing="12"
+                          style="-fx-padding: 80 0 80 0;" visible="false" managed="false">
+                        <Label text="🎬"
+                               style="-fx-font-size: 48px;"/>
+                        <Label text="No comments found"
+                               style="-fx-text-fill: #555; -fx-font-size: 18px; -fx-font-weight: bold;"/>
+                        <Label text="All clear — nothing to moderate right now."
+                               style="-fx-text-fill: #3a3a3a; -fx-font-size: 13px;"/>
+                    </VBox>
+
+                </VBox>
+            </ScrollPane>
+
+        </VBox>
+    </center>
+
+</BorderPane>

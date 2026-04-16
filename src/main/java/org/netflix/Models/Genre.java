@@ -18,6 +18,8 @@ public class Genre {
 
     @Override
     public String toString() {
+        if (name == null) return "";
         return name.toString().replace("_", " ");
     }
+
 }

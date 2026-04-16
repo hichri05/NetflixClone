@@ -262,7 +262,6 @@
     -fx-tick-label-fill: white;
     -fx-axis-label-fill: white;
 }
-/* Tab Buttons */
 .tab-button {
     -fx-background-color: transparent;
     -fx-text-fill: #b3b3b3;
@@ -278,7 +277,6 @@
     -fx-border-width: 0 0 4 0; /* Only bottom border */
 }
 
-/* Comment Section Styling */
 .comment-section-bg {
     -fx-background-color: #000000;
     -fx-padding: 20;
@@ -304,4 +302,26 @@
     -fx-text-fill: white;
     -fx-font-weight: bold;
     -fx-cursor: hand;
+}
+.cast-photo {
+    -fx-background-radius: 50em;
+    -fx-border-radius: 50em;
+    -fx-effect: dropshadow(three-pass-box, rgba(0,0,0,0.5), 10, 0, 0, 0);
+}
+
+.cast-name {
+    -fx-text-fill: white;
+    -fx-font-size: 12px;
+    -fx-font-weight: bold;
+}
+
+.cast-role {
+    -fx-text-fill: #808080;
+    -fx-font-size: 11px;
+}
+
+.comment-bubble {
+    -fx-background-color: #262626;
+    -fx-background-radius: 10;
+    -fx-padding: 10;
 }

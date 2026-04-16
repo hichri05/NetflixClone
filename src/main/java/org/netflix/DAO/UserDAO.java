@@ -12,7 +12,7 @@ public class UserDAO {
 
     public static List<User> getAllUsers() {
         List<User> users = new ArrayList<>();
-        // Fixed: added role column so UserManagementController can read it
+
         String SQL = "SELECT id_User, userName, email, role FROM user";
 
         try (Statement stmt = conn.createStatement();
