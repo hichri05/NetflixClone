@@ -11,39 +11,41 @@ public class EpisodeDAO {
 
     public static List<Episode> getEpisodesBySeason(int idSaison) {
         List<Episode> episodes = new ArrayList<>();
-        // Fixed: Column names match your DB image (id_Saison, episodeNumber)
+        // Matches your DB columns: id_Saison, episodeNumber, thumbnail_path
         String sql = "SELECT * FROM episode WHERE id_Saison = ? ORDER BY episodeNumber ASC";
 
         try (PreparedStatement pstmt = conn.prepareStatement(sql)) {
             pstmt.setInt(1, idSaison);
             try (ResultSet rs = pstmt.executeQuery()) {
                 while (rs.next()) {
-                    episodes.add(new Episode(
-                            rs.getInt("id_Episode"),
-                            rs.getInt("id_Saison"),
-                            rs.getInt("episodeNumber"),
-                            rs.getString("title"),
-                            rs.getString("videoUrl"),
-                            rs.getString("thumbnail_path")
-                    ));
+                    Episode ep = new Episode();
+                    ep.setId(rs.getInt("id_Episode"));
+                    ep.setSeasonId(rs.getInt("id_Saison"));
+                    ep.setEpisodeNumber(rs.getInt("episodeNumber"));
+                    ep.setTitle(rs.getString("title"));
+                    ep.setDescription(rs.getString("description"));
+                    ep.setFilePath(rs.getString("videoUrl"));
+                    ep.setThumbnailPath(rs.getString("thumbnail_path"));
+                    ep.setDuration(rs.getInt("duration_minutes"));
+
+                    episodes.add(ep);
                 }
             }
         } catch (SQLException e) {
-            System.err.println("Erreur : " + e.getMessage());
+            System.err.println("Erreur DAO : " + e.getMessage());
         }
         return episodes;
     }
 
     public static boolean addEpisode(Episode episode) {
-        // Fixed: matches columns in your screenshot
-        String sql = "INSERT INTO episode (id_Saison, episodeNumber, title, videoUrl, thumbnail_path, description, duration_minutes) VALUES (?, ?, ?, ?, ?, ?, ?)";
+        String sql = "INSERT INTO episode (id_Saison, episodeNumber, title, description, videoUrl, thumbnail_path, duration_minutes) VALUES (?, ?, ?, ?, ?, ?, ?)";
         try (PreparedStatement pstmt = conn.prepareStatement(sql)) {
             pstmt.setInt(1, episode.getSeasonId());
             pstmt.setInt(2, episode.getEpisodeNumber());
             pstmt.setString(3, episode.getTitle());
-            pstmt.setString(4, episode.getFilePath());
-            pstmt.setString(5, episode.getThumbnailPath());
-            pstmt.setString(6, episode.getDescription());
+            pstmt.setString(4, episode.getDescription());
+            pstmt.setString(5, episode.getFilePath());
+            pstmt.setString(6, episode.getThumbnailPath());
             pstmt.setInt(7, episode.getDuration());
 
             return pstmt.executeUpdate() > 0;
