@@ -231,7 +231,6 @@ public class MediaDetailsController {
         }
     }
 
-    // ── Comments Section ──
     private void loadComments() {
         commentsListContainer.getChildren().clear();
         List<CommentDAO.CommentDTO> comments = CommentDAO.getCommentsByMedia(media.getIdMedia());
@@ -253,7 +252,6 @@ public class MediaDetailsController {
             Region spacer = new Region();
             HBox.setHgrow(spacer, Priority.ALWAYS);
 
-            // Report / Unreport Button Logic
             Button reportBtn = new Button();
             boolean isReported = dto.comment.getIs_reported() == 1;
 
@@ -261,7 +259,6 @@ public class MediaDetailsController {
                 reportBtn.setText("🚨 Reported");
                 reportBtn.setStyle("-fx-background-color: #3a0a0a; -fx-text-fill: #e50914; -fx-font-size: 10px; -fx-padding: 2 8 2 8; -fx-background-radius: 4; -fx-border-color: transparent;");
 
-                // Only Admin can "Unreport"
                 if (currentUser.getRole().equalsIgnoreCase("admin")) {
                     reportBtn.setCursor(Cursor.HAND);
                     reportBtn.setOnAction(e -> handleUnreportComment(dto.comment.getId_Comment()));
@@ -278,7 +275,6 @@ public class MediaDetailsController {
 
             header.getChildren().addAll(userLabel, dateLabel, spacer, reportBtn);
 
-            // Delete Button Logic
             if (currentUser.getRole().equalsIgnoreCase("admin") || currentUser.getId() == dto.comment.getId_User()) {
                 Button deleteBtn = new Button("🗑 Delete");
                 deleteBtn.setStyle("-fx-background-color: transparent; -fx-text-fill: #888; -fx-font-size: 10px; -fx-cursor: hand;");

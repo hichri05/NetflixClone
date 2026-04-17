@@ -29,11 +29,10 @@ import java.util.ResourceBundle;
 
 public class SeriePageController implements Initializable {
 
-    // ── Matches FilmPage.fxml ─────────────────────────────────────────
+
     @FXML private VBox      categoryContainer;
     @FXML private TextField searchField;
 
-    // ── Hover popup shared across all cards ───────────────────────────
     private Popup             sharedPreviewPopup;
     private PauseTransition   showDelay;
     private PauseTransition   hideDelay;
@@ -41,7 +40,6 @@ public class SeriePageController implements Initializable {
 
     @Override
     public void initialize(URL url, ResourceBundle rb) {
-        // Setup shared popup + delays
         sharedPreviewPopup = new Popup();
         sharedPreviewPopup.setAutoHide(false);
         sharedPreviewPopup.setHideOnEscape(true);
@@ -53,7 +51,6 @@ public class SeriePageController implements Initializable {
         sharedPreviewPopup.addEventFilter(MouseEvent.MOUSE_ENTERED, e -> hideDelay.stop());
         sharedPreviewPopup.addEventFilter(MouseEvent.MOUSE_EXITED,  e -> hideDelay.playFromStart());
 
-        // Load all genre rows
         categoryContainer.getChildren().clear();
         loadMovieCategories();
     }
@@ -89,12 +86,9 @@ public class SeriePageController implements Initializable {
         categoryContainer.getChildren().add(new VBox(label, hScroll));
     }
 
-    // ═════════════════════════════════════════════════════════════════
-    //  CARD BUILDER
-    // ═════════════════════════════════════════════════════════════════
+
 
     private VBox createSerieCard(Serie serie) {
-        // Poster thumbnail
         ImageView poster = new ImageView();
         try {
             String url = serie.getBackDropImageUrl();
@@ -150,13 +144,11 @@ public class SeriePageController implements Initializable {
                 "-fx-border-color: #333; -fx-border-radius: 10; -fx-padding: 0;");
         preview.setPrefWidth(300);
 
-        // Backdrop image
         ImageView img = new ImageView(new Image(serie.getBackDropImageUrl(), true));
         img.setFitWidth(300);
         img.setFitHeight(160);
         img.setPreserveRatio(false);
 
-        // Info section
         VBox info = new VBox(8);
         info.setPadding(new Insets(15));
 
@@ -164,7 +156,7 @@ public class SeriePageController implements Initializable {
         Label matchLbl = new Label(match + "% Match");
         matchLbl.setStyle("-fx-text-fill: #46d369; -fx-font-weight: bold; -fx-font-size: 14;");
 
-        // Buttons
+
         String outlineBtn = "-fx-background-color: transparent; -fx-border-color: white; " +
                 "-fx-border-radius: 50; -fx-text-fill: white; -fx-cursor: hand;";
         Button playBtn = new Button("▶");
