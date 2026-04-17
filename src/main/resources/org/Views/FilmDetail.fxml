@@ -13,49 +13,37 @@
            styleClass="root-overlay"
            stylesheets="@style.css">
 
-    <!-- Dark overlay background -->
     <Pane styleClass="dark-overlay"/>
 
-    <!-- Main modal container -->
     <VBox styleClass="modal-container" maxWidth="900" maxHeight="720"
           alignment="TOP_LEFT">
 
-        <!-- ═══════════════════════════════════════════════════ -->
-        <!--  HERO SECTION  -->
-        <!-- ═══════════════════════════════════════════════════ -->
+
         <StackPane styleClass="hero-section" minHeight="340">
 
-            <!-- Backdrop image -->
             <ImageView fx:id="backdropImage" fitWidth="900" fitHeight="340"
                        preserveRatio="false" styleClass="backdrop-image"/>
 
-            <!-- Gradient overlay on backdrop -->
             <Pane styleClass="backdrop-gradient"/>
 
-            <!-- Close button top-right -->
             <HBox alignment="TOP_RIGHT" styleClass="close-btn-wrapper">
                 <Button fx:id="closeBtn" styleClass="close-btn" text="✕"
                         onAction="#handleClose"/>
             </HBox>
 
-            <!-- Bottom content over hero -->
             <VBox alignment="BOTTOM_LEFT" styleClass="hero-content-box">
 
-                <!-- Netflix MOVIE badge -->
                 <HBox alignment="CENTER_LEFT" spacing="6">
                     <Label styleClass="netflix-n" text="N"/>
                     <Label styleClass="movie-badge" text="M O V I E"/>
                 </HBox>
 
-                <!-- Title -->
                 <Label fx:id="titleLabel" styleClass="hero-title" text="THE QUANTUM HEIST"
                        wrapText="true"/>
 
-                <!-- Tagline -->
                 <Label fx:id="taglineLabel" styleClass="hero-tagline"
                        text="Saving time before it runs out"/>
 
-                <!-- Progress bar -->
                 <HBox alignment="CENTER_LEFT" spacing="10" styleClass="progress-row">
                     <ProgressBar fx:id="watchProgress" styleClass="watch-progress"
                                  progress="0.078" prefWidth="360" prefHeight="4"/>
@@ -63,7 +51,6 @@
                            text="10 of 128m"/>
                 </HBox>
 
-                <!-- Action buttons row -->
                 <HBox spacing="10" alignment="CENTER_LEFT" styleClass="action-row">
                     <Button fx:id="resumeBtn" styleClass="resume-btn"
                             text="▶  Resume" onAction="#handleResume"/>
@@ -74,7 +61,6 @@
                 </HBox>
             </VBox>
 
-            <!-- Star ratings top-right of hero -->
             <VBox alignment="TOP_RIGHT" styleClass="hero-rating-box">
                 <HBox fx:id="userRatingStars" styleClass="stars-row" spacing="2"/>
                 <HBox fx:id="criticRatingStars" styleClass="stars-row" spacing="2"/>
@@ -82,15 +68,10 @@
 
         </StackPane>
 
-        <!-- ═══════════════════════════════════════════════════ -->
-        <!--  DETAILS SECTION  -->
-        <!-- ═══════════════════════════════════════════════════ -->
-        <HBox styleClass="details-section" spacing="24">
 
-            <!-- LEFT COLUMN -->
+        <HBox styleClass="details-section" spacing="24">
             <VBox styleClass="left-col" spacing="12" HBox.hgrow="ALWAYS">
 
-                <!-- Title + meta -->
                 <Label fx:id="detailTitleLabel" styleClass="detail-title"
                        text="THE QUANTUM HEIST"/>
                 <HBox spacing="10" alignment="CENTER_LEFT">
@@ -100,21 +81,17 @@
                     <Label styleClass="meta-label ad-badge" text="AD›"/>
                 </HBox>
 
-                <!-- Description -->
                 <Label fx:id="descriptionLabel" styleClass="description-text"
                        wrapText="true" maxWidth="440"
                        text="A brilliant but disgraced physicist must use her unauthorized time-travel technology to pull off the ultimate heist: stealing a crucial historical artifact before a catastrophic paradox occurs. Can she and her ragtag team succeed?"/>
 
-                <!-- Genre tags -->
                 <FlowPane fx:id="genreTagsPane" styleClass="genre-tags-pane"
                           hgap="8" vgap="8"/>
 
             </VBox>
 
-            <!-- RIGHT COLUMN -->
             <VBox styleClass="right-col" spacing="14" minWidth="280">
 
-                <!-- CAST header -->
                 <HBox alignment="CENTER_LEFT" spacing="0">
                     <Label styleClass="section-label" text="CAST"/>
                     <Region HBox.hgrow="ALWAYS"/>
@@ -122,19 +99,15 @@
                            text="96% Match"/>
                 </HBox>
 
-                <!-- Cast avatars row -->
                 <HBox fx:id="castRow" spacing="10" alignment="CENTER_LEFT"/>
 
-                <!-- Cast names row -->
                 <HBox fx:id="castNamesRow" spacing="12" alignment="CENTER_LEFT"/>
 
-                <!-- Director -->
                 <HBox spacing="6" alignment="CENTER_LEFT">
                     <Label styleClass="info-key" text="Director:"/>
                     <Label fx:id="directorLabel" styleClass="info-val" text="—"/>
                 </HBox>
 
-                <!-- Genres text -->
                 <HBox spacing="6" alignment="CENTER_LEFT">
                     <Label styleClass="info-key" text="Genres:"/>
                     <Label fx:id="genresTextLabel" styleClass="info-val"
@@ -142,17 +115,14 @@
                            maxWidth="200"/>
                 </HBox>
 
-                <!-- Mood -->
                 <HBox spacing="6" alignment="CENTER_LEFT">
                     <Label styleClass="info-key" text="This movie is:"/>
                     <Label fx:id="moodLabel" styleClass="info-val green-text"
                            text="Exciting, Gritty"/>
                 </HBox>
 
-                <!-- Separator -->
                 <Separator styleClass="divider"/>
 
-                <!-- USER REVIEWS -->
                 <HBox alignment="CENTER_LEFT">
                     <Label styleClass="section-label" text="USER REVIEWS"/>
                     <Region HBox.hgrow="ALWAYS"/>
@@ -160,7 +130,6 @@
                             text="ADD YOUR REVIEW" />
                 </HBox>
 
-                <!-- Reviews list -->
                 <ScrollPane styleClass="reviews-scroll" fitToWidth="true"
                             prefHeight="140" hbarPolicy="NEVER">
                     <VBox fx:id="reviewsContainer" spacing="10" styleClass="reviews-vbox"/>

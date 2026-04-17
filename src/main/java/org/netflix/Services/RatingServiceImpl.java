@@ -17,7 +17,6 @@ public class RatingServiceImpl implements IRatingService {
 
     @Override
     public boolean rateMedia(int userId, int mediaId, float score) {
-        // Règle métier : score entre 1 et 5
         if (score < 1 || score > 5) return false;
 
         Rating existing = ratingDAO.findByUserAndMedia(userId, mediaId);
@@ -31,7 +30,6 @@ public class RatingServiceImpl implements IRatingService {
             result = ratingDAO.insert(rating);
         }
 
-        // Recalculer la moyenne après chaque vote
         if (result) mediaService.calculateAverageRating(mediaId);
         return result;
     }

@@ -14,8 +14,6 @@ public class SerieDAO {
     private static Connection  con=ConxDB.getInstance();
     public List<Serie> getAllSeries() {
         List<Serie> series = new ArrayList<>();
-        // FIX 1: Added spaces at the end of each string line to prevent "s.nbrSaisonFROM" error
-        // FIX 2: Corrected table names to match your schema (media and serie)
         String sql = "SELECT m.*, s.nbrSaison " +
                 "FROM media m " +
                 "INNER JOIN serie s ON m.id_Media = s.id_Media";
@@ -24,12 +22,10 @@ public class SerieDAO {
              ResultSet rs = stmt.executeQuery(sql)) {
 
             while (rs.next()) {
-                // Fetch genres for this specific media
                 List<Genre> genresList = MediaDAO.getGenresByMediaId(rs.getInt("id_Media"));
-                List<Acteur> casting = new ArrayList<>(); // Placeholder as seen in your code
+                List<Acteur> casting = new ArrayList<>();
 
-                // FIX 3: Defensive Null Checks for the Chart
-                // If views or backdrop_path are missing in DB, we provide defaults
+
                 int views = 0;
                 try { views = rs.getInt("views"); } catch (SQLException e) { /* Column might not exist */ }
 
@@ -84,7 +80,6 @@ public class SerieDAO {
 
             try (ResultSet rs = pstmt.executeQuery()) {
                 while (rs.next()) {
-                    //series.add(mapResultSetToSerie(rs));
                 }
             }
 

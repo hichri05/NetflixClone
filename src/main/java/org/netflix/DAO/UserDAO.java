@@ -24,7 +24,6 @@ public class UserDAO {
                 String email     = rs.getString("email");
                 String role      = rs.getString("role");
 
-                // Use the constructor that includes role
                 User user = new User(id, username, email, role, null, new ArrayList<>());
                 users.add(user);
             }
@@ -48,7 +47,6 @@ public class UserDAO {
             pstmt.setInt(1, userId);
             try (ResultSet rs = pstmt.executeQuery()) {
                 while (rs.next()) {
-                    // Fixed: single call to ResultToMedia — no duplicate adds, no undefined 'type' variable
                     Media media = MediaDAO.ResultToMedia(rs);
                     media.setGenres(MediaDAO.getGenresByMediaId(media.getIdMedia()));
                     favorites.add(media);
@@ -207,7 +205,6 @@ public class UserDAO {
             pstmt.setInt(1, userId);
             try (ResultSet rs = pstmt.executeQuery()) {
                 while (rs.next()) {
-                    // Utilisation de la méthode de mapping centralisée dans MediaDAO
                     history.add(MediaDAO.ResultToMedia(rs));
                 }
             }
