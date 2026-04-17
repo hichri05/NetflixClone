@@ -220,7 +220,7 @@ public class VideoPlayerController implements Initializable {
         }
     }
 
-    // ── Title setup ───────────────────────────────────────────────────────────
+
     private void setupTitle() {
         if (currentMedia != null) {
             videoTitle.setText(currentMedia.getTitle());
@@ -244,9 +244,6 @@ public class VideoPlayerController implements Initializable {
         return seasonId;
     }
 
-    // ══════════════════════════════════════════════════════════════════════════
-    //  BINGE-WATCH OVERLAY
-    // ══════════════════════════════════════════════════════════════════════════
 
     private void showNextEpisodeOverlay() {
         if (nextEpisode == null) return;
@@ -294,8 +291,7 @@ public class VideoPlayerController implements Initializable {
         nextEpisodeOverlay.setManaged(false);
     }
 
-    // ── Play next ─────────────────────────────────────────────────────────────
-    @FXML
+   @FXML
     public void handlePlayNext(ActionEvent event) {
         hideNextEpisodeOverlay();
         playNextEpisode();
@@ -320,7 +316,7 @@ public class VideoPlayerController implements Initializable {
         if (nextEpisode == null) return;
         if (mediaPlayer != null) mediaPlayer.stop();
 
-        // Navigate: set next episode in TransferData then reload
+
         TransferData.setEpisode(nextEpisode);
         try {
             javafx.fxml.FXMLLoader loader = new javafx.fxml.FXMLLoader(
@@ -333,7 +329,7 @@ public class VideoPlayerController implements Initializable {
         }
     }
 
-    // ── Video source resolution ───────────────────────────────────────────────
+
     private String resolveVideoSource() {
         // Episode takes priority
         if (currentEpisode != null) {
