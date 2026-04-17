@@ -74,7 +74,7 @@ public class Episode {
         this.duration = duration;
     }
 
-    public void setDesription(String desription) {
+    public void setDescription(String desription) {
         this.desription = desription;
     }
 
