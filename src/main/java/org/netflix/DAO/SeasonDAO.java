@@ -11,7 +11,6 @@ public class SeasonDAO {
 
     public static List<Season> getSeasonsBySerie(int idSerie) {
         List<Season> seasons = new ArrayList<>();
-        // Fixed: Table is 'saison', FK is 'id_Serie'
         String sql = "SELECT * FROM saison WHERE id_Serie = ? ORDER BY saisonNumber ASC";
 
         try (PreparedStatement pstmt = conn.prepareStatement(sql)) {

@@ -10,7 +10,6 @@ import java.util.List;
 public class RatingDAO {
     private static Connection conn = ConxDB.getInstance();
     public static boolean saveOrUpdateRating(Rating rating) {
-        // On utilise 'ON DUPLICATE KEY UPDATE' pour permettre à l'utilisateur de changer sa note
         String sql = "INSERT INTO rating (id_User, id_Media, score, ratingDate) VALUES (?, ?, ?, ?) " +
                 "ON DUPLICATE KEY UPDATE score = ?, ratingDate = ?";
 
@@ -20,7 +19,6 @@ public class RatingDAO {
             pstmt.setFloat(3, rating.getScore());
             pstmt.setDate(4, Date.valueOf(rating.getRatingDate()));
 
-            // Pour l'update
             pstmt.setFloat(5, rating.getScore());
             pstmt.setDate(6, Date.valueOf(rating.getRatingDate()));
 
@@ -80,7 +78,6 @@ public class RatingDAO {
         }
         return ids;
     }
-    // ✅ NOUVEAUX AJOUTS dans RatingDAO
 
     public Rating findByUserAndMedia(int userId, int mediaId) {
         String sql = "SELECT * FROM rating WHERE id_user=? AND id_media=?";

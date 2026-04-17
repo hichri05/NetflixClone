@@ -12,11 +12,9 @@
       xmlns:fx="http://javafx.com/fxml/1"
       fx:controller="org.netflix.Controllers.UserManagementController">
 
-    <!-- ── TOP BAR ─────────────────────────────────────────────────────────── -->
     <HBox alignment="CENTER_LEFT" spacing="16"
           style="-fx-background-color: #0a0a0a; -fx-padding: 18 30 18 30; -fx-border-color: #2a2a2a; -fx-border-width: 0 0 1 0;">
 
-        <!-- Netflix-red accent bar -->
         <Rectangle width="4" height="28" fill="#e50914" arcWidth="2" arcHeight="2"/>
 
         <Label text="User Moderation"
@@ -24,7 +22,6 @@
 
         <Region HBox.hgrow="ALWAYS"/>
 
-        <!-- Search -->
         <HBox alignment="CENTER_LEFT" spacing="0"
               style="-fx-background-color: #1f1f1f; -fx-border-color: #333; -fx-border-radius: 6; -fx-background-radius: 6;">
             <Label text="🔍" style="-fx-padding: 0 8 0 12; -fx-text-fill: #777; -fx-font-size: 13px;"/>
@@ -36,9 +33,7 @@
         </HBox>
     </HBox>
 
-    <!-- ── STAT CARDS ──────────────────────────────────────────────────────── -->
     <HBox spacing="16" style="-fx-padding: 20 30 4 30;">
-        <!-- Total Users -->
         <VBox spacing="4" style="-fx-background-color: #1a1a1a; -fx-padding: 14 20;
                                   -fx-background-radius: 8; -fx-border-color: #2a2a2a;
                                   -fx-border-radius: 8;" HBox.hgrow="ALWAYS">
@@ -48,7 +43,6 @@
                    style="-fx-text-fill: white; -fx-font-size: 28px; -fx-font-weight: bold;"/>
         </VBox>
 
-        <!-- Admins -->
         <VBox spacing="4" style="-fx-background-color: #1a1a1a; -fx-padding: 14 20;
                                   -fx-background-radius: 8; -fx-border-color: #2a2a2a;
                                   -fx-border-radius: 8;" HBox.hgrow="ALWAYS">
@@ -58,7 +52,6 @@
                    style="-fx-text-fill: #e50914; -fx-font-size: 28px; -fx-font-weight: bold;"/>
         </VBox>
 
-        <!-- Banned -->
         <VBox spacing="4" style="-fx-background-color: #1a1a1a; -fx-padding: 14 20;
                                   -fx-background-radius: 8; -fx-border-color: #2a2a2a;
                                   -fx-border-radius: 8;" HBox.hgrow="ALWAYS">
@@ -69,7 +62,6 @@
         </VBox>
     </HBox>
 
-    <!-- ── TABLE ───────────────────────────────────────────────────────────── -->
     <VBox VBox.vgrow="ALWAYS" style="-fx-padding: 16 30 0 30;">
         <TableView fx:id="userTable" VBox.vgrow="ALWAYS"
                    style="-fx-background-color: #1a1a1a;
@@ -94,7 +86,6 @@
         </TableView>
     </VBox>
 
-    <!-- ── BOTTOM ACTION BAR ───────────────────────────────────────────────── -->
     <HBox spacing="12" alignment="CENTER_RIGHT"
           style="-fx-padding: 16 30 20 30; -fx-background-color: #0a0a0a;
                  -fx-border-color: #2a2a2a; -fx-border-width: 1 0 0 0;">

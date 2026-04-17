@@ -50,12 +50,12 @@
 
                 <Region prefHeight="530.0" prefWidth="1280.0" />
 
-                <!-- Progress slider -->
+
                 <Slider fx:id="timeSlider" style="-fx-cursor: hand;">
                     <padding><Insets left="20.0" right="20.0" /></padding>
                 </Slider>
 
-                <!-- Bottom controls -->
+
                 <HBox alignment="CENTER_LEFT" spacing="20.0"
                       style="-fx-padding: 0 20 20 20;">
                     <children>
@@ -75,7 +75,7 @@
                                 style="-fx-background-color: transparent; -fx-text-fill: white; -fx-cursor: hand;"
                                 text="10s ⟳" />
 
-                        <!-- Next episode button (always visible for series) -->
+
                         <Button fx:id="nextEpisodeBtn" onAction="#handleNextEpisode"
                                 style="-fx-background-color: transparent; -fx-text-fill: #aaa;
                                        -fx-border-color: #555; -fx-border-radius: 4; -fx-background-radius: 4;
@@ -97,7 +97,7 @@
               StackPane.alignment="BOTTOM_RIGHT">
             <children>
 
-                <!-- Card -->
+
                 <VBox fx:id="nextEpisodeCard"
                       spacing="12"
                       style="-fx-background-color: rgba(20,20,20,0.96);
@@ -109,16 +109,16 @@
                       prefWidth="340">
                     <children>
 
-                        <!-- Thumbnail -->
+
                         <StackPane>
                             <ImageView fx:id="nextEpThumbnail"
                                        fitWidth="340" fitHeight="190"
                                        preserveRatio="false"
                                        style="-fx-background-radius: 12 12 0 0;" />
-                            <!-- Gradient over thumbnail -->
+
                             <VBox style="-fx-background-color: linear-gradient(to top, rgba(20,20,20,0.9), transparent);
                                          -fx-background-radius: 0;" />
-                            <!-- Countdown ring area (top-right) -->
+
                             <StackPane StackPane.alignment="TOP_RIGHT">
                                 <padding><Insets top="12" right="12" /></padding>
                                 <StackPane fx:id="countdownRing"
@@ -132,7 +132,7 @@
                             </StackPane>
                         </StackPane>
 
-                        <!-- Info -->
+
                         <VBox spacing="4">
                             <padding><Insets left="16" right="16" /></padding>
                             <Label text="NEXT EPISODE"
@@ -149,14 +149,14 @@
                                    maxHeight="40" />
                         </VBox>
 
-                        <!-- Countdown bar -->
+
                         <ProgressBar fx:id="countdownBar"
                                      progress="1.0"
                                      prefWidth="340" prefHeight="3"
                                      style="-fx-accent: #e50914; -fx-background-color: #333;
                                             -fx-background-radius: 0; -fx-padding: 0;" />
 
-                        <!-- Action buttons -->
+
                         <HBox spacing="10" alignment="CENTER">
                             <padding><Insets left="16" right="16" bottom="16" /></padding>
                             <Button fx:id="playNextBtn" onAction="#handlePlayNext"

@@ -23,7 +23,6 @@ public class ActeurDAO {
     }
     public static List<Acteur> getActeursByMedia(int id_Media) {
         List<Acteur> acteurs = new ArrayList<>();
-        // On suppose l'existence d'une table de liaison 'media_acteur'
         String sql = "SELECT a.* FROM acteur a " +
                 "JOIN media_acteurs ma ON a.id_Acteur = ma.id_Acteur " +
                 "WHERE ma.id_Media = ?";

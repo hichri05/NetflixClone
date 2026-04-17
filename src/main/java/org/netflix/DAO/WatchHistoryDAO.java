@@ -154,7 +154,6 @@ public class WatchHistoryDAO {
         return 0;
     }
     public static double[] getProgressAndDuration(int userId, int mediaId) {
-        // Get stopped_at_time
         double stoppedAt = 0;
         String sql1 = "SELECT stopped_at_time FROM watch_history " +
                 "WHERE id_User = ? AND id_Media = ? AND id_Episode IS NULL " +
@@ -165,7 +164,6 @@ public class WatchHistoryDAO {
             if (rs.next()) stoppedAt = rs.getDouble("stopped_at_time");
         } catch (SQLException e) { e.printStackTrace(); }
 
-        // Get actual duration from movie table (in minutes → convert to seconds)
         double durationSeconds = 6600; // fallback 110min
         String sql2 = "SELECT duration_minutes FROM movie WHERE id_Media = ?";
         try (PreparedStatement p = conn.prepareStatement(sql2)) {
