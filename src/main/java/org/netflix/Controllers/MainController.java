@@ -11,6 +11,7 @@ import javafx.geometry.Point2D;
 import javafx.geometry.Pos;
 import javafx.scene.Cursor;
 import javafx.scene.Parent;
+import javafx.scene.Scene;
 import javafx.scene.control.*;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
@@ -69,6 +70,11 @@ public class MainController implements Initializable {
     private PauseTransition seriesShowDelay;
     private PauseTransition seriesHideDelay;
 
+    // User profile popup
+    private Popup           userPopup;
+    private PauseTransition userShowDelay;
+    private PauseTransition userHideDelay;
+
     @Override
     public void initialize(URL url, ResourceBundle resourceBundle) {
         searchField.setFocusTraversable(false);
@@ -95,6 +101,7 @@ public class MainController implements Initializable {
         loadMediaRows();
         setupSearch();
         setupUser();
+        setupUserPopup();   // ← NEW
         setupInitialView();
         setupFilterBar();
         getTrendMovie();
@@ -107,10 +114,145 @@ public class MainController implements Initializable {
         return popup;
     }
 
+    // ── USER PROFILE POPUP (NEW) ─────────────────────────────────────
+
+    private void setupUserPopup() {
+        userPopup = new Popup();
+        userPopup.setAutoHide(true);
+        userPopup.setHideOnEscape(true);
+
+        userHideDelay = new PauseTransition(Duration.millis(250));
+        userHideDelay.setOnFinished(ev -> userPopup.hide());
+
+        userShowDelay = new PauseTransition(Duration.millis(180));
+
+        // Avatar initial
+        Label avatar = new Label(user != null
+                ? String.valueOf(user.getUsername().charAt(0)).toUpperCase() : "?");
+        avatar.setStyle(
+                "-fx-background-color: #e50914;" +
+                        "-fx-text-fill: white;" +
+                        "-fx-font-size: 18px;" +
+                        "-fx-font-weight: bold;" +
+                        "-fx-min-width: 42px; -fx-min-height: 42px;" +
+                        "-fx-max-width: 42px; -fx-max-height: 42px;" +
+                        "-fx-background-radius: 4;" +
+                        "-fx-alignment: center;"
+        );
+
+        Label nameLbl = new Label(user != null ? user.getUsername() : "");
+        nameLbl.setStyle(
+                "-fx-text-fill: white;" +
+                        "-fx-font-size: 13px;" +
+                        "-fx-font-weight: bold;"
+        );
+
+        VBox topRow = new VBox(6, avatar, nameLbl);
+        topRow.setAlignment(Pos.CENTER);
+        topRow.setPadding(new Insets(14, 16, 12, 16));
+
+        Pane divider = new Pane();
+        divider.setPrefHeight(1);
+        divider.setStyle("-fx-background-color: #333;");
+
+        Button logoutBtn = new Button("Sign out of Netflix");
+        logoutBtn.setStyle(
+                "-fx-background-color: transparent;" +
+                        "-fx-text-fill: #e5e5e5;" +
+                        "-fx-font-size: 13px;" +
+                        "-fx-cursor: hand;" +
+                        "-fx-padding: 10 16;" +
+                        "-fx-alignment: center;" +
+                        "-fx-border-width: 0;"
+        );
+        logoutBtn.setMaxWidth(Double.MAX_VALUE);
+        logoutBtn.setOnMouseEntered(e -> logoutBtn.setStyle(
+                "-fx-background-color: #1a1a1a;" +
+                        "-fx-text-fill: white;" +
+                        "-fx-font-size: 13px;" +
+                        "-fx-cursor: hand;" +
+                        "-fx-padding: 10 16;" +
+                        "-fx-alignment: center;" +
+                        "-fx-border-width: 0;"
+        ));
+        logoutBtn.setOnMouseExited(e -> logoutBtn.setStyle(
+                "-fx-background-color: transparent;" +
+                        "-fx-text-fill: #e5e5e5;" +
+                        "-fx-font-size: 13px;" +
+                        "-fx-cursor: hand;" +
+                        "-fx-padding: 10 16;" +
+                        "-fx-alignment: center;" +
+                        "-fx-border-width: 0;"
+        ));
+        logoutBtn.setOnAction(e -> handleLogout());
+
+        // Small downward-pointing triangle caret at top of popup
+        Label caret = new Label("▲");
+        caret.setStyle(
+                "-fx-text-fill: #333;" +
+                        "-fx-font-size: 12px;" +
+                        "-fx-padding: 0 0 0 0;"
+        );
+        caret.setAlignment(Pos.CENTER);
+
+        VBox card = new VBox(topRow, divider, logoutBtn);
+        card.setStyle(
+                "-fx-background-color: #141414;" +
+                        "-fx-border-color: #333;" +
+                        "-fx-border-width: 1;" +
+                        "-fx-background-radius: 4;" +
+                        "-fx-border-radius: 4;" +
+                        "-fx-effect: dropshadow(gaussian, rgba(0,0,0,0.85), 16, 0, 0, 5);"
+        );
+        card.setPrefWidth(190);
+
+        VBox wrapper = new VBox(0, caret, card);
+        wrapper.setAlignment(Pos.TOP_CENTER);
+        wrapper.setStyle("-fx-background-color: transparent;");
+
+        userPopup.getContent().add(wrapper);
+
+        // Keep popup alive when mouse is inside
+        wrapper.addEventFilter(MouseEvent.MOUSE_ENTERED, e -> userHideDelay.stop());
+        wrapper.addEventFilter(MouseEvent.MOUSE_EXITED,  e -> userHideDelay.playFromStart());
+
+        // Wire up the userinf label
+        userinf.setCursor(Cursor.HAND);
+        userinf.setOnMouseEntered(e -> {
+            userHideDelay.stop();
+            userShowDelay.setOnFinished(ev -> {
+                Point2D p = userinf.localToScreen(0, 0);
+                userPopup.show(userinf,
+                        p.getX() - card.getPrefWidth() / 2 + userinf.getWidth() / 2,
+                        p.getY() + userinf.getHeight() + 4);
+            });
+            userShowDelay.playFromStart();
+        });
+        userinf.setOnMouseExited(e -> {
+            userShowDelay.stop();
+            userHideDelay.playFromStart();
+        });
+    }
+
+    private void handleLogout() {
+        if (userPopup != null) userPopup.hide();
+        Session.logout();
+        try {
+            Parent root = FXMLLoader.load(
+                    getClass().getResource("/org/Views/SignIn.fxml"));
+            Stage stage = (Stage) mediaRows.getScene().getWindow();
+            Scene scene = new Scene(root);
+            stage.setScene(scene);
+            stage.setFullScreen(true);
+            stage.show();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
+
     // ── FILTER BAR SETUP ─────────────────────────────────────────────
 
     private void setupFilterBar() {
-        // Populate genre combo
         List<String> genres = new ArrayList<>();
         genres.add("All Genres");
         for (MediaGenre g : MediaGenre.values()) {
@@ -119,7 +261,6 @@ public class MainController implements Initializable {
         genreFilterCombo.setItems(FXCollections.observableArrayList(genres));
         genreFilterCombo.setValue("All Genres");
 
-        // Populate year combo — gather distinct years from DB, fallback to range
         List<String> years = new ArrayList<>();
         years.add("All Years");
         List<Media> all = MediaDAO.getAllMedia();
@@ -128,7 +269,6 @@ public class MainController implements Initializable {
             if (m.getReleaseYear() > 1900) distinctYears.add(m.getReleaseYear());
         }
         for (int y : distinctYears) years.add(String.valueOf(y));
-        // Fallback range if DB is empty
         if (distinctYears.isEmpty()) {
             for (int y = 2025; y >= 1980; y--) years.add(String.valueOf(y));
         }
@@ -145,12 +285,10 @@ public class MainController implements Initializable {
         boolean yearActive  = selectedYear  != null && !selectedYear.equals("All Years");
 
         if (!genreActive && !yearActive) {
-            // Nothing selected — just go home
             showHomeView();
             return;
         }
 
-        // Build filter heading
         StringBuilder heading = new StringBuilder("Results");
         if (genreActive && yearActive)
             heading = new StringBuilder(selectedGenre + "  ·  " + selectedYear);
@@ -159,8 +297,6 @@ public class MainController implements Initializable {
         else
             heading = new StringBuilder(selectedYear);
         filterHeadingLabel.setText(heading.toString());
-
-
 
         List<Media> results = List.of();
         if (genreActive) {
@@ -179,10 +315,8 @@ public class MainController implements Initializable {
                     .collect(Collectors.toList());
         }
 
-        // Render chips showing active filters
         renderFilterChips(genreActive ? selectedGenre : null, yearActive ? selectedYear : null);
 
-        // Show results
         filterGrid.getChildren().clear();
         if (results.isEmpty()) {
             Label empty = new Label("No results found.");
