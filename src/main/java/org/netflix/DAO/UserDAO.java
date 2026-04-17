@@ -192,4 +192,29 @@ public class UserDAO {
         }
         return result;
     }
+
+    public static List<Media> getWatchHistory(int userId) {
+        List<Media> history = new ArrayList<>();
+        String sql = """
+            SELECT m.* FROM media m
+            JOIN watch_history wh ON m.id_Media = wh.id_Media
+            WHERE wh.id_User = ?
+            ORDER BY wh.last_watched DESC
+            LIMIT 20
+        """;
+
+        try (PreparedStatement pstmt = conn.prepareStatement(sql)) {
+            pstmt.setInt(1, userId);
+            try (ResultSet rs = pstmt.executeQuery()) {
+                while (rs.next()) {
+                    // Utilisation de la méthode de mapping centralisée dans MediaDAO
+                    history.add(MediaDAO.ResultToMedia(rs));
+                }
+            }
+        } catch (SQLException e) {
+            System.err.println("Erreur lors de la récupération de l'historique : " + e.getMessage());
+            e.printStackTrace();
+        }
+        return history;
+    }
 }
