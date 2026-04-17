@@ -197,4 +197,27 @@ public class CommentDAO {
     public boolean delete(int commentId) { return deleteComment(commentId); }
     public boolean markAsReported(int commentId) { return reportComment(commentId); }
     public List<Comment> findReported() { return getReportedComments(); }
+    public static boolean updateComment(Comment comment) {
+        // Requête SQL pour modifier le contenu et mettre à jour la date si nécessaire
+        String sql = "UPDATE Comment SET content = ?, created_at = ? WHERE id_Comment = ?";
+
+        try (PreparedStatement pstmt = conn.prepareStatement(sql)) {
+            // Remplacement des paramètres (?)
+            pstmt.setString(1, comment.getContent());
+            // On met à jour la date à "aujourd'hui" pour indiquer que le commentaire a été modifié
+            pstmt.setDate(2, Date.valueOf(java.time.LocalDate.now()));
+            pstmt.setInt(3, comment.getId_Comment());
+
+            // Exécution de la requête
+            int rowsAffected = pstmt.executeUpdate();
+
+            // Si rowsAffected > 0, cela signifie que le commentaire a été trouvé et mis à jour
+            return rowsAffected > 0;
+
+        } catch (SQLException e) {
+            System.err.println("Erreur lors de la mise à jour du commentaire : " + e.getMessage());
+            e.printStackTrace();
+            return false;
+        }
+    }
 }

@@ -65,7 +65,6 @@
     -fx-font-family: "Arial Black";
     -fx-font-size: 52px;
     -fx-text-fill: white;
-
     -fx-effect: dropshadow(gaussian, rgba(0,0,0,0.9), 20, 0.6, 0, 0);
 }
 
@@ -73,7 +72,6 @@
     -fx-font-size: 18px;
     -fx-text-fill: #e5e5e5;
     -fx-max-width: 600px;
-
     -fx-effect: dropshadow(gaussian, rgba(0,0,0,1), 10, 0.6, 0, 0);
 }
 
@@ -83,7 +81,6 @@
     -fx-text-fill: black;
     -fx-font-weight: bold;
     -fx-font-size: 16px;
-
     -fx-background-radius: 5;
     -fx-padding: 12 28;
     -fx-cursor: hand;
@@ -98,13 +95,26 @@
     -fx-text-fill: white;
     -fx-font-weight: bold;
     -fx-font-size: 16px;
-
     -fx-background-radius: 5;
     -fx-padding: 12 28;
     -fx-cursor: hand;
 }
 .btn-mylist:hover {
     -fx-background-color: rgba(109,109,110,0.4);
+}
+
+/* ✅ MODIFICATION : Bouton Back → fond blanc, texte noir gras */
+.btn-back {
+    -fx-background-color: white;
+    -fx-text-fill: black;
+    -fx-font-weight: bold;
+    -fx-font-size: 14px;
+    -fx-background-radius: 5;
+    -fx-padding: 8 20;
+    -fx-cursor: hand;
+}
+.btn-back:hover {
+    -fx-background-color: rgba(255, 255, 255, 0.85);
 }
 
 .genre-title {
@@ -176,7 +186,6 @@
     -fx-font-size: 14px;
     -fx-font-weight: normal;
     -fx-cursor: hand;
-
     -fx-transition: all 0.2s ease-in-out;
 }
 
@@ -227,7 +236,7 @@
 }
 
 .slider .thumb {
-    -fx-background-color: #e50914; /* Netflix Red */
+    -fx-background-color: #e50914;
     -fx-background-radius: 10;
 }
 
@@ -238,20 +247,22 @@
     -fx-font-family: "Monospaced";
     -fx-font-weight: bold;
 }
+
+/* ✅ MODIFICATION : Étoiles → couleur jaune (au lieu de rouge) */
 .star-btn {
     -fx-font-size: 28px;
     -fx-text-fill: #555;
     -fx-cursor: hand;
 }
 .star-filled {
-    -fx-text-fill: #f5c518;
+    -fx-text-fill: #f5c518; /* Jaune doré */
+}
+.star-btn:hover {
+    -fx-text-fill: #f5c518; /* Jaune doré au hover */
 }
 
-.star-btn:hover {
-    -fx-text-fill: #f5c518;
-}
 .chart-bar {
-    -fx-bar-fill: #e50914; /* Netflix Red */
+    -fx-bar-fill: #e50914;
 }
 
 .chart-plot-background {
@@ -273,8 +284,8 @@
 
 .tab-active {
     -fx-text-fill: white;
-    -fx-border-color: #e50914; /* Netflix Red Line */
-    -fx-border-width: 0 0 4 0; /* Only bottom border */
+    -fx-border-color: #e50914;
+    -fx-border-width: 0 0 4 0;
 }
 
 .comment-section-bg {
@@ -297,12 +308,55 @@
     -fx-border-width: 0 0 1 0;
 }
 
+/* ✅ MODIFICATION : Bouton Publier → rouge */
 .publish-btn {
     -fx-background-color: #e50914;
     -fx-text-fill: white;
     -fx-font-weight: bold;
     -fx-cursor: hand;
+    -fx-background-radius: 5;
+    -fx-padding: 8 20;
 }
+.publish-btn:hover {
+    -fx-background-color: #c40812;
+}
+
+/* ✅ AJOUT : Bouton Modifier un commentaire */
+.btn-edit {
+    -fx-background-color: transparent;
+    -fx-text-fill: #f5c518;
+    -fx-font-size: 12px;
+    -fx-font-weight: bold;
+    -fx-cursor: hand;
+    -fx-border-color: #f5c518;
+    -fx-border-width: 1;
+    -fx-border-radius: 4;
+    -fx-background-radius: 4;
+    -fx-padding: 4 10;
+}
+.btn-edit:hover {
+    -fx-background-color: #f5c518;
+    -fx-text-fill: black;
+}
+
+/* ✅ AJOUT : Bouton Supprimer un commentaire */
+.btn-delete {
+    -fx-background-color: transparent;
+    -fx-text-fill: #e50914;
+    -fx-font-size: 12px;
+    -fx-font-weight: bold;
+    -fx-cursor: hand;
+    -fx-border-color: #e50914;
+    -fx-border-width: 1;
+    -fx-border-radius: 4;
+    -fx-background-radius: 4;
+    -fx-padding: 4 10;
+}
+.btn-delete:hover {
+    -fx-background-color: #e50914;
+    -fx-text-fill: white;
+}
+
 .cast-photo {
     -fx-background-radius: 50em;
     -fx-border-radius: 50em;
