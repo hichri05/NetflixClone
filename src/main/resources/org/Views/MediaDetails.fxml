@@ -105,7 +105,7 @@
                                                   prefWidth="150" />
                                     </children>
                                 </HBox>
-                                <VBox fx:id="episodesContainer" spacing="15.0" style="-fx-padding: 10 0 10 0;" />
+                                <VBox fx:id="episodesContainers" spacing="15.0" style="-fx-padding: 10 0 10 0;" />
                             </children>
                         </VBox>
 
