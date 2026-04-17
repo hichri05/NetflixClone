@@ -14,7 +14,7 @@ import java.util.stream.Collectors;
 
 public class AdminCommentController {
 
-    // ── FXML refs ─────────────────────────────────────────────────────────────
+
     @FXML private Label adminNameLabel;
     @FXML private Label reportedCountLabel;
     @FXML private Label totalCountLabel;
@@ -27,12 +27,12 @@ public class AdminCommentController {
     @FXML private VBox commentsRows;
     @FXML private VBox emptyState;
 
-    // ── State ─────────────────────────────────────────────────────────────────
+
     private boolean showingReportedOnly = false;
     private List<CommentDAO.CommentDTO> allComments;
     private List<CommentDAO.CommentDTO> reportedComments;
 
-    // ─────────────────────────────────────────────────────────────────────────
+
     @FXML
     public void initialize() {
         if (Session.getUser() != null)
@@ -41,7 +41,7 @@ public class AdminCommentController {
         renderRows(allComments);
     }
 
-    // ── Data loading ──────────────────────────────────────────────────────────
+
     private void loadData() {
         allComments      = CommentDAO.getAllComments();
         reportedComments = CommentDAO.getReportedCommentsDTO();
@@ -50,7 +50,7 @@ public class AdminCommentController {
         reportedCountLabel.setText(String.valueOf(reportedComments.size()));
     }
 
-    // ── Render rows ───────────────────────────────────────────────────────────
+
     private void renderRows(List<CommentDAO.CommentDTO> list) {
         commentsRows.getChildren().clear();
 
@@ -72,7 +72,7 @@ public class AdminCommentController {
         }
     }
 
-    // ── Build a single row ────────────────────────────────────────────────────
+
     private HBox buildRow(CommentDAO.CommentDTO dto, int index) {
         boolean isReported = dto.comment.getIs_reported() == 1;
         String rowBg = isReported ? "#1c1010" : (index % 2 == 0 ? "#181818" : "#1a1a1a");
@@ -84,24 +84,20 @@ public class AdminCommentController {
                 "-fx-padding: 14 16 14 16;" +
                 "-fx-border-color: #222; -fx-border-width: 0 0 1 0;");
 
-        // Left red bar for reported
         if (isReported) {
             row.setStyle(row.getStyle() + "-fx-border-color: #e50914 #222 #222 #e50914;" +
                     "-fx-border-width: 0 0 1 3;");
         }
 
-        // Hover effect
         row.setOnMouseEntered(e -> row.setStyle(row.getStyle()
                 .replace(rowBg, isReported ? "#2a1010" : "#222222")));
         row.setOnMouseExited(e -> row.setStyle(row.getStyle()
                 .replace(isReported ? "#2a1010" : "#222222", rowBg)));
 
-        // ── USER column ──
         VBox userCol = new VBox(2);
         userCol.setMinWidth(150);
         userCol.setMaxWidth(150);
 
-        // Avatar circle with initial
         String initial = dto.username.isEmpty() ? "?" :
                 String.valueOf(dto.username.charAt(0)).toUpperCase();
         Label avatar = new Label(initial);
@@ -123,7 +119,6 @@ public class AdminCommentController {
         userBox.getChildren().addAll(avatar, userInfo);
         userCol.getChildren().add(userBox);
 
-        // ── MEDIA column ──
         VBox mediaCol = new VBox(2);
         mediaCol.setMinWidth(180);
         mediaCol.setMaxWidth(180);
@@ -139,21 +134,18 @@ public class AdminCommentController {
 
         mediaCol.getChildren().addAll(mediaTitle, mediaId);
 
-        // ── CONTENT column ──
         Label content = new Label(dto.comment.getContent());
         content.setStyle("-fx-text-fill: #aaaaaa; -fx-font-size: 13px;");
         content.setWrapText(true);
         content.setMaxWidth(Double.MAX_VALUE);
         HBox.setHgrow(content, Priority.ALWAYS);
 
-        // ── DATE column ──
         Label date = new Label(dto.comment.getCreated_at() != null
                 ? dto.comment.getCreated_at().toString() : "—");
         date.setMinWidth(110);
         date.setMaxWidth(110);
         date.setStyle("-fx-text-fill: #555; -fx-font-size: 12px;");
 
-        // ── STATUS column ──
         Label statusBadge;
         if (isReported) {
             statusBadge = new Label("🚨 Reported");
@@ -169,7 +161,7 @@ public class AdminCommentController {
         statusBadge.setMinWidth(100);
         statusBadge.setMaxWidth(100);
 
-        // ── ACTION column ──
+
         HBox actions = new HBox(6);
         actions.setAlignment(Pos.CENTER_LEFT);
         actions.setMinWidth(100);
@@ -185,7 +177,6 @@ public class AdminCommentController {
                 .replace("#b20710", "#e50914")));
         deleteBtn.setOnAction(e -> handleDelete(dto.comment.getId_Comment(), row));
 
-        // Dismiss report button (only for reported)
         if (isReported) {
             Button dismissBtn = new Button("Dismiss");
             dismissBtn.setStyle("-fx-background-color: #2a2a2a; -fx-text-fill: #aaa;" +
@@ -202,7 +193,6 @@ public class AdminCommentController {
         return row;
     }
 
-    // ── Delete ────────────────────────────────────────────────────────────────
     private void handleDelete(int commentId, HBox row) {
         Alert confirm = new Alert(Alert.AlertType.CONFIRMATION);
         confirm.setTitle("Delete Comment");
@@ -214,7 +204,7 @@ public class AdminCommentController {
             if (result == ButtonType.OK) {
                 if (CommentDAO.deleteComment(commentId)) {
                     commentsRows.getChildren().remove(row);
-                    loadData(); // refresh counts
+                    loadData();
                     flashStatus("Comment deleted.");
                 } else {
                     flashStatus("Failed to delete.");
@@ -223,7 +213,6 @@ public class AdminCommentController {
         });
     }
 
-    // ── Dismiss report ────────────────────────────────────────────────────────
     private void handleDismissReport(int commentId, HBox row) {
         if (CommentDAO.dismissReport(commentId)) {
             loadData();
@@ -235,7 +224,6 @@ public class AdminCommentController {
         }
     }
 
-    // ── Tabs ──────────────────────────────────────────────────────────────────
     @FXML
     private void handleTabAll(ActionEvent event) {
         showingReportedOnly = false;
@@ -252,13 +240,11 @@ public class AdminCommentController {
         renderRows(reportedComments);
     }
 
-    // ── Search ────────────────────────────────────────────────────────────────
     @FXML
     private void handleSearch() {
         renderRows(showingReportedOnly ? reportedComments : allComments);
     }
 
-    // ── Refresh ───────────────────────────────────────────────────────────────
     @FXML
     private void handleRefresh(ActionEvent event) {
         searchField.clear();
@@ -267,7 +253,6 @@ public class AdminCommentController {
         flashStatus("Refreshed.");
     }
 
-    // ── Helpers ───────────────────────────────────────────────────────────────
     private void flashStatus(String msg) {
         statusLabel.setText(msg);
         new Thread(() -> {

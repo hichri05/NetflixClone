@@ -44,7 +44,7 @@ public class MainController implements Initializable {
     @FXML private VBox       mediaRows;
     @FXML private Button     playbtn, mylistbtn, adminBtn;
 
-    // ── Filter bar controls ───────────────────────────────────────────
+
     @FXML private ComboBox<String> genreFilterCombo;
     @FXML private ComboBox<String> yearFilterCombo;
     @FXML private HBox             activeFilterChips;
@@ -59,18 +59,15 @@ public class MainController implements Initializable {
 
     private boolean moviesLoaded = false;
     private boolean seriesLoaded = false;
-
-    // Shared popup for movies tab
     private Popup           moviesPopup;
     private PauseTransition moviesShowDelay;
     private PauseTransition moviesHideDelay;
 
-    // Shared popup for series tab
     private Popup           seriesPopup;
     private PauseTransition seriesShowDelay;
     private PauseTransition seriesHideDelay;
 
-    // User profile popup
+
     private Popup           userPopup;
     private PauseTransition userShowDelay;
     private PauseTransition userHideDelay;
@@ -84,7 +81,7 @@ public class MainController implements Initializable {
         adminBtn.setVisible(isAdmin);
         adminBtn.setManaged(isAdmin);
 
-        // Setup shared popups for movies and series tabs
+
         moviesPopup = buildSharedPopup(moviesHideDelay = new PauseTransition(Duration.millis(200)));
         moviesShowDelay = new PauseTransition(Duration.millis(300));
         moviesHideDelay.setOnFinished(ev -> moviesPopup.hide());
@@ -101,7 +98,7 @@ public class MainController implements Initializable {
         loadMediaRows();
         setupSearch();
         setupUser();
-        setupUserPopup();   // ← NEW
+        setupUserPopup();
         setupInitialView();
         setupFilterBar();
         getTrendMovie();
@@ -114,7 +111,7 @@ public class MainController implements Initializable {
         return popup;
     }
 
-    // ── USER PROFILE POPUP (NEW) ─────────────────────────────────────
+
 
     private void setupUserPopup() {
         userPopup = new Popup();
@@ -126,7 +123,7 @@ public class MainController implements Initializable {
 
         userShowDelay = new PauseTransition(Duration.millis(180));
 
-        // Avatar initial
+
         Label avatar = new Label(user != null
                 ? String.valueOf(user.getUsername().charAt(0)).toUpperCase() : "?");
         avatar.setStyle(
@@ -186,7 +183,7 @@ public class MainController implements Initializable {
         ));
         logoutBtn.setOnAction(e -> handleLogout());
 
-        // Small downward-pointing triangle caret at top of popup
+
         Label caret = new Label("▲");
         caret.setStyle(
                 "-fx-text-fill: #333;" +
@@ -212,11 +209,10 @@ public class MainController implements Initializable {
 
         userPopup.getContent().add(wrapper);
 
-        // Keep popup alive when mouse is inside
         wrapper.addEventFilter(MouseEvent.MOUSE_ENTERED, e -> userHideDelay.stop());
         wrapper.addEventFilter(MouseEvent.MOUSE_EXITED,  e -> userHideDelay.playFromStart());
 
-        // Wire up the userinf label
+
         userinf.setCursor(Cursor.HAND);
         userinf.setOnMouseEntered(e -> {
             userHideDelay.stop();
@@ -250,7 +246,7 @@ public class MainController implements Initializable {
         }
     }
 
-    // ── FILTER BAR SETUP ─────────────────────────────────────────────
+
 
     private void setupFilterBar() {
         List<String> genres = new ArrayList<>();
@@ -364,7 +360,6 @@ public class MainController implements Initializable {
         showHomeView();
     }
 
-    // ── SETUP ────────────────────────────────────────────────────────
 
     private void setupHeroSize() {
         heroStack.sceneProperty().addListener((obs, oldScene, newScene) -> {
@@ -410,7 +405,6 @@ public class MainController implements Initializable {
         mainScroll.setVisible(true);
     }
 
-    // ── VIEW SWITCHING ───────────────────────────────────────────────
 
     private void hideAll() {
         mainScroll.setVisible(false);
@@ -454,7 +448,6 @@ public class MainController implements Initializable {
         }
     }
 
-    // ── MOVIES TAB ──────────────────────────────────────────────────
 
     private void addMovieGenreRow(String title, List<Movie> movies) {
         Label label = new Label(title);
@@ -574,7 +567,7 @@ public class MainController implements Initializable {
         return preview;
     }
 
-    // ── SERIES TAB ──────────────────────────────────────────────────
+
 
     private void addSerieGenreRow(String title, List<Serie> series) {
         Label label = new Label(title);
@@ -694,7 +687,7 @@ public class MainController implements Initializable {
         return preview;
     }
 
-    // ── SHARED NAVIGATION ────────────────────────────────────────────
+
 
     private void openMediaDetails(Media media) {
         TransferData.setMedia(media);
@@ -707,7 +700,6 @@ public class MainController implements Initializable {
         }
     }
 
-    // ── HOME ROW LOADER ──────────────────────────────────────────────
 
     private void loadRow(String title, List<Media> medias) {
         if (medias == null || medias.isEmpty()) return;
@@ -722,7 +714,7 @@ public class MainController implements Initializable {
         }
     }
 
-    // ── HERO ─────────────────────────────────────────────────────────
+
 
     public void getTrendMovie() {
         heroMedias = MediaDAO.getTopViews();
@@ -767,7 +759,7 @@ public class MainController implements Initializable {
                 ? "✓ In My List" : "+ My List");
     }
 
-    // ── SEARCH ───────────────────────────────────────────────────────
+
 
     private void performSearch(String search) {
         List<Media> results = MediaDAO.searchMedia(search);
@@ -794,7 +786,7 @@ public class MainController implements Initializable {
         }
     }
 
-    // ── MY LIST ──────────────────────────────────────────────────────
+
 
     public void displayMyList(List<Media> favorites) {
         listGrid.getChildren().clear();
@@ -813,7 +805,7 @@ public class MainController implements Initializable {
         }
     }
 
-    // ── HANDLERS ─────────────────────────────────────────────────────
+
 
     @FXML private void handleHomeClick(MouseEvent event)  { showHomeView(); }
     @FXML private void handleMoviesClick(MouseEvent event) { showMoviesView(); }

@@ -11,11 +11,10 @@ import java.util.List;
 public class CommentDAO {
     private static Connection conn = ConxDB.getInstance();
 
-    // ── DTO ───────────────────────────────────────────────────────────────────
     public static class CommentDTO {
         public Comment comment;
         public String username;
-        public String mediaTitle; // ← NEW: media title for admin view
+        public String mediaTitle;
 
         public CommentDTO(Comment comment, String username, String mediaTitle) {
             this.comment = comment;
@@ -23,13 +22,11 @@ public class CommentDAO {
             this.mediaTitle = mediaTitle != null ? mediaTitle : "Unknown";
         }
 
-        // Backwards-compatible constructor (used in MediaDetailsController)
         public CommentDTO(Comment comment, String username) {
             this(comment, username, "");
         }
     }
 
-    // ── Add comment ───────────────────────────────────────────────────────────
     public static boolean addComment(Comment comment) {
         String sql = "INSERT INTO comment (id_User, id_Media, content, created_at, is_reported) VALUES (?, ?, ?, ?, ?)";
         try (PreparedStatement pstmt = conn.prepareStatement(sql)) {
@@ -46,7 +43,6 @@ public class CommentDAO {
         }
     }
 
-    // ── Get comments by media (for MediaDetailsController) ───────────────────
     public static List<CommentDTO> getCommentsByMedia(int id_Media) {
         List<CommentDTO> comments = new ArrayList<>();
         String sql = "SELECT c.*, u.userName, m.title AS mediaTitle " +
@@ -68,7 +64,6 @@ public class CommentDAO {
         return comments;
     }
 
-    // ── Get ALL comments (for admin — all media) ──────────────────────────────
     public static List<CommentDTO> getAllComments() {
         List<CommentDTO> comments = new ArrayList<>();
         String sql = "SELECT c.*, u.userName, m.title AS mediaTitle " +
@@ -88,7 +83,6 @@ public class CommentDAO {
         return comments;
     }
 
-    // ── Get reported comments as DTO (for admin tab) ──────────────────────────
     public static List<CommentDTO> getReportedCommentsDTO() {
         List<CommentDTO> comments = new ArrayList<>();
         String sql = "SELECT c.*, u.userName, m.title AS mediaTitle " +
@@ -108,7 +102,6 @@ public class CommentDAO {
         return comments;
     }
 
-    // ── Report a comment (called from MediaDetailsController) ─────────────────
     public static boolean reportComment(int id_Comment) {
         String sql = "UPDATE comment SET is_reported = 1 WHERE id_Comment = ?";
         try (PreparedStatement pstmt = conn.prepareStatement(sql)) {
@@ -131,7 +124,6 @@ public class CommentDAO {
     }
 
 
-    // ── Dismiss a report (admin clears the flag) ──────────────────────────────
     public static boolean dismissReport(int id_Comment) {
         String sql = "UPDATE comment SET is_reported = 0 WHERE id_Comment = ?";
         try (PreparedStatement pstmt = conn.prepareStatement(sql)) {
@@ -143,7 +135,6 @@ public class CommentDAO {
         }
     }
 
-    // ── Delete a comment ──────────────────────────────────────────────────────
     public static boolean deleteComment(int id_Comment) {
         String sql = "DELETE FROM comment WHERE id_Comment = ?";
         try (PreparedStatement pstmt = conn.prepareStatement(sql)) {
@@ -155,7 +146,6 @@ public class CommentDAO {
         }
     }
 
-    // ── Legacy list (kept for backward compat) ────────────────────────────────
     public static List<Comment> getReportedComments() {
         List<Comment> list = new ArrayList<>();
         String sql = "SELECT * FROM comment WHERE is_reported = 1";
@@ -173,7 +163,6 @@ public class CommentDAO {
         return 0;
     }
 
-    // ── Private mapper ────────────────────────────────────────────────────────
     private static Comment mapComment(ResultSet rs) throws SQLException {
         return new Comment(
                 rs.getInt("id_Comment"),
@@ -187,7 +176,6 @@ public class CommentDAO {
         );
     }
 
-    // ── Stub methods kept for CommentServiceImpl ──────────────────────────────
     public boolean insert(Comment comment) { return addComment(comment); }
     public List<Comment> findByMedia(int mediaId) {
         List<Comment> out = new ArrayList<>();

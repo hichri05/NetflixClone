@@ -16,13 +16,8 @@ import java.util.List;
 import java.util.ResourceBundle;
 import java.util.stream.Collectors;
 
-/**
- * Controller for FilmDetail.fxml
- * Receives a Movie object from FilmPageController and populates all fields.
- */
 public class NetflixController implements Initializable {
 
-    // ── Matches FilmDetail.fxml fx:id fields EXACTLY ─────────────────
     @FXML private ImageView heroImageView;
     @FXML private Label     movieTitleLabel;
     @FXML private Label     directorLabel;
@@ -40,46 +35,38 @@ public class NetflixController implements Initializable {
         // Nothing to do — setMovie() is called right after load()
     }
 
-    // ═════════════════════════════════════════════════════════════════
-    //  ENTRY POINT — called by FilmPageController after loader.load()
-    // ═════════════════════════════════════════════════════════════════
 
     public void setMovie(Movie movie) {
         if (movie == null) return;
 
-        // Hero backdrop
         String backdropUrl = movie.getBackDropImageUrl();
         if (backdropUrl != null && !backdropUrl.isEmpty()) {
             try { heroImageView.setImage(new Image(backdropUrl, true)); }
             catch (Exception ignored) {}
         }
 
-        // Title
+
         movieTitleLabel.setText(movie.getTitle().toUpperCase());
 
-        // Director
+
         String dir = movie.getDirector();
         directorLabel.setText("Directed by " + (dir != null && !dir.isEmpty() ? dir : "Unknown"));
 
-        // Year
+
         yearLabel.setText(String.valueOf(movie.getReleaseYear()));
 
-        // Match % — stable per movie (derived from title hash)
         int match = 80 + (Math.abs(movie.getTitle().hashCode()) % 19);
         ratingLabel.setText(match + "% Match");
 
-        // Duration
+
         int mins = movie.getDurationMinutes();
         durationLabel.setText(mins > 0 ? (mins / 60) + "h " + (mins % 60) + "m" : "—");
 
-        // Type badge
         typeLabel.setText("MOVIE");
 
-        // Synopsis
         String desc = movie.getDescription();
         descriptionLabel.setText(desc != null && !desc.isEmpty() ? desc : "No synopsis available.");
 
-        // Cast
         List<Acteur> casting = movie.getCasting();
         if (casting != null && !casting.isEmpty()) {
             String castStr = casting.stream()
@@ -90,7 +77,6 @@ public class NetflixController implements Initializable {
             castLabel.setText("Cast: —");
         }
 
-        // Genres
         List<Genre> genres = movie.getGenres();
         if (genres != null && !genres.isEmpty()) {
             String genreStr = genres.stream()
@@ -101,13 +87,9 @@ public class NetflixController implements Initializable {
             genreLabel.setText("Genres: —");
         }
 
-        // Views
         viewsLabel.setText("Views: " + movie.getViews());
     }
 
-    // ═════════════════════════════════════════════════════════════════
-    //  FXML HANDLER — X button in FilmDetail.fxml (onAction="#handleClose")
-    // ═════════════════════════════════════════════════════════════════
 
     @FXML
     private void handleClose() {

@@ -83,7 +83,6 @@ public class MovieDAO {
         return movie;
     }
 
-    // ✅ SINGLE findbyGenre - fixed, no duplicate
     public static List<Movie> findbyGenre(String genreName) {
         List<Movie> movies = new ArrayList<>();
 
@@ -102,7 +101,6 @@ public class MovieDAO {
                     int currentId = rs.getInt("id_Media");
                     List<Genre> genreList = MediaDAO.getGenresByMediaId(currentId);
                     List<Acteur> casting = new ArrayList<>();
-                    // ✅ movies.add() not movies = new Movie()
                     movies.add(new Movie(
                             currentId,
                             rs.getString("title"),

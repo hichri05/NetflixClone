@@ -19,7 +19,6 @@
       xmlns:fx="http://javafx.com/fxml/1"
       fx:controller="org.netflix.Controllers.EpisodeController">
 
-    <!-- ── Top bar ── -->
     <HBox alignment="CENTER_LEFT" spacing="0"
           style="-fx-background-color: #1a1a1a; -fx-border-color: #2a2a2a; -fx-border-width: 0 0 1 0;">
         <padding><Insets top="18" right="28" bottom="18" left="28"/></padding>
@@ -40,10 +39,8 @@
                        -fx-font-size: 13px; -fx-cursor: hand; -fx-padding: 8 16 8 16;"/>
     </HBox>
 
-    <!-- ── Body ── -->
     <HBox spacing="0" VBox.vgrow="ALWAYS">
 
-        <!-- ── Left panel: Add form ── -->
         <VBox prefWidth="270" spacing="0"
               style="-fx-background-color: #1a1a1a; -fx-border-color: #2a2a2a; -fx-border-width: 0 1 0 0;">
             <padding><Insets top="24" right="20" bottom="24" left="20"/></padding>
@@ -53,12 +50,10 @@
             <Label text="Fill in the fields below"
                    style="-fx-text-fill: #666666; -fx-font-size: 12px;"/>
 
-            <!-- Divider -->
             <Region prefHeight="20"/>
             <Separator style="-fx-background-color: #2a2a2a;"/>
             <Region prefHeight="20"/>
 
-            <!-- Season Number -->
             <Label text="SEASON"
                    style="-fx-text-fill: #888888; -fx-font-size: 10px; -fx-font-weight: bold;"/>
             <Region prefHeight="6"/>
@@ -69,7 +64,6 @@
 
             <Region prefHeight="16"/>
 
-            <!-- Episode Number -->
             <Label text="EPISODE"
                    style="-fx-text-fill: #888888; -fx-font-size: 10px; -fx-font-weight: bold;"/>
             <Region prefHeight="6"/>
@@ -80,7 +74,6 @@
 
             <Region prefHeight="16"/>
 
-            <!-- Title -->
             <Label text="TITLE  (optional)"
                    style="-fx-text-fill: #888888; -fx-font-size: 10px; -fx-font-weight: bold;"/>
             <Region prefHeight="6"/>
@@ -92,7 +85,6 @@
 
             <Region prefHeight="16"/>
 
-            <!-- Video URL -->
             <Label text="VIDEO URL"
                    style="-fx-text-fill: #888888; -fx-font-size: 10px; -fx-font-weight: bold;"/>
             <Region prefHeight="6"/>
@@ -104,7 +96,6 @@
 
             <Region prefHeight="24"/>
 
-            <!-- Add button -->
             <Button text="＋  Add to Series" onAction="#handleAddEpisode"
                     maxWidth="Infinity"
                     style="-fx-background-color: #e50914; -fx-text-fill: #ffffff;
@@ -113,11 +104,9 @@
                            -fx-cursor: hand; -fx-padding: 10 0 10 0;"/>
         </VBox>
 
-        <!-- ── Right panel: Table ── -->
         <VBox spacing="0" HBox.hgrow="ALWAYS">
             <padding><Insets top="24" right="28" bottom="20" left="28"/></padding>
 
-            <!-- Table header row -->
             <HBox alignment="CENTER_LEFT" spacing="8">
                 <padding><Insets bottom="14"/></padding>
                 <Label text="Episodes"
@@ -148,7 +137,6 @@
 
             <Region prefHeight="14"/>
 
-            <!-- Footer row -->
             <HBox alignment="CENTER_RIGHT">
                 <Button text="Remove Selected" onAction="#handleDeleteEpisode"
                         style="-fx-background-color: transparent; -fx-text-fill: #cc3333;

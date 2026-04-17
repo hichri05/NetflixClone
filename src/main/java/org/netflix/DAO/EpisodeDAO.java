@@ -11,7 +11,6 @@ public class EpisodeDAO {
 
     public static List<Episode> getEpisodesBySeason(int idSaison) {
         List<Episode> episodes = new ArrayList<>();
-        // Matches your DB columns: id_Saison, episodeNumber, thumbnail_path
         String sql = "SELECT * FROM episode WHERE id_Saison = ? ORDER BY episodeNumber ASC";
 
         try (PreparedStatement pstmt = conn.prepareStatement(sql)) {

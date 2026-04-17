@@ -24,7 +24,6 @@ public class UserDAO {
                 String email     = rs.getString("email");
                 String role      = rs.getString("role");
 
-                // Use the constructor that includes role
                 User user = new User(id, username, email, role, null, new ArrayList<>());
                 users.add(user);
             }
@@ -48,7 +47,6 @@ public class UserDAO {
             pstmt.setInt(1, userId);
             try (ResultSet rs = pstmt.executeQuery()) {
                 while (rs.next()) {
-                    // Fixed: single call to ResultToMedia — no duplicate adds, no undefined 'type' variable
                     Media media = MediaDAO.ResultToMedia(rs);
                     media.setGenres(MediaDAO.getGenresByMediaId(media.getIdMedia()));
                     favorites.add(media);
@@ -191,5 +189,29 @@ public class UserDAO {
             e.printStackTrace();
         }
         return result;
+    }
+
+    public static List<Media> getWatchHistory(int userId) {
+        List<Media> history = new ArrayList<>();
+        String sql = """
+            SELECT m.* FROM media m
+            JOIN watch_history wh ON m.id_Media = wh.id_Media
+            WHERE wh.id_User = ?
+            ORDER BY wh.last_watched DESC
+            LIMIT 20
+        """;
+
+        try (PreparedStatement pstmt = conn.prepareStatement(sql)) {
+            pstmt.setInt(1, userId);
+            try (ResultSet rs = pstmt.executeQuery()) {
+                while (rs.next()) {
+                    history.add(MediaDAO.ResultToMedia(rs));
+                }
+            }
+        } catch (SQLException e) {
+            System.err.println("Erreur lors de la récupération de l'historique : " + e.getMessage());
+            e.printStackTrace();
+        }
+        return history;
     }
 }

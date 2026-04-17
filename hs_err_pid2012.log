@@ -1,0 +1,153 @@
+#
+# A fatal error has been detected by the Java Runtime Environment:
+#
+#  EXCEPTION_ACCESS_VIOLATION (0xc0000005) at pc=0x00007ffbd1d53785, pid=2012, tid=11192
+#
+# JRE version: OpenJDK Runtime Environment Microsoft-13106404 (21.0.10+7) (build 21.0.10+7-LTS)
+# Java VM: OpenJDK 64-Bit Server VM Microsoft-13106404 (21.0.10+7-LTS, mixed mode, sharing, tiered, compressed oops, compressed class ptrs, g1 gc, windows-amd64)
+# Problematic frame:
+# V  [jvm.dll+0x453785]
+#
+# No core dump will be written. Minidumps are not enabled by default on client versions of Windows
+#
+# If you would like to submit a bug report, please visit:
+#   https://github.com/microsoft/openjdk/issues
+#
+
+---------------  S U M M A R Y ------------
+
+Command Line: -javaagent:C:\IntelliJ IDEA 2025.3.3\lib\idea_rt.jar=50690 -Dfile.encoding=UTF-8 -Dsun.stdout.encoding=UTF-8 -Dsun.stderr.encoding=UTF-8 --module-path=C:\Users\latra\IdeaProjects\NetflixClone\target\classes;C:\Users\latra\.m2\repository\org\openjfx\javafx-base\21\javafx-base-21-win.jar;C:\Users\latra\.m2\repository\org\openjfx\javafx-graphics\21\javafx-graphics-21-win.jar;C:\Users\latra\.m2\repository\org\openjfx\javafx-fxml\21\javafx-fxml-21-win.jar;C:\Users\latra\.m2\repository\org\openjfx\javafx-media\21\javafx-media-21-win.jar;C:\Users\latra\.m2\repository\org\kordamp\ikonli\ikonli-javafx\12.4.0\ikonli-javafx-12.4.0.jar;C:\Users\latra\.m2\repository\org\openjfx\javafx-controls\21\javafx-controls-21-win.jar;C:\Users\latra\.m2\repository\com\mysql\mysql-connector-j\8.3.0\mysql-connector-j-8.3.0.jar;C:\Users\latra\.m2\repository\org\kordamp\ikonli\ikonli-fontawesome6-pack\12.4.0\ikonli-fontawesome6-pack-12.4.0.jar;C:\Users\latra\.m2\repository\org\mindrot\jbcrypt\0.4\jbcrypt-0.4.jar;C:\Users\latra\.m2\repository\org\kordamp\ikonli\ikonli-core\12.4.0\ikonli-core-12.4.0.jar -Djdk.module.main=org.netflix org.netflix/org.netflix.Main.App
+
+Host: 13th Gen Intel(R) Core(TM) i5-13420H, 12 cores, 7G,  Windows 11 , 64 bit Build 26100 (10.0.26100.8246)
+Time: Fri Apr 17 16:13:26 2026 Afr. centrale Ouest elapsed time: 81.050901 seconds (0d 0h 1m 21s)
+
+---------------  T H R E A D  ---------------
+
+Current thread (0x0000028b7dae4f60):  JavaThread "JavaFX Application Thread"        [_thread_in_vm, id=11192, stack(0x000000dc15500000,0x000000dc15600000) (1024K)]
+
+Stack: [0x000000dc15500000,0x000000dc15600000],  sp=0x000000dc155fecb0,  free space=1019k
+Native frames: (J=compiled Java code, j=interpreted, Vv=VM code, C=native code)
+V  [jvm.dll+0x453785]  (no source info available)
+C  [glass.dll+0x274c]  (no source info available)
+
+Java frames: (J=compiled Java code, j=interpreted, Vv=VM code)
+j  com.sun.glass.ui.win.WinApplication._runLoop(Ljava/lang/Runnable;)V+0 javafx.graphics@21
+j  com.sun.glass.ui.win.WinApplication.lambda$runLoop$3(ILjava/lang/Runnable;)V+8 javafx.graphics@21
+j  com.sun.glass.ui.win.WinApplication$$Lambda+0x0000028b010349b0.run()V+12 javafx.graphics@21
+j  java.lang.Thread.runWith(Ljava/lang/Object;Ljava/lang/Runnable;)V+5 java.base@21.0.10
+j  java.lang.Thread.run()V+19 java.base@21.0.10
+v  ~StubRoutines::call_stub 0x0000028b700b100d
+
+siginfo: EXCEPTION_ACCESS_VIOLATION (0xc0000005), reading address 0x0000000000000000
+
+
+Registers:
+RAX=0x0000000000000000, RBX=0x0000028b7dae4f60, RCX=0x0000000000000003, RDX=0x0000000000000004
+RSP=0x000000dc155fecb0, RBP=0x000000dc155fedb8, RSI=0x0000028b7dae5320, RDI=0x0000000000000000
+R8 =0x0000000000000003, R9 =0x0000028b7eb950f0, R10=0x0000028b42132be0, R11=0x000000dc155feca0
+R12=0x00007ffbd2359b70, R13=0x0000028b7dae5320, R14=0x0000028b4c8c8468, R15=0x00000000000000d4
+RIP=0x00007ffbd1d53785, EFLAGS=0x0000000000010293
+
+XMM[0]=0x0000000000000000 0x0000002900000000
+XMM[1]=0x0000000000000000 0x0000000000000000
+XMM[2]=0x0000000000000000 0x0000000000000000
+XMM[3]=0x0000000000000000 0x0000000000000000
+XMM[4]=0x0000000000000000 0x0000000000000000
+XMM[5]=0x0000000000000000 0x0000000000000000
+XMM[6]=0x0000000000000000 0x0000000000000000
+XMM[7]=0x0000000000000000 0x0000000000000000
+XMM[8]=0x0000000000000000 0x0000000000000000
+XMM[9]=0x0000000000000000 0x0000000000000000
+XMM[10]=0x0000000000000000 0x0000000000000000
+XMM[11]=0x0000000000000000 0x0000000000000000
+XMM[12]=0x0000000000000000 0x0000000000000000
+XMM[13]=0x0000000000000000 0x0000000000000000
+XMM[14]=0x0000000000000000 0x0000000000000000
+XMM[15]=0x0000000000000000 0x0000000000000000
+  MXCSR=0x00001faf
+
+
+Register to memory mapping:
+
+RAX=0x0 is null
+RBX=0x0000028b7dae4f60 is a thread
+RCX=0x0000000000000003 is an unknown value
+RDX=0x0000000000000004 is an unknown value
+RSP=0x000000dc155fecb0 is pointing into the stack for thread: 0x0000028b7dae4f60
+RBP=0x000000dc155fedb8 is pointing into the stack for thread: 0x0000028b7dae4f60
+RSI=0x0000028b7dae5320 points into unknown readable memory: 0x00007ffbd2548850 | 50 88 54 d2 fb 7f 00 00
+RDI=0x0 is null
+R8 =0x0000000000000003 is an unknown value
+R9 =0x0000028b7eb950f0 points into unknown readable memory: 0x0000004000000003 | 03 00 00 00 40 00 00 00
+R10={method} {0x0000028b42132be8} 'getInstance' '()Lcom/sun/glass/ui/win/WinDnDClipboard;' in 'com/sun/glass/ui/win/WinDnDClipboard'
+R11=0x000000dc155feca0 is pointing into the stack for thread: 0x0000028b7dae4f60
+R12=0x00007ffbd2359b70 jvm.dll
+R13=0x0000028b7dae5320 points into unknown readable memory: 0x00007ffbd2548850 | 50 88 54 d2 fb 7f 00 00
+R14=0x0000028b4c8c8468 points into unknown readable memory: 0x0000028b42132be0 | e0 2b 13 42 8b 02 00 00
+R15=0x00000000000000d4 is an unknown value
+
+Top of Stack: (sp=0x000000dc155fecb0)
+0x000000dc155fecb0:   0000028b42132be0 0000028b7dae4f60
+0x000000dc155fecc0:   0000028b7dae5320 0000000000000000
+0x000000dc155fecd0:   0000787e00b23300 00007ffc61c970b0
+0x000000dc155fece0:   0000028b5e6b5400 0000028b7eba2401
+0x000000dc155fecf0:   0000028b0000000c 00007ffbd1d60500
+0x000000dc155fed00:   0000028b7dae4f60 0000000000000000
+0x000000dc155fed10:   0000000085ca4450 0000028b00000000
+0x000000dc155fed20:   00007ffbd2359b70 0000028b4c7a01b8
+0x000000dc155fed30:   000000000000000c 0000000000000019
+0x000000dc155fed40:   0000000000000000 000000dc155fedb8
+0x000000dc155fed50:   0000028b7e42e1d4 0000000000000001
+0x000000dc155fed60:   0000000000000000 00007ffc1b30274c
+0x000000dc155fed70:   0000028b7dae5320 000000dc155fef00
+0x000000dc155fed80:   0000000000000000 00007ffc5b7f9751
+0x000000dc155fed90:   0000000000000000 00007ffc1b315416
+0x000000dc155feda0:   0000028b7dae5320 0000000000000000
+0x000000dc155fedb0:   0000028b4c8c8468 0000000000000000
+0x000000dc155fedc0:   0000028b7dae5320 0000000000000000
+0x000000dc155fedd0:   00000000000000dd 0000000000000000
+0x000000dc155fede0:   0000000000170800 0000000000000000
+0x000000dc155fedf0:   00000000000000dd 00007ffc1b32081b
+0x000000dc155fee00:   00000000000000d4 000000dc155fef00
+0x000000dc155fee10:   0000028b7f4bcb48 0000000000000000
+0x000000dc155fee20:   0000028b7f4bcb20 00007ffc1b31c30f
+0x000000dc155fee30:   0000028b7f4bcb20 0000000000000084
+0x000000dc155fee40:   0000000000000000 0000000000000000
+0x000000dc155fee50:   0000000000000000 0000000000000000
+0x000000dc155fee60:   0000000000000000 0000000000000000
+0x000000dc155fee70:   0000000000000000 0000000000000000
+0x000000dc155fee80:   0000000000000020 0000025e000003a6
+0x000000dc155fee90:   0000000000000201 000002fd000002cb
+0x000000dc155feea0:   0000000000000000 0000000000000000 
+
+Instructions: (pc=0x00007ffbd1d53785)
+0x00007ffbd1d53685:   48 89 6c 24 10 48 89 74 24 18 57 41 54 41 56 48
+0x00007ffbd1d53695:   81 ec a0 00 00 00 8b 81 b0 00 00 00 48 8d 99 40
+0x00007ffbd1d536a5:   fc ff ff 05 53 21 ff ff 49 8b e9 4d 8b f0 48 8b
+0x00007ffbd1d536b5:   fa 48 8b f1 83 f8 01 77 08 48 8b cb e8 ba b4 fa
+0x00007ffbd1d536c5:   ff 80 3d f3 f6 85 00 00 c7 83 4c 04 00 00 06 00
+0x00007ffbd1d536d5:   00 00 75 06 e8 22 f7 27 00 90 48 8b 83 50 04 00
+0x00007ffbd1d536e5:   00 a8 01 74 0d 45 33 c0 b2 01 48 8b cb e8 39 14
+0x00007ffbd1d536f5:   2f 00 8b 83 48 04 00 00 a8 0c 74 08 48 8b cb e8
+0x00007ffbd1d53705:   27 c9 fa ff c7 83 4c 04 00 00 06 00 00 00 48 83
+0x00007ffbd1d53715:   7b 08 00 48 89 5c 24 50 48 c7 44 24 58 00 00 00
+0x00007ffbd1d53725:   00 74 0a 48 8d 4c 24 50 e8 be c9 2b 00 49 8b 16
+0x00007ffbd1d53735:   48 8d 4c 24 70 c7 44 24 40 0c 00 00 00 e8 19 e6
+0x00007ffbd1d53745:   00 00 48 8b c7 48 89 ac 24 98 00 00 00 83 e0 03
+0x00007ffbd1d53755:   4c 8d 25 14 64 60 00 4c 89 64 24 70 48 83 f8 01
+0x00007ffbd1d53765:   75 0c 48 8d 4f ff ff 15 ef 22 7f 00 eb 15 48 83
+0x00007ffbd1d53775:   f8 02 75 0c 48 8d 4f fe ff 15 9d 98 7e 00 eb 03
+0x00007ffbd1d53785:   48 8b 07 8b 15 b2 06 86 00 48 8b c8 e8 6a 97 27
+0x00007ffbd1d53795:   00 48 8b d3 48 8b 08 4c 8b 81 b0 00 00 00 48 8b
+0x00007ffbd1d537a5:   c8 41 ff d0 48 83 7b 08 00 75 35 48 8d 44 24 70
+0x00007ffbd1d537b5:   48 89 5c 24 30 48 89 44 24 28 48 8d 54 24 40 45
+0x00007ffbd1d537c5:   33 c9 4c 89 74 24 20 45 33 c0 48 8b ce e8 d9 f6
+0x00007ffbd1d537d5:   00 00 48 83 7b 08 00 75 07 48 8b 7c 24 48 eb 02
+0x00007ffbd1d537e5:   33 ff 48 83 7c 24 58 00 4c 89 64 24 70 48 c7 84
+0x00007ffbd1d537f5:   24 98 00 00 00 00 00 00 00 74 0a 48 8d 4c 24 50
+0x00007ffbd1d53805:   e8 66 c9 2b 00 48 8b 9b 98 01 00 00 48 8b 43 10
+0x00007ffbd1d53815:   48 83 38 00 74 08 48 8b cb e8 fd d8 f5 ff 48 8b
+0x00007ffbd1d53825:   53 08 48 8b 4b 10 48 89 4a 10 48 8b 53 08 48 8b
+0x00007ffbd1d53835:   4b 18 48 89 4a 18 48 8b 4b 20 48 8b 53 08 48 89
+0x00007ffbd1d53845:   4a 20 48 8d 4e e0 e8 00 36 ed ff 4c 8d 9c 24 a0
+0x00007ffbd1d53855:   00 00 00 90 49 8b 5b 20 48 8b c7 49 8b 6b 28 c7

@@ -27,14 +27,12 @@ public class UserManagementController {
     @FXML private Label bannedUsersLabel;
     @FXML private Label adminUsersLabel;
 
-    // ── Role constants ────────────────────────────────────────────────────────
     private static final String ROLE_USER   = "user";
     private static final String ROLE_ADMIN  = "ADMIN";
     private static final String ROLE_BANNED = "BANNED";
 
     private ObservableList<User> allUsers = FXCollections.observableArrayList();
 
-    // ── Init ──────────────────────────────────────────────────────────────────
     @FXML
     public void initialize() {
         setupColumns();
@@ -42,11 +40,9 @@ public class UserManagementController {
         setupSearch();
     }
 
-    // ── Column setup ──────────────────────────────────────────────────────────
     private void setupColumns() {
         colUserEmail.setCellValueFactory(new PropertyValueFactory<>("email"));
 
-        // Role pill badge
         colUserRole.setCellFactory(col -> new TableCell<>() {
             @Override
             protected void updateItem(String item, boolean empty) {
@@ -63,7 +59,6 @@ public class UserManagementController {
             }
         });
 
-        // Status dot + label
         colUserStatus.setCellFactory(col -> new TableCell<>() {
             @Override
             protected void updateItem(String item, boolean empty) {
@@ -88,7 +83,6 @@ public class UserManagementController {
             }
         });
 
-        // Action buttons
         colActions.setCellFactory(col -> new TableCell<>() {
             private final Button promoteBtn = new Button();
             private final Button banBtn     = new Button();
@@ -146,7 +140,6 @@ public class UserManagementController {
         });
     }
 
-    // ── Data ──────────────────────────────────────────────────────────────────
     private void loadUsers() {
         allUsers.setAll(UserDAO.getAllUsers());
         userTable.setItems(allUsers);
@@ -178,7 +171,7 @@ public class UserManagementController {
         });
     }
 
-    // ── Actions ───────────────────────────────────────────────────────────────
+
     private void handlePromote(User user) {
         // Toggle: ADMIN → user, anything else → ADMIN
         String newRole = ROLE_ADMIN.equalsIgnoreCase(user.getRole()) ? ROLE_USER : ROLE_ADMIN;
@@ -202,7 +195,6 @@ public class UserManagementController {
         if (isBanned) {
             showConfirm("Unban User", "Restore " + user.getUsername() + " to a regular user?",
                     () -> {
-                        // FIX: use constant, consistent casing
                         boolean ok = UserDAO.updateRole(user.getId(), ROLE_USER);
                         if (ok) {
                             showInfo("User Unbanned", user.getUsername() + " has been unbanned.");
@@ -215,7 +207,6 @@ public class UserManagementController {
             showConfirm("Ban User",
                     "Ban " + user.getUsername() + "? They will lose access immediately.",
                     () -> {
-                        // FIX: "BANNED" is now 6 chars — make sure your DB column is VARCHAR(20)
                         boolean ok = UserDAO.updateRole(user.getId(), ROLE_BANNED);
                         if (ok) {
                             showInfo("User Banned", user.getUsername() + " has been banned.");
@@ -242,7 +233,7 @@ public class UserManagementController {
         handlePromote(selected);
     }
 
-    // ── Helpers ───────────────────────────────────────────────────────────────
+
     private String getRolePillStyle(String role) {
         String base = "-fx-padding: 2 10; -fx-background-radius: 20; -fx-font-size: 11px; -fx-font-weight: bold;";
         if (ROLE_ADMIN.equalsIgnoreCase(role))

@@ -20,18 +20,15 @@ import java.util.List;
 
 public class MediaDetailsController {
 
-    // ── Hero ──────────────────────────────────────────────────────────────────
     @FXML private ImageView backgroundImage;
     @FXML private Label titleLabel, descriptionLabel, ratingLabel;
     @FXML private Label star1, star2, star3, star4, star5;
     @FXML private ScrollPane mainScroll;
     @FXML private Button mylistbtn;
-
-    // ── Cast ──────────────────────────────────────────────────────────────────
     @FXML private HBox castingContainer;
-
-    // ── Season / Episode bar ──────────────────────────────────────────────────
-    @FXML private VBox seasonEpisodeBar;
+    @FXML private Button tabMoreLikeThis, tabEpisodes, tabComments;
+    @FXML private VBox panelMoreLikeThis, panelEpisodes, panelComments;
+    @FXML private FlowPane relatedGrid;
     @FXML private ComboBox<String> seasonComboBox;
     @FXML private HBox episodesContainer;
 
@@ -44,13 +41,40 @@ public class MediaDetailsController {
     @FXML private VBox commentsListContainer;
     @FXML private TextArea newCommentField;
 
-    // ── State ─────────────────────────────────────────────────────────────────
     private List<Label> stars;
     private int currentRating = 0;
     private Media media;
     private List<Season> seasons;
 
-    // ─────────────────────────────────────────────────────────────────────────
+    private static final String TAB_ACTIVE =
+            "-fx-background-color: transparent; -fx-text-fill: white;" +
+                    "-fx-font-size: 15px; -fx-font-weight: bold; -fx-cursor: hand;" +
+                    "-fx-border-color: #e50914; -fx-border-width: 0 0 3 0;" +
+                    "-fx-padding: 10 20 10 20;";
+
+    private static final String TAB_ACTIVE_FIRST =
+            "-fx-background-color: transparent; -fx-text-fill: white;" +
+                    "-fx-font-size: 15px; -fx-font-weight: bold; -fx-cursor: hand;" +
+                    "-fx-border-color: #e50914; -fx-border-width: 0 0 3 0;" +
+                    "-fx-padding: 10 20 10 0;";
+
+    private static final String TAB_INACTIVE =
+            "-fx-background-color: transparent; -fx-text-fill: #aaa;" +
+                    "-fx-font-size: 15px; -fx-font-weight: bold; -fx-cursor: hand;" +
+                    "-fx-border-color: transparent; -fx-border-width: 0 0 3 0;" +
+                    "-fx-padding: 10 20 10 20;";
+
+    private static final String TAB_INACTIVE_FIRST =
+            "-fx-background-color: transparent; -fx-text-fill: #aaa;" +
+                    "-fx-font-size: 15px; -fx-font-weight: bold; -fx-cursor: hand;" +
+                    "-fx-border-color: transparent; -fx-border-width: 0 0 3 0;" +
+                    "-fx-padding: 10 20 10 0;";
+
+    private static final String STYLE_ACTIVE_FIRST = TAB_ACTIVE_FIRST;
+    private static final String STYLE_INACTIVE_FIRST = TAB_INACTIVE_FIRST;
+    private static final String STYLE_ACTIVE = TAB_ACTIVE;
+    private static final String STYLE_INACTIVE = TAB_INACTIVE;
+
     @FXML
     public void initialize() {
         media = TransferData.getMedia();
@@ -65,7 +89,6 @@ public class MediaDetailsController {
         loadComments();
     }
 
-    // ── Hero setup ────────────────────────────────────────────────────────────
     private void setupUI(User user) {
         titleLabel.setText(media.getTitle());
         descriptionLabel.setText(media.getDescription());
@@ -78,7 +101,6 @@ public class MediaDetailsController {
         setupStarHover();
     }
 
-    // ── Cast ──────────────────────────────────────────────────────────────────
     private void loadCast() {
         castingContainer.getChildren().clear();
         List<Acteur> acteurs = ActeurDAO.getActeursByMedia(media.getIdMedia());
@@ -130,13 +152,16 @@ public class MediaDetailsController {
     private void loadEpisodes(int seasonId) {
         episodesContainer.getChildren().clear();
         List<Episode> episodes = EpisodeDAO.getEpisodesBySeason(seasonId);
-
         for (Episode ep : episodes) {
             VBox card = new VBox(6);
             card.setAlignment(Pos.TOP_LEFT);
             card.setStyle("-fx-background-color: #1e1e1e; -fx-padding: 8; -fx-cursor: hand;");
             card.setPrefWidth(160);
 
+            Label numLbl = new Label(String.valueOf(ep.getEpisodeNumber()));
+            numLbl.setStyle("-fx-text-fill: #aaa; -fx-font-size: 18px; -fx-min-width: 30;");
+
+            StackPane thumbBox = new StackPane();
             ImageView thumb = new ImageView();
             thumb.setFitWidth(160);
             thumb.setFitHeight(90);
@@ -147,6 +172,7 @@ public class MediaDetailsController {
             Rectangle clip = new Rectangle(160, 90);
             clip.setArcWidth(8); clip.setArcHeight(8);
             thumb.setClip(clip);
+            thumbBox.getChildren().add(thumb);
 
             Label epTitle = new Label("Ep " + ep.getEpisodeNumber() + " · " + ep.getTitle());
             epTitle.setStyle("-fx-text-fill: white; -fx-font-size: 12px; -fx-font-weight: bold;");
@@ -208,8 +234,6 @@ public class MediaDetailsController {
         panelMoreLikeThis.setManaged(false);
     }
 
-    // ── More Like This (genre-based recommendations) ──────────────────────────
-    // ── More Like This (genre-based recommendations) ──────────────────────────
     private void loadRelatedMedia() {
         relatedGrid.getChildren().clear();
         List<Media> recommendations = new java.util.ArrayList<>();
@@ -218,7 +242,6 @@ public class MediaDetailsController {
             for (Genre g : media.getGenres()) {
                 if (g.getName() == null) continue; // ← FIX
                 String genreStr = g.getName().toString();
-
                 List<Movie> byGenre = MovieDAO.findbyGenre(genreStr);
                 for (Movie m : byGenre) {
                     if (m.getIdMedia() != media.getIdMedia() && !recommendations.contains(m))
@@ -287,19 +310,19 @@ public class MediaDetailsController {
             relatedGrid.getChildren().add(card);
         }
     }
-    // ── Replace your loadComments() method in MediaDetailsController with this ──
 
+    // ── Comments Section ──
     private void loadComments() {
         commentsListContainer.getChildren().clear();
         List<CommentDAO.CommentDTO> comments = CommentDAO.getCommentsByMedia(media.getIdMedia());
+        User currentUser = Session.getUser();
 
         for (CommentDAO.CommentDTO dto : comments) {
             VBox bubble = new VBox(5);
             bubble.getStyleClass().add("comment-bubble");
 
-            // Header: username + date + report button
             HBox header = new HBox(8);
-            header.setAlignment(javafx.geometry.Pos.CENTER_LEFT);
+            header.setAlignment(Pos.CENTER_LEFT);
 
             Label userLabel = new Label(dto.username);
             userLabel.setStyle("-fx-text-fill: #e50914; -fx-font-weight: bold;");
@@ -311,26 +334,35 @@ public class MediaDetailsController {
             javafx.scene.layout.Region spacer = new javafx.scene.layout.Region();
             HBox.setHgrow(spacer, javafx.scene.layout.Priority.ALWAYS);
 
-            // 🚩 Report button
-            Button reportBtn = new Button(dto.comment.getIs_reported() == 1 ? "🚨 Reported" : "🚩 Report");
-            reportBtn.setStyle(dto.comment.getIs_reported() == 1
-                    ? "-fx-background-color: #3a0a0a; -fx-text-fill: #e50914; -fx-font-size: 10px;" +
-                    "-fx-padding: 2 8 2 8; -fx-background-radius: 4; -fx-cursor: default; -fx-border-color: transparent;"
-                    : "-fx-background-color: transparent; -fx-text-fill: #555; -fx-font-size: 10px;" +
-                    "-fx-padding: 2 8 2 8; -fx-cursor: hand; -fx-border-color: #333; -fx-background-radius: 4;");
-            reportBtn.setDisable(dto.comment.getIs_reported() == 1);
+            Button reportBtn = new Button();
+            boolean isReported = dto.comment.getIs_reported() == 1;
 
-            final int commentId = dto.comment.getId_Comment();
-            reportBtn.setOnAction(e -> {
-                if (CommentDAO.reportComment(commentId)) {
-                    reportBtn.setText("🚨 Reported");
-                    reportBtn.setStyle("-fx-background-color: #3a0a0a; -fx-text-fill: #e50914; -fx-font-size: 10px;" +
-                            "-fx-padding: 2 8 2 8; -fx-background-radius: 4; -fx-cursor: default; -fx-border-color: transparent;");
+            if (isReported) {
+                reportBtn.setText("🚨 Reported");
+                reportBtn.setStyle("-fx-background-color: #3a0a0a; -fx-text-fill: #e50914; -fx-font-size: 10px; -fx-padding: 2 8 2 8; -fx-background-radius: 4; -fx-border-color: transparent;");
+
+                if (currentUser.getRole().equalsIgnoreCase("admin")) {
+                    reportBtn.setCursor(Cursor.HAND);
+                    reportBtn.setOnAction(e -> handleUnreportComment(dto.comment.getId_Comment()));
+                    reportBtn.setOnMouseEntered(e -> reportBtn.setText("Undo Report?"));
+                    reportBtn.setOnMouseExited(e -> reportBtn.setText("🚨 Reported"));
+                } else {
                     reportBtn.setDisable(true);
                 }
-            });
+            } else {
+                reportBtn.setText("🚩 Report");
+                reportBtn.setStyle("-fx-background-color: transparent; -fx-text-fill: #555; -fx-font-size: 10px; -fx-padding: 2 8 2 8; -fx-cursor: hand; -fx-border-color: #333; -fx-background-radius: 4;");
+                reportBtn.setOnAction(e -> handleReportComment(dto.comment.getId_Comment()));
+            }
 
             header.getChildren().addAll(userLabel, dateLabel, spacer, reportBtn);
+
+            if (currentUser.getRole().equalsIgnoreCase("admin") || currentUser.getId() == dto.comment.getId_User()) {
+                Button deleteBtn = new Button("🗑 Delete");
+                deleteBtn.setStyle("-fx-background-color: transparent; -fx-text-fill: #888; -fx-font-size: 10px; -fx-cursor: hand;");
+                deleteBtn.setOnAction(e -> handleDeleteComment(dto.comment.getId_Comment()));
+                header.getChildren().add(deleteBtn);
+            }
 
             Label contentLabel = new Label(dto.comment.getContent());
             contentLabel.setStyle("-fx-text-fill: white;");
@@ -338,6 +370,24 @@ public class MediaDetailsController {
 
             bubble.getChildren().addAll(header, contentLabel);
             commentsListContainer.getChildren().add(bubble);
+        }
+    }
+
+    private void handleReportComment(int commentId) {
+        if (CommentDAO.reportComment(commentId)) {
+            loadComments();
+        }
+    }
+
+    private void handleUnreportComment(int commentId) {
+        if (CommentDAO.UnreportComment(commentId)) { // Make sure this method exists in your DAO!
+            loadComments();
+        }
+    }
+
+    private void handleDeleteComment(int commentId) {
+        if (CommentDAO.deleteComment(commentId)) {
+            loadComments();
         }
     }
 
@@ -354,7 +404,6 @@ public class MediaDetailsController {
         }
     }
 
-    // ── Navigation ────────────────────────────────────────────────────────────
     @FXML private void handleBack(ActionEvent e) { SceneSwitcher.goTo(e, "/org/Views/main.fxml"); }
     @FXML private void handlePlay(ActionEvent e) { SceneSwitcher.goTo(e, "/org/Views/VideoPlayer.fxml"); }
 
@@ -381,7 +430,6 @@ public class MediaDetailsController {
         }
     }
 
-    // ── My List ───────────────────────────────────────────────────────────────
     private void updateButtonUI(User u, Media m) {
         mylistbtn.setText(UserDAO.isFavorite(u.getId(), m.getIdMedia()) ? "✓ In My List" : "+ My List");
     }

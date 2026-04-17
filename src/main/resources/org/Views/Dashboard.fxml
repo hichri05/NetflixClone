@@ -23,9 +23,7 @@
     <content>
         <VBox spacing="20" style="-fx-background-color: #000000; -fx-padding: 20;">
 
-            <!-- ══════════════════════════════════════════════ -->
-            <!-- HEADER                                        -->
-            <!-- ══════════════════════════════════════════════ -->
+
             <HBox alignment="CENTER_LEFT" spacing="30">
                 <Label text="NETFLIX" textFill="#e50914">
                     <font><Font name="System Bold" size="36.0" /></font>
@@ -34,7 +32,6 @@
                     <font><Font size="22.0" /></font>
                 </Label>
 
-                <!-- Filter pushed to the right -->
                 <HBox HBox.hgrow="ALWAYS" />
                 <VBox spacing="5" style="-fx-background-color: #141414; -fx-padding: 10; -fx-background-radius: 6;">
                     <Label text="Date Range" textFill="WHITE" />
@@ -44,11 +41,8 @@
                 </VBox>
             </HBox>
 
-            <!-- ══════════════════════════════════════════════ -->
-            <!-- STAT CARDS ROW                                -->
-            <!-- ══════════════════════════════════════════════ -->
+
             <HBox spacing="20">
-                <!-- Movies -->
                 <VBox alignment="CENTER" prefHeight="110" HBox.hgrow="ALWAYS"
                       style="-fx-background-color: #0a0a0a; -fx-border-color: #333;
                              -fx-border-radius: 6; -fx-background-radius: 6;">
@@ -59,7 +53,6 @@
                         <font><Font size="40" /></font>
                     </Label>
                 </VBox>
-                <!-- Series -->
                 <VBox alignment="CENTER" prefHeight="110" HBox.hgrow="ALWAYS"
                       style="-fx-background-color: #0a0a0a; -fx-border-color: #333;
                              -fx-border-radius: 6; -fx-background-radius: 6;">
@@ -70,7 +63,6 @@
                         <font><Font size="40" /></font>
                     </Label>
                 </VBox>
-                <!-- Users -->
                 <VBox alignment="CENTER" prefHeight="110" HBox.hgrow="ALWAYS"
                       style="-fx-background-color: #0a0a0a; -fx-border-color: #333;
                              -fx-border-radius: 6; -fx-background-radius: 6;">
@@ -83,9 +75,7 @@
                 </VBox>
             </HBox>
 
-            <!-- ══════════════════════════════════════════════ -->
-            <!-- CHARTS — 2 × 2 GRID                          -->
-            <!-- ══════════════════════════════════════════════ -->
+
             <GridPane hgap="20" vgap="20">
                 <columnConstraints>
                     <ColumnConstraints percentWidth="50" />
@@ -96,9 +86,7 @@
                     <RowConstraints minHeight="320" />
                 </rowConstraints>
 
-                <!-- ┌─────────────────────────────────────────┐ -->
-                <!-- │ [0,0]  Top 5 genres by total views      │ -->
-                <!-- └─────────────────────────────────────────┘ -->
+
                 <VBox GridPane.columnIndex="0" GridPane.rowIndex="0"
                       style="-fx-background-color: #0a0a0a; -fx-border-color: #333;
                              -fx-border-radius: 6; -fx-background-radius: 6; -fx-padding: 10;">
@@ -116,9 +104,7 @@
                     </BarChart>
                 </VBox>
 
-                <!-- ┌─────────────────────────────────────────┐ -->
-                <!-- │ [1,0]  Genre distribution pie chart     │ -->
-                <!-- └─────────────────────────────────────────┘ -->
+
                 <VBox GridPane.columnIndex="1" GridPane.rowIndex="0"
                       style="-fx-background-color: #0a0a0a; -fx-border-color: #333;
                              -fx-border-radius: 6; -fx-background-radius: 6; -fx-padding: 10;">
@@ -132,9 +118,6 @@
                               style="-fx-pie-label-visible: true;" />
                 </VBox>
 
-                <!-- ┌─────────────────────────────────────────┐ -->
-                <!-- │ [0,1]  Top 5 most-viewed films          │ -->
-                <!-- └─────────────────────────────────────────┘ -->
                 <VBox GridPane.columnIndex="0" GridPane.rowIndex="1"
                       style="-fx-background-color: #0a0a0a; -fx-border-color: #333;
                              -fx-border-radius: 6; -fx-background-radius: 6; -fx-padding: 10;">
@@ -152,9 +135,7 @@
                     </BarChart>
                 </VBox>
 
-                <!-- ┌─────────────────────────────────────────┐ -->
-                <!-- │ [1,1]  User registrations per day       │ -->
-                <!-- └─────────────────────────────────────────┘ -->
+
                 <VBox GridPane.columnIndex="1" GridPane.rowIndex="1"
                       style="-fx-background-color: #0a0a0a; -fx-border-color: #333;
                              -fx-border-radius: 6; -fx-background-radius: 6; -fx-padding: 10;">
@@ -178,7 +159,6 @@
 
             </GridPane>
 
-            <!-- Footer -->
             <Label text="Data as of Q4 2026" textFill="GRAY" />
 
         </VBox>

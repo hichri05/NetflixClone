@@ -70,7 +70,6 @@
                     </content>
                 </ScrollPane>
 
-                <!-- SEARCH RESULTS VIEW -->
                 <ScrollPane fx:id="searchContent" style="-fx-background-color: #141414;" visible="false">
                     <FlowPane fx:id="searchGrid" hgap="15" vgap="15">
                         <padding>
@@ -79,7 +78,6 @@
                     </FlowPane>
                 </ScrollPane>
 
-                <!-- FILTER RESULTS VIEW -->
                 <ScrollPane fx:id="filterContent" fitToWidth="true" hbarPolicy="NEVER"
                             style="-fx-background-color: #141414;" visible="false"
                             stylesheets="@../Styles/style.css" vbarPolicy="NEVER">
@@ -99,7 +97,6 @@
                     </content>
                 </ScrollPane>
 
-                <!-- MY LIST VIEW -->
                 <ScrollPane fx:id="mainScrollList" fitToWidth="true" hbarPolicy="NEVER" style="-fx-background-color: #141414;" stylesheets="@../Styles/style.css" vbarPolicy="NEVER" xmlns="http://javafx.com/javafx/25" xmlns:fx="http://javafx.com/fxml/1">
                     <content>
                         <VBox minHeight="800" spacing="20.0" style="-fx-background-color: #141414;">
@@ -115,7 +112,6 @@
                     </content>
                 </ScrollPane>
 
-                <!-- MOVIES TAB VIEW -->
                 <ScrollPane fx:id="moviesScroll" fitToWidth="true" hbarPolicy="NEVER"
                             style="-fx-background-color: #141414;" visible="false"
                             stylesheets="@../Styles/style.css" vbarPolicy="NEVER">
@@ -125,7 +121,6 @@
                     </content>
                 </ScrollPane>
 
-                <!-- SERIES TAB VIEW -->
                 <ScrollPane fx:id="seriesScroll" fitToWidth="true" hbarPolicy="NEVER"
                             style="-fx-background-color: #141414;" visible="false"
                             stylesheets="@../Styles/style.css" vbarPolicy="NEVER">
@@ -141,7 +136,6 @@
 
     <top>
         <VBox>
-            <!-- ── MAIN NAVBAR ── -->
             <BorderPane fx:id="navbar" styleClass="navbar" BorderPane.alignment="CENTER">
                 <left>
                     <Label styleClass="logo" text="NETFLIX" textFill="#e50914" BorderPane.alignment="CENTER">
@@ -172,7 +166,6 @@
                         <children>
                             <Label style="-fx-text-fill: white; -fx-font-size: 18px;" text="🔍" />
                             <TextField fx:id="searchField" promptText="Titles, people, genres" styleClass="search-input" />
-                            <!-- userinf: styled white + bold; hover popup wired in controller -->
                             <Label fx:id="userinf" text="Label"
                                    style="-fx-text-fill: white; -fx-font-size: 14px; -fx-font-weight: bold; -fx-cursor: hand;" />
                             <Button fx:id="adminBtn" onAction="#handleOpenDashboard" styleClass="btn-play" text="Admin Dashboard" />
@@ -184,7 +177,6 @@
                 </padding>
             </BorderPane>
 
-            <!-- ── FILTER BAR ── -->
             <HBox fx:id="filterBar" alignment="CENTER_LEFT" spacing="12"
                   style="-fx-background-color: rgba(0,0,0,0.92);
                       -fx-border-color: #1f1f1f; -fx-border-width: 1 0 0 0;
@@ -192,26 +184,22 @@
                 <children>
                     <Label style="-fx-text-fill: #777; -fx-font-size: 11px; -fx-font-weight: bold; -fx-letter-spacing: 1;" text="FILTER" />
 
-                    <!-- Genre ComboBox -->
                     <ComboBox fx:id="genreFilterCombo" promptText="All Genres"
                               style="-fx-background-color: #1c1c1c; -fx-text-fill: white;
                                   -fx-border-color: #333; -fx-border-radius: 6; -fx-background-radius: 6;
                                   -fx-pref-width: 150; -fx-cursor: hand; -fx-font-size: 13px;" />
 
-                    <!-- Year ComboBox -->
                     <ComboBox fx:id="yearFilterCombo" promptText="All Years"
                               style="-fx-background-color: #1c1c1c; -fx-text-fill: white;
                                   -fx-border-color: #333; -fx-border-radius: 6; -fx-background-radius: 6;
                                   -fx-pref-width: 120; -fx-cursor: hand; -fx-font-size: 13px;" />
 
-                    <!-- Apply button -->
                     <Button onAction="#handleApplyFilter"
                             style="-fx-background-color: #e50914; -fx-text-fill: white;
                                 -fx-font-weight: bold; -fx-font-size: 12px;
                                 -fx-border-radius: 6; -fx-background-radius: 6;
                                 -fx-padding: 6 18; -fx-cursor: hand;" text="Apply" />
 
-                    <!-- Active filter chips area -->
                     <HBox fx:id="activeFilterChips" alignment="CENTER_LEFT" spacing="8" />
                 </children>
             </HBox>

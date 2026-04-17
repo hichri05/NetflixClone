@@ -45,8 +45,7 @@ public class MediaDAO {
             try (ResultSet rs = pstmt.executeQuery()) {
                 while (rs.next()) {
                     Media m = ResultToMedia(rs);
-                    // On charge les genres APRES avoir fini avec le ResultSet si nécessaire
-                    // ou on utilise une méthode qui ne boucle pas sur la connexion
+
                     medias.add(m);
                 }
             }
@@ -54,7 +53,6 @@ public class MediaDAO {
             System.out.println(e);
         }
 
-        // Charger les genres pour chaque média pour éviter la récursion SQL
         for(Media m : medias) {
             m.setGenres(getGenresByMediaId(m.getIdMedia()));
         }
@@ -103,7 +101,6 @@ public class MediaDAO {
         return results;
     }
 
-    // Version allégée pour éviter le StackOverflow
     static Media ResultToMedia(ResultSet rs) throws SQLException {
         return new Media(
                 rs.getInt("id_Media"),
@@ -114,10 +111,10 @@ public class MediaDAO {
                 rs.getString("coverImageUrl"),
                 rs.getString("backdrop_path"),
                 rs.getString("director"),
-                new ArrayList<>(),          // genres (loaded separately to avoid recursion)
-                new ArrayList<>(),          // casting
-                rs.getInt("views"),         // ← views
-                rs.getString("type")        // ← type LAST
+                new ArrayList<>(),
+                new ArrayList<>(),
+                rs.getInt("views"),
+                rs.getString("type")
         );
     }
     public static List<Media> getAllMediaWithViews() {
@@ -138,12 +135,12 @@ public class MediaDAO {
                         rs.getInt("releaseYear"),
                         rs.getDouble("averageRating"),
                         rs.getString("coverImageUrl"),
-                        rs.getString("backdrop_path"),  // backdropImageUrl
+                        rs.getString("backdrop_path"),
                         rs.getString("director"),
-                        genres,                          // ← genres before casting
-                        new ArrayList<>(),               // casting
-                        rs.getInt("views"),              // ← views
-                        rs.getString("type")             // ← type LAST, not duplicated
+                        genres,
+                        new ArrayList<>(),
+                        rs.getInt("views"),
+                        rs.getString("type")
                 ));
             }
         } catch (SQLException e) {

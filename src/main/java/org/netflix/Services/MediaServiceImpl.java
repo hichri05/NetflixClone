@@ -40,11 +40,9 @@ public class MediaServiceImpl implements IMediaService {
 
     @Override
     public Media getMediaById(int id) {
-        // Try movie first, fall back to searching all media
         Movie movie = MovieDAO.getMovieById(id);
         if (movie != null) return movie;
 
-        // Search in all media list
         return MediaDAO.getAllMedia().stream()
                 .filter(m -> m.getIdMedia() == id)
                 .findFirst()
@@ -64,7 +62,6 @@ public class MediaServiceImpl implements IMediaService {
 
     @Override
     public List<Media> filterByYear(int year) {
-        // Filter from all media in memory — no dedicated DAO method needed
         return MediaDAO.getAllMedia().stream()
                 .filter(m -> m.getReleaseYear() == year)
                 .collect(java.util.stream.Collectors.toList());
@@ -72,7 +69,6 @@ public class MediaServiceImpl implements IMediaService {
 
     @Override
     public List<Media> getFeaturedMedia() {
-        // Top 5 by average rating
         return MediaDAO.getAllMediaWithViews().stream()
                 .sorted((a, b) -> Double.compare(b.getAverageRating(), a.getAverageRating()))
                 .limit(5)
@@ -138,7 +134,6 @@ public class MediaServiceImpl implements IMediaService {
                 .average()
                 .orElse(0.0);
 
-        // Persist the recalculated average back to the media row
         MediaDAO.updateMedia(
                 MediaDAO.getAllMedia().stream()
                         .filter(m -> m.getIdMedia() == idMedia)
