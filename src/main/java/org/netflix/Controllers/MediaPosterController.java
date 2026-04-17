@@ -40,7 +40,6 @@ public class MediaPosterController {
     private PauseTransition showDelay;
     private PauseTransition hideDelay;
 
-    // Safety placeholder
     private final String PLACEHOLDER = "https://via.placeholder.com/300x450?text=No+Image";
 
     @FXML
@@ -56,7 +55,6 @@ public class MediaPosterController {
         posterImageView.setClip(clip);
     }
 
-    // Safety helper to prevent the "Invalid URL" crash
     private Image safeLoadImage(String url) {
         if (url == null || url.trim().isEmpty()) {
             return new Image(PLACEHOLDER, true);
@@ -103,13 +101,11 @@ public class MediaPosterController {
                 "-fx-border-color: #333; -fx-border-radius: 10; -fx-padding: 0;");
         preview.setPrefWidth(300);
 
-        // Backdrop image (Safely loaded)
         ImageView img = new ImageView(safeLoadImage(media.getBackDropImageUrl()));
         img.setFitWidth(300);
         img.setFitHeight(160);
         img.setPreserveRatio(false);
 
-        // Info section
         VBox info = new VBox(8);
         info.setPadding(new Insets(15));
 
@@ -117,7 +113,6 @@ public class MediaPosterController {
         Label matchLbl = new Label(match + "% Match");
         matchLbl.setStyle("-fx-text-fill: #46d369; -fx-font-weight: bold; -fx-font-size: 14;");
 
-        // Buttons
         String outlineBtn = "-fx-background-color: transparent; -fx-border-color: white; " +
                 "-fx-border-radius: 50; -fx-text-fill: white; -fx-cursor: hand;";
 
@@ -140,7 +135,6 @@ public class MediaPosterController {
         Label titleLbl = new Label(media.getTitle());
         titleLbl.setStyle("-fx-text-fill: white; -fx-font-weight: bold; -fx-font-size: 18;");
 
-        // Description Restored
         Label desc = new Label(media.getDescription());
         desc.setStyle("-fx-text-fill: #d2d2d2; -fx-font-size: 12;");
         desc.setWrapText(true);
@@ -156,7 +150,6 @@ public class MediaPosterController {
         if (media == null) return;
         this.media = media;
 
-        // Poster (Safely loaded)
         posterImageView.setImage(safeLoadImage(media.getCoverImageUrl()));
 
         rootPane.getChildren().removeIf(n -> "typeBadge".equals(n.getId()));

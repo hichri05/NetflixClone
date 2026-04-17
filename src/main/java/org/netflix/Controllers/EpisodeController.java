@@ -72,7 +72,7 @@ public class EpisodeController {
             }
         });
 
-        // Format episode number nicely
+
         colNumber.setCellFactory(col -> new TableCell<>() {
             @Override
             protected void updateItem(Integer item, boolean empty) {

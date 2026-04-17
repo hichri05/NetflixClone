@@ -9,7 +9,7 @@ import java.io.InputStream;
 public class ConxDB {
     private static Connection connexion;
     Properties prop = new Properties();
-    private final String DB_URL = "jdbc:mysql://localhost:3306/netflix";
+    private final String DB_URL = "jdbc:mysql://localhost:3307/netflix";
     private final String USER = "root";
     private final String PASS = "";
 
