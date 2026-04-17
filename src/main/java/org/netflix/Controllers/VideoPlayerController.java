@@ -66,7 +66,7 @@ public class VideoPlayerController implements Initializable {
     private Timeline    countdownTimeline;
     private int         countdownSeconds = 10;
 
-    private static final int COUNTDOWN_DURATION = 10;
+    private static final int COUNTDOWN_DURATION = 10; // seconds before auto-play
 
 
     @Override

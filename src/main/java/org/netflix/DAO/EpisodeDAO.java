@@ -37,7 +37,7 @@ public class EpisodeDAO {
     }
 
     public static boolean addEpisode(Episode episode) {
-        String sql = "INSERT INTO episode (id_Saison, episodeNumber, title, description, videoUrl, thumbnail_path, duration_minutes) VALUES (?, ?, ?, ?, ?, ?, ?)";
+        String sql = "INSERT INTO episode (id_Saison, episodeNumber, title, description, videoUrl, thumbnail_path, duration_minutes, duration) VALUES (?, ?, ?, ?, ?, ?, 0, 0)";
         try (PreparedStatement pstmt = conn.prepareStatement(sql)) {
             pstmt.setInt(1, episode.getSeasonId());
             pstmt.setInt(2, episode.getEpisodeNumber());
@@ -45,7 +45,7 @@ public class EpisodeDAO {
             pstmt.setString(4, episode.getDescription());
             pstmt.setString(5, episode.getFilePath());
             pstmt.setString(6, episode.getThumbnailPath());
-            pstmt.setInt(7, episode.getDuration());
+            //pstmt.setInt(7, episode.getDuration());
 
             return pstmt.executeUpdate() > 0;
         } catch (SQLException e) {
