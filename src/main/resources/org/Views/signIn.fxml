@@ -7,62 +7,134 @@
 <?import javafx.scene.control.TextField?>
 <?import javafx.scene.image.Image?>
 <?import javafx.scene.image.ImageView?>
+<?import javafx.scene.layout.HBox?>
 <?import javafx.scene.layout.Pane?>
 <?import javafx.scene.layout.StackPane?>
 <?import javafx.scene.layout.VBox?>
 <?import javafx.scene.text.Font?>
 
-<?import javafx.scene.layout.HBox?>
-<StackPane fx:id="root" xmlns="http://javafx.com/javafx/25" xmlns:fx="http://javafx.com/fxml/1" fx:controller="org.netflix.Controllers.SignInController">
-   <children>
-      <ImageView fx:id="background" fitHeight="328.0" fitWidth="572.0" pickOnBounds="true" preserveRatio="true">
-         <image>
-            <Image url="@../Images/login_background.jpg" />
-         </image>
-      </ImageView>
-      <Pane prefHeight="200.0" prefWidth="200.0" style="-fx-background-color: rgba(0,0,0,0.5);" />
-      <VBox alignment="CENTER_LEFT" maxHeight="500.0" maxWidth="400.0" minHeight="300.0" minWidth="275.0" spacing="10.0" style="-fx-background-color: rgba(0,0,0,0.75); -fx-background-radius: 3px;" StackPane.alignment="CENTER">
-         <children>
-            <Label text="SIGN IN" textFill="WHITE">
-               <font>
-                  <Font name="System Bold" size="32.0" />
-               </font>
-            </Label>
-            <TextField fx:id="emailField" promptText="Email" style="-fx-background-color: none; -fx-border-color: #fff; -fx-border-radius: 3px; -fx-border-width: 0.5px; -fx-text-fill: white; -fx-prompt-text-fill: #8c8c8c;" stylesheets="@../Styles/style.css">
-               <opaqueInsets>
-                  <Insets />
-               </opaqueInsets>
-               <padding>
-                  <Insets bottom="7.0" left="7.0" right="7.0" top="7.0" />
-               </padding></TextField>
-            <PasswordField fx:id="passwordField" onAction="#handleLogin" promptText="Password" style="-fx-background-color: none; -fx-border-color: #fff; -fx-border-radius: 3px; -fx-border-width: 0.5px; -fx-prompt-text-fill: #8c8c8c; -fx-text-fill: white;">
-               <padding>
-                  <Insets bottom="7.0" left="7.0" right="7.0" top="7.0" />
-               </padding></PasswordField>
-            <Button fx:id="loginButton" onAction="#handleLogin" maxWidth="1.7976931348623157E308" mnemonicParsing="false" style="-fx-background-color: #E50914;" text="Sign In" textFill="WHITE">
-               <font>
-                  <Font name="System Bold" size="12.0" />
-               </font></Button>
-             <HBox spacing="5.0">
-                 <children>
-                     <Label text="New to Netflix?" textFill="#8c8c8c" />
-                     <Label onMouseClicked="#goToSignUp" style="-fx-cursor: hand;" text="Sign up now." textFill="WHITE">
-                         <font>
-                             <Font name="System Bold" size="12.0" />
-                         </font>
-                     </Label>
-                 </children>
-                 <padding>
-                     <Insets top="10.0" />
-                 </padding>
-             </HBox>
-         </children>
-         <StackPane.margin>
-            <Insets bottom="10.0" left="10.0" right="10.0" top="10.0" />
-         </StackPane.margin>
-         <padding>
-            <Insets bottom="30.0" left="30.0" right="30.0" top="30.0" />
-         </padding>
-      </VBox>
-   </children>
+<StackPane fx:id="root"
+           xmlns="http://javafx.com/javafx/21"
+           xmlns:fx="http://javafx.com/fxml/1"
+           fx:controller="org.netflix.Controllers.SignInController">
+    <children>
+
+        <!-- Arrière-plan -->
+        <ImageView fx:id="background"
+                   fitHeight="328.0" fitWidth="572.0"
+                   pickOnBounds="true" preserveRatio="true">
+            <image>
+                <Image url="@../Images/login_background.jpg" />
+            </image>
+        </ImageView>
+
+        <!-- Overlay sombre -->
+        <Pane prefHeight="200.0" prefWidth="200.0"
+              style="-fx-background-color: rgba(0,0,0,0.5);" />
+
+        <!-- Formulaire -->
+        <VBox fx:id="container"
+              alignment="CENTER_LEFT"
+              maxHeight="560.0" maxWidth="400.0"
+              minHeight="300.0" minWidth="275.0"
+              spacing="10.0"
+              style="-fx-background-color: rgba(0,0,0,0.75); -fx-background-radius: 3px;"
+              StackPane.alignment="CENTER">
+            <children>
+
+                <!-- Titre -->
+                <Label text="SIGN IN" textFill="WHITE">
+                    <font><Font name="System Bold" size="32.0" /></font>
+                    <VBox.margin><Insets bottom="10.0" /></VBox.margin>
+                </Label>
+
+                <!-- Champ Email -->
+                <TextField fx:id="emailField"
+                           promptText="Email"
+                           style="-fx-background-color: none; -fx-border-color: #fff; -fx-border-radius: 3px; -fx-border-width: 0.5px; -fx-text-fill: white; -fx-prompt-text-fill: #8c8c8c;">
+                    <padding><Insets bottom="10.0" left="10.0" right="10.0" top="10.0" /></padding>
+                </TextField>
+
+                <!-- Conteneur mot de passe + bouton œil -->
+                <StackPane>
+                    <children>
+
+                        <!-- PasswordField masqué -->
+                        <PasswordField fx:id="passwordField"
+                                       onAction="#handleLogin"
+                                       promptText="Password"
+                                       style="-fx-background-color: none; -fx-border-color: #fff; -fx-border-radius: 3px; -fx-border-width: 0.5px; -fx-text-fill: white; -fx-prompt-text-fill: #8c8c8c;">
+                            <padding><Insets bottom="10.0" left="10.0" right="40.0" top="10.0" /></padding>
+                        </PasswordField>
+
+                        <!-- TextField visible (mot de passe en clair) -->
+                        <TextField fx:id="passwordVisible"
+                                   onAction="#handleLogin"
+                                   promptText="Password"
+                                   visible="false"
+                                   managed="false"
+                                   style="-fx-background-color: none; -fx-border-color: #fff; -fx-border-radius: 3px; -fx-border-width: 0.5px; -fx-text-fill: white; -fx-prompt-text-fill: #8c8c8c;">
+                            <padding><Insets bottom="10.0" left="10.0" right="40.0" top="10.0" /></padding>
+                        </TextField>
+
+                        <!-- Bouton œil (texte Unicode, pas d'image) -->
+                        <Button fx:id="togglePassword"
+                                onAction="#togglePasswordVisibility"
+                                mnemonicParsing="false"
+                                StackPane.alignment="CENTER_RIGHT">
+                            <StackPane.margin>
+                                <Insets right="6.0" />
+                            </StackPane.margin>
+                        </Button>
+
+                    </children>
+                </StackPane>
+
+                <!-- Label d'erreur -->
+                <Label fx:id="errorLabel"
+                       textFill="#e87c03"
+                       wrapText="true"
+                       visible="false"
+                       managed="false"
+                       maxWidth="1.7976931348623157E308">
+                    <font><Font size="12.0" /></font>
+                </Label>
+
+                <!-- Bouton Sign In -->
+                <Button fx:id="loginButton"
+                        onAction="#handleLogin"
+                        maxWidth="1.7976931348623157E308"
+                        mnemonicParsing="false"
+                        text="Sign In"
+                        textFill="WHITE"
+                        style="-fx-background-color: #E50914; -fx-cursor: hand; -fx-background-radius: 3px;">
+                    <font><Font name="System Bold" size="14.0" /></font>
+                    <padding><Insets bottom="10.0" left="10.0" right="10.0" top="10.0" /></padding>
+                </Button>
+
+                <!-- Lien Sign Up -->
+                <HBox spacing="5.0">
+                    <children>
+                        <Label text="New to Netflix?" textFill="#8c8c8c" />
+                        <Label onMouseClicked="#goToSignUp"
+                               style="-fx-cursor: hand;"
+                               text="Sign up now."
+                               textFill="WHITE">
+                            <font><Font name="System Bold" size="12.0" /></font>
+                        </Label>
+                    </children>
+                    <padding><Insets top="10.0" /></padding>
+                </HBox>
+
+            </children>
+
+            <StackPane.margin>
+                <Insets bottom="10.0" left="10.0" right="10.0" top="10.0" />
+            </StackPane.margin>
+            <padding>
+                <Insets bottom="30.0" left="30.0" right="30.0" top="30.0" />
+            </padding>
+        </VBox>
+
+    </children>
 </StackPane>
