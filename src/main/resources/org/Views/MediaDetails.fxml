@@ -20,22 +20,29 @@
     <content>
         <VBox spacing="30.0" style="-fx-background-color: #141414;">
             <children>
-
                 <StackPane fx:id="detailHero" prefHeight="450.0">
                     <children>
                         <ImageView fx:id="backgroundImage" pickOnBounds="true" preserveRatio="true" />
                         <VBox alignment="BOTTOM_LEFT" spacing="15.0"
                               style="-fx-background-color: linear-gradient(to top, #141414, transparent);">
                             <children>
-                                <Button fx:id="backButton" onAction="#handleBack" styleClass="btn-back" text="← Back" />
+                                <Button fx:id="backButton" onAction="#handleBack" text="← Back"
+                                        style="-fx-background-color: rgba(0,0,0,0.5); -fx-text-fill: white; -fx-font-weight: bold; -fx-padding: 8 15; -fx-background-radius: 4; -fx-cursor: hand;"/>
+
                                 <Label fx:id="titleLabel" styleClass="hero-title" text="TITLE" />
+
                                 <HBox spacing="15.0">
                                     <children>
-                                        <Button fx:id="playbtn" onAction="#handlePlay" styleClass="btn-play" text="▶ Play" />
-                                        <Button fx:id="mylistbtn" onAction="#handleAddToMyList" styleClass="btn-mylist" text="+ My List" />
+                                        <Button fx:id="playbtn" onAction="#handlePlay" text="▶ Play"
+                                                style="-fx-background-color: white; -fx-text-fill: black; -fx-font-size: 16px; -fx-font-weight: bold; -fx-padding: 10 25; -fx-background-radius: 4; -fx-cursor: hand;" />
+
+                                        <Button fx:id="mylistbtn" onAction="#handleAddToMyList" text="+ My List"
+                                                style="-fx-background-color: rgba(109, 109, 110, 0.7); -fx-text-fill: white; -fx-font-size: 16px; -fx-font-weight: bold; -fx-padding: 10 25; -fx-background-radius: 4; -fx-cursor: hand;" />
                                     </children>
                                 </HBox>
+
                                 <Label fx:id="descriptionLabel" maxWidth="600.0" styleClass="hero-description" wrapText="true" />
+
                                 <HBox fx:id="ratingBox" alignment="CENTER_LEFT" spacing="5.0">
                                     <Label fx:id="star1" onMouseClicked="#handleRate" styleClass="star-btn" text="★" userData="1" />
                                     <Label fx:id="star2" onMouseClicked="#handleRate" styleClass="star-btn" text="★" userData="2" />
@@ -53,8 +60,7 @@
                 <VBox spacing="10.0" style="-fx-padding: 0 50 0 50;">
                     <children>
                         <Label styleClass="section-title" text="Cast" />
-                        <ScrollPane hbarPolicy="NEVER" vbarPolicy="NEVER"
-                                    style="-fx-background-color: transparent; -fx-background: transparent;">
+                        <ScrollPane hbarPolicy="NEVER" vbarPolicy="NEVER" style="-fx-background-color: transparent; -fx-background: transparent;">
                             <content>
                                 <HBox fx:id="castingContainer" spacing="25.0" />
                             </content>
@@ -64,27 +70,14 @@
 
                 <VBox spacing="0" style="-fx-padding: 0 50 0 50;">
                     <children>
-
                         <HBox fx:id="tabHeader" spacing="0" style="-fx-border-color: #333; -fx-border-width: 0 0 2 0;">
                             <children>
-                                <Button fx:id="tabMoreLikeThis" onAction="#handleTabMoreLikeThis"
-                                        text="More Like This"
-                                        style="-fx-background-color: transparent; -fx-text-fill: white;
-                                               -fx-font-size: 15px; -fx-font-weight: bold; -fx-cursor: hand;
-                                               -fx-border-color: #e50914; -fx-border-width: 0 0 3 0;
-                                               -fx-padding: 10 20 10 0;" />
-                                <Button fx:id="tabEpisodes" onAction="#handleTabEpisodes"
-                                        text="Épisodes"
-                                        style="-fx-background-color: transparent; -fx-text-fill: #aaa;
-                                               -fx-font-size: 15px; -fx-font-weight: bold; -fx-cursor: hand;
-                                               -fx-border-color: transparent; -fx-border-width: 0 0 3 0;
-                                               -fx-padding: 10 20 10 20;" />
-                                <Button fx:id="tabComments" onAction="#handleTabComments"
-                                        text="Comments"
-                                        style="-fx-background-color: transparent; -fx-text-fill: #aaa;
-                                               -fx-font-size: 15px; -fx-font-weight: bold; -fx-cursor: hand;
-                                               -fx-border-color: transparent; -fx-border-width: 0 0 3 0;
-                                               -fx-padding: 10 20 10 20;" />
+                                <Button fx:id="tabMoreLikeThis" onAction="#handleTabMoreLikeThis" text="More Like This"
+                                        style="-fx-background-color: transparent; -fx-text-fill: white; -fx-font-size: 15px; -fx-font-weight: bold; -fx-cursor: hand; -fx-border-color: #e50914; -fx-border-width: 0 0 3 0; -fx-padding: 10 20 10 0;" />
+                                <Button fx:id="tabEpisodes" onAction="#handleTabEpisodes" text="Épisodes"
+                                        style="-fx-background-color: transparent; -fx-text-fill: #aaa; -fx-font-size: 15px; -fx-font-weight: bold; -fx-cursor: hand; -fx-border-color: transparent; -fx-border-width: 0 0 3 0; -fx-padding: 10 20 10 20;" />
+                                <Button fx:id="tabComments" onAction="#handleTabComments" text="Comments"
+                                        style="-fx-background-color: transparent; -fx-text-fill: #aaa; -fx-font-size: 15px; -fx-font-weight: bold; -fx-cursor: hand; -fx-border-color: transparent; -fx-border-width: 0 0 3 0; -fx-padding: 10 20 10 20;" />
                             </children>
                         </HBox>
 
@@ -94,42 +87,35 @@
                             </children>
                         </VBox>
 
-                        <VBox fx:id="panelEpisodes" spacing="15.0" visible="false" managed="false"
-                              style="-fx-padding: 20 0 20 0;">
+                        <VBox fx:id="panelEpisodes" managed="false" spacing="20.0" style="-fx-padding: 20 0 20 0;" visible="false">
                             <children>
-                                <HBox spacing="15.0" alignment="CENTER_LEFT">
+                                <HBox alignment="CENTER_LEFT" spacing="15.0">
                                     <children>
                                         <Label style="-fx-text-fill: #aaa; -fx-font-size: 14px;" text="Saison :" />
-                                        <ComboBox fx:id="seasonComboBox" onAction="#handleSeasonChange"
-                                                  style="-fx-background-color: #333; -fx-text-fill: white; -fx-font-size: 13px;"
-                                                  prefWidth="150" />
+                                        <ComboBox fx:id="seasonComboBox" onAction="#handleSeasonChange" prefWidth="150" style="-fx-background-color: #333; -fx-text-fill: white;" />
                                     </children>
                                 </HBox>
-                                <VBox fx:id="episodesContainer" spacing="15.0" style="-fx-padding: 10 0 10 0;" />
+                                <VBox fx:id="episodesContainer" spacing="15.0" />
                             </children>
                         </VBox>
 
-                        <VBox fx:id="panelComments" spacing="15.0" visible="false" managed="false"
-                              style="-fx-padding: 20 0 50 0;">
+                        <VBox fx:id="panelComments" managed="false" spacing="15.0" style="-fx-padding: 20 0 50 0;" visible="false">
                             <children>
                                 <VBox fx:id="commentsListContainer" spacing="15.0" />
-                                <VBox spacing="10.0" styleClass="comment-input-area">
+                                <VBox spacing="10.0">
                                     <children>
-                                        <TextArea fx:id="newCommentField" prefRowCount="3"
-                                                  promptText="Écrire un commentaire..."
-                                                  styleClass="comment-text-area" wrapText="true" />
+                                        <TextArea fx:id="newCommentField" prefRowCount="3" promptText="Écrire un commentaire..."
+                                                  style="-fx-control-inner-background: #222; -fx-text-fill: white; -fx-prompt-text-fill: #555; -fx-background-color: #222; -fx-border-color: #444; -fx-border-radius: 4;" wrapText="true" />
                                         <HBox alignment="CENTER_RIGHT">
-                                            <Button onAction="#handlePublishComment"
-                                                    styleClass="btn-publish" text="Publier" />
+                                            <Button onAction="#handlePublishComment" text="Publier"
+                                                    style="-fx-background-color: #e50914; -fx-text-fill: white; -fx-font-weight: bold; -fx-padding: 8 20; -fx-background-radius: 4; -fx-cursor: hand;" />
                                         </HBox>
                                     </children>
                                 </VBox>
                             </children>
                         </VBox>
-
                     </children>
                 </VBox>
-
             </children>
         </VBox>
     </content>

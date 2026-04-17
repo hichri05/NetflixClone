@@ -119,6 +119,17 @@ public class CommentDAO {
             return false;
         }
     }
+    public static boolean UnreportComment(int id_Comment) {
+        String sql = "UPDATE comment SET is_reported = 0 WHERE id_Comment = ?";
+        try (PreparedStatement pstmt = conn.prepareStatement(sql)) {
+            pstmt.setInt(1, id_Comment);
+            return pstmt.executeUpdate() > 0;
+        } catch (SQLException e) {
+            e.printStackTrace();
+            return false;
+        }
+    }
+
 
     // ── Dismiss a report (admin clears the flag) ──────────────────────────────
     public static boolean dismissReport(int id_Comment) {
