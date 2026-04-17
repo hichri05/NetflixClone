@@ -22,16 +22,19 @@
             <Button fx:id="btnDashboard" onAction="#showDashboard" prefWidth="210" alignment="BASELINE_LEFT"
                     text="📊  Dashboard Analysis" style="-fx-background-color: transparent; -fx-text-fill: #aaa; -fx-font-size: 15; -fx-cursor: hand;"/>
 
-
             <Button fx:id="btnUsers" onAction="#showUsers" prefWidth="210" alignment="BASELINE_LEFT"
                     text="👥  Users" style="-fx-background-color: transparent; -fx-text-fill: #aaa; -fx-font-size: 15; -fx-cursor: hand;"/>
+
             <Button fx:id="btnComments" onAction="#showcomments" prefWidth="210" alignment="BASELINE_LEFT"
                     text="💬  Comments" style="-fx-background-color: transparent; -fx-text-fill: #aaa; -fx-font-size: 15; -fx-cursor: hand;"/>
 
             <Region VBox.vgrow="ALWAYS" />
 
+            <Button fx:id="BacktoUser" onAction="#handleBackToMain" prefWidth="210" text="Back to Home"
+                    style="-fx-background-color: transparent; -fx-text-fill: #e50914; -fx-border-color: #e50914; -fx-border-radius: 5; -fx-cursor: hand;"/>
+
             <Button fx:id="logoutbtn" onAction="#handleLogout" prefWidth="210" text="Logout"
-                    style="-fx-background-color: transparent; -fx-text-fill: #e50914; -fx-border-color: #e50914; -fx-border-radius: 5;"/>
+                    style="-fx-background-color: transparent; -fx-text-fill: #e50914; -fx-border-color: #e50914; -fx-border-radius: 5; -fx-cursor: hand;"/>
         </VBox>
     </left>
 

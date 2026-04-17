@@ -4,7 +4,6 @@ import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Node;
-import javafx.scene.Parent;
 import javafx.scene.control.Button;
 import javafx.scene.layout.StackPane;
 import org.netflix.Utils.SceneSwitcher;
@@ -15,7 +14,7 @@ import java.io.IOException;
 public class AdminMainController {
 
     @FXML private StackPane contentArea;
-    @FXML private Button btnCatalogue, btnCategories, btnUsers, logoutbtn;
+    @FXML private Button btnCatalogue, btnCategories, btnUsers, logoutbtn, btnDashboard, btnComments, BacktoUser;
 
 
     private static final String ACTIVE_STYLE   = "-fx-text-fill: white;-fx-background-color: transparent;";
@@ -24,7 +23,6 @@ public class AdminMainController {
 
     @FXML
     public void initialize() {
-
         showCatalogue(null);
     }
 
@@ -54,6 +52,7 @@ public class AdminMainController {
         btnDashboard.setStyle(INACTIVE_STYLE);
         btnComments.setStyle(INACTIVE_STYLE);
     }
+
     public void showDashboard(ActionEvent actionEvent) {
         loadView("/org/Views/Dashboard.fxml");
         btnCatalogue.setStyle(INACTIVE_STYLE);
@@ -61,6 +60,15 @@ public class AdminMainController {
         btnUsers.setStyle(INACTIVE_STYLE);
         btnDashboard.setStyle(ACTIVE_STYLE);
         btnComments.setStyle(INACTIVE_STYLE);
+    }
+
+    public void showcomments(ActionEvent actionEvent) {
+        loadView("/org/Views/AdminComments.fxml");
+        btnCatalogue.setStyle(INACTIVE_STYLE);
+        btnCategories.setStyle(INACTIVE_STYLE);
+        btnUsers.setStyle(INACTIVE_STYLE);
+        btnDashboard.setStyle(INACTIVE_STYLE);
+        btnComments.setStyle(ACTIVE_STYLE);
     }
 
     private void loadView(String fxmlPath) {
@@ -76,17 +84,8 @@ public class AdminMainController {
         Session.logout();
         SceneSwitcher.goTo(actionEvent, "/org/Views/SignIn.fxml");
     }
-    @FXML
-    private Button btnDashboard;
-    @FXML
-    private Button btnComments;
-    public void showcomments(ActionEvent actionEvent) {
-        loadView("/org/Views/AdminComments.fxml");
-        btnCatalogue.setStyle(INACTIVE_STYLE);
-        btnCategories.setStyle(INACTIVE_STYLE);
-        btnUsers.setStyle(INACTIVE_STYLE);
-        btnDashboard.setStyle(INACTIVE_STYLE);
-        btnComments.setStyle(ACTIVE_STYLE);
-    }
 
+    public void handleBackToMain(ActionEvent actionEvent) {
+        SceneSwitcher.goTo(actionEvent, "/org/Views/main.fxml");
+    }
 }
