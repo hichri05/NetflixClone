@@ -112,6 +112,7 @@ public class CommentDAO {
             return false;
         }
     }
+
     public static boolean UnreportComment(int id_Comment) {
         String sql = "UPDATE comment SET is_reported = 0 WHERE id_Comment = ?";
         try (PreparedStatement pstmt = conn.prepareStatement(sql)) {
