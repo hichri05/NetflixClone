@@ -201,7 +201,7 @@ public class SignInController {
         if (!AuthService.login(email, password)) {
             passwordField.setStyle(STYLE_ERROR);
             passwordVisible.setStyle(STYLE_ERROR);//
-
+//
             showError("Mot de passe incorrect. Veuillez réessayer.");
             if (isPasswordVisible) { passwordVisible.requestFocus(); passwordVisible.clear(); }
             else                   { passwordField.requestFocus();   passwordField.clear();   }
