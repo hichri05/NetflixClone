@@ -522,7 +522,7 @@ public class MediaDetailsController {
 
             bubble.getChildren().addAll(header, content);
             commentsListContainer.getChildren().add(bubble);
-        }
+        }//
     }
     @FXML
     public void handlePublishComment(ActionEvent event) {
