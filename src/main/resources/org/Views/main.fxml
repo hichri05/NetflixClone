@@ -62,6 +62,21 @@
                                         </VBox>
                                     </children>
                                 </StackPane>
+                                <VBox fx:id="continueWatchingSection" spacing="0"
+                                      style="-fx-padding: 30 0 10 0;"
+                                      managed="false" visible="false">
+                                    <Label text="Continue Watching"
+                                           style="-fx-text-fill: white; -fx-font-size: 22px; -fx-font-weight: bold;
+                                  -fx-padding: 0 0 14 50;" />
+                                    <ScrollPane hbarPolicy="NEVER" vbarPolicy="NEVER"
+                                                style="-fx-background-color: transparent; -fx-background: transparent;
+                                       -fx-border-color: transparent;">
+                                        <content>
+                                            <HBox fx:id="continueWatchingRow" spacing="16"
+                                                  style="-fx-padding: 0 50 0 50;" />
+                                        </content>
+                                    </ScrollPane>
+                                </VBox>
                             </children>
                             <padding>
                                 <Insets bottom="5.0" left="5.0" right="5.0" top="5.0" />
@@ -200,7 +215,7 @@
                                 -fx-border-radius: 6; -fx-background-radius: 6;
                                 -fx-padding: 6 18; -fx-cursor: hand;" text="Apply" />
 
-                    <HBox fx:id="activeFilterChips" alignment="CENTER_LEFT" spacing="8" />
+                    <HBox fx:id="activeFilter" alignment="CENTER_LEFT" spacing="8" />
                 </children>
             </HBox>
         </VBox>
