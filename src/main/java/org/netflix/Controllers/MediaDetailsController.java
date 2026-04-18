@@ -31,14 +31,13 @@ public class MediaDetailsController {
     // ── Cast ──────────────────────────────────────────────────────────────────
     @FXML private HBox castingContainer;
 
-    // ── Season / Episode bar ──────────────────────────────────────────────────
-    @FXML private VBox       seasonEpisodeBar;
+    // ── Season / Episode ──────────────────────────────────────────────────────
     @FXML private ComboBox<String> seasonComboBox;
-    @FXML private VBox       episodesContainer;
+    @FXML private VBox             episodesContainer;
 
     // ── Tabs ──────────────────────────────────────────────────────────────────
-    @FXML private Button tabMoreLikeThis, tabComments;
-    @FXML private VBox   panelMoreLikeThis, panelComments;
+    @FXML private Button   tabMoreLikeThis, tabEpisodes, tabComments;
+    @FXML private VBox     panelMoreLikeThis, panelEpisodes, panelComments;
     @FXML private FlowPane relatedGrid;
 
     // ── Comments ──────────────────────────────────────────────────────────────
@@ -51,12 +50,9 @@ public class MediaDetailsController {
     private Media media;
     private List<Season> seasons;
 
-    /** episodeId → stoppedAtTime (seconds). Only incomplete, stopped > 5s. */
     private Map<Integer, Double> resumeMap    = new HashMap<>();
-    /** episodeIds that are fully completed (completed=1). */
     private Set<Integer>         completedSet = new HashSet<>();
 
-    /** First unwatched / partially-watched episode for smart resume. */
     private Episode smartResumeEpisode     = null;
     private int     smartResumeSeasonIndex = 0;
 
@@ -117,7 +113,7 @@ public class MediaDetailsController {
             List<Episode> eps = EpisodeDAO.getEpisodesBySeason(seasons.get(si).getIdSeason());
             for (Episode ep : eps) {
                 if (!completedSet.contains(ep.getId())) {
-                    smartResumeEpisode    = ep;
+                    smartResumeEpisode     = ep;
                     smartResumeSeasonIndex = si;
                     return;
                 }
@@ -133,30 +129,25 @@ public class MediaDetailsController {
         titleLabel.setText(media.getTitle());
         descriptionLabel.setText(media.getDescription());
 
-        // Backdrop
         String bdUrl = media.getBackdropImageUrl();
         if (bdUrl != null && !bdUrl.isBlank()) {
             backgroundImage.setImage(new Image(bdUrl, true));
         }
         backgroundImage.fitWidthProperty().bind(mainScroll.widthProperty().multiply(0.99));
 
-        // Type badge
         boolean isSerie = "serie".equalsIgnoreCase(media.getType()) ||
                 "series".equalsIgnoreCase(media.getType());
         typeBadgeLabel.setText(isSerie ? "SERIES" : "MOVIE");
         typeBadgeLabel.setStyle(typeBadgeLabel.getStyle() +
                 (isSerie ? "-fx-background-color: #1a76d2;" : "-fx-background-color: #e50914;"));
 
-        // Year
         if (media.getReleaseYear() > 0)
             yearLabel.setText(String.valueOf(media.getReleaseYear()));
 
-        // Avg rating
         double avg = media.getAverageRating();
         if (avg > 0)
             ratingAvgLabel.setText(String.format("★ %.1f", avg));
 
-        // User rating
         if (user != null) {
             int saved = MediaDAO.getRating(user.getId(), media.getIdMedia());
             if (saved > 0) { currentRating = saved; fillStars(saved); }
@@ -209,8 +200,9 @@ public class MediaDetailsController {
         seasons = SeasonDAO.getSeasonsBySerie(media.getIdMedia());
         if (seasons == null || seasons.isEmpty()) return;
 
-        seasonEpisodeBar.setVisible(true);
-        seasonEpisodeBar.setManaged(true);
+        // Show the Episodes tab only for series
+        tabEpisodes.setVisible(true);
+        tabEpisodes.setManaged(true);
 
         resolveSmartResume(seasons);
 
@@ -233,7 +225,7 @@ public class MediaDetailsController {
     }
 
     // ══════════════════════════════════════════════════════════════════════════
-    //  EPISODE CARDS — Titre + Durée + Résumé + Miniature + Progress badge
+    //  EPISODE CARDS
     // ══════════════════════════════════════════════════════════════════════════
 
     private void loadEpisodes(int seasonId) {
@@ -246,7 +238,6 @@ public class MediaDetailsController {
             boolean isSmartResume = smartResumeEpisode != null
                     && ep.getId() == smartResumeEpisode.getId();
 
-            // ── Row container ──────────────────────────────────────────────
             HBox row = new HBox(18);
             row.setAlignment(Pos.CENTER_LEFT);
             row.setCursor(Cursor.HAND);
@@ -268,11 +259,9 @@ public class MediaDetailsController {
             row.setOnMouseEntered(e -> row.setStyle(hoverStyle));
             row.setOnMouseExited(e  -> row.setStyle(defaultStyle));
 
-            // ── Episode number ─────────────────────────────────────────────
             Label numLbl = new Label(String.format("%02d", ep.getEpisodeNumber()));
             numLbl.setStyle("-fx-text-fill: #555; -fx-font-size: 20px; -fx-font-weight: bold; -fx-min-width: 36;");
 
-            // ── Thumbnail ──────────────────────────────────────────────────
             StackPane thumbBox = new StackPane();
             thumbBox.setMinWidth(180); thumbBox.setMaxWidth(180);
 
@@ -283,17 +272,15 @@ public class MediaDetailsController {
                 try { thumb.setImage(new Image(ep.getThumbnailPath(), true)); }
                 catch (Exception ignored) {}
             } else {
-                // Fallback dark placeholder
                 thumb.setStyle("-fx-background-color: #2a2a2a;");
             }
             Rectangle thumbClip = new Rectangle(180, 101);
             thumbClip.setArcWidth(6); thumbClip.setArcHeight(6);
             thumb.setClip(thumbClip);
 
-            // Progress bar overlay at bottom of thumbnail (if in progress)
             if (isInProgress) {
                 double stopped  = resumeMap.get(ep.getId());
-                double duration = ep.getDuration() * 60.0; // convert minutes to seconds
+                double duration = ep.getDuration() * 60.0;
                 double ratio    = duration > 0 ? Math.min(stopped / duration, 1.0) : 0.5;
 
                 ProgressBar progBar = new ProgressBar(ratio);
@@ -305,25 +292,21 @@ public class MediaDetailsController {
                 thumbBox.getChildren().add(thumb);
             }
 
-            // ── Info column ────────────────────────────────────────────────
             VBox info = new VBox(6);
             info.setAlignment(Pos.CENTER_LEFT);
             HBox.setHgrow(info, Priority.ALWAYS);
 
-            // Title line + duration
             HBox titleLine = new HBox(12);
             titleLine.setAlignment(Pos.BOTTOM_LEFT);
 
             Label titleLbl = new Label(ep.getTitle() != null ? ep.getTitle() : "Episode " + ep.getEpisodeNumber());
             titleLbl.setStyle("-fx-text-fill: white; -fx-font-size: 15px; -fx-font-weight: bold;");
 
-            // Duration badge
             Label durLbl = new Label(ep.getDuration() > 0 ? ep.getDuration() + " min" : "");
             durLbl.setStyle("-fx-text-fill: #666; -fx-font-size: 12px;");
 
             titleLine.getChildren().addAll(titleLbl, durLbl);
 
-            // Synopsis / description
             Label descLbl = new Label(ep.getDescription() != null && !ep.getDescription().isBlank()
                     ? ep.getDescription() : "No summary available.");
             descLbl.setStyle("-fx-text-fill: #aaa; -fx-font-size: 13px;");
@@ -332,7 +315,6 @@ public class MediaDetailsController {
 
             info.getChildren().addAll(titleLine, descLbl);
 
-            // ── Status badge (right side) ──────────────────────────────────
             VBox badgeCol = new VBox(6);
             badgeCol.setAlignment(Pos.CENTER_RIGHT);
             badgeCol.setMinWidth(100);
@@ -350,7 +332,6 @@ public class MediaDetailsController {
                         "-fx-font-size: 11px; -fx-font-weight: bold;" +
                         "-fx-padding: 4 10 4 10; -fx-background-radius: 12;");
 
-                // Show time remaining approximation
                 double stopped  = resumeMap.get(ep.getId());
                 int remainSecs  = (int) Math.max(0, ep.getDuration() * 60 - stopped);
                 int remainMin   = remainSecs / 60;
@@ -368,7 +349,6 @@ public class MediaDetailsController {
 
             row.getChildren().addAll(numLbl, thumbBox, info, badgeCol);
 
-            // ── Click → launch player ──────────────────────────────────────
             row.setOnMouseClicked(e -> {
                 TransferData.setEpisode(ep);
                 SceneSwitcher.goTo(e, "/org/Views/VideoPlayer.fxml");
@@ -385,16 +365,30 @@ public class MediaDetailsController {
     @FXML
     private void handleTabMoreLikeThis(ActionEvent event) {
         tabMoreLikeThis.setStyle(TAB_ACTIVE_FIRST);
+        tabEpisodes.setStyle(TAB_INACTIVE);
         tabComments.setStyle(TAB_INACTIVE);
-        panelMoreLikeThis.setVisible(true); panelMoreLikeThis.setManaged(true);
-        panelComments.setVisible(false);    panelComments.setManaged(false);
+        panelMoreLikeThis.setVisible(true);  panelMoreLikeThis.setManaged(true);
+        panelEpisodes.setVisible(false);     panelEpisodes.setManaged(false);
+        panelComments.setVisible(false);     panelComments.setManaged(false);
+    }
+
+    @FXML
+    private void handleTabEpisodes(ActionEvent event) {
+        tabMoreLikeThis.setStyle(TAB_INACTIVE_FIRST);
+        tabEpisodes.setStyle(TAB_ACTIVE);
+        tabComments.setStyle(TAB_INACTIVE);
+        panelMoreLikeThis.setVisible(false); panelMoreLikeThis.setManaged(false);
+        panelEpisodes.setVisible(true);      panelEpisodes.setManaged(true);
+        panelComments.setVisible(false);     panelComments.setManaged(false);
     }
 
     @FXML
     private void handleTabComments(ActionEvent event) {
         tabMoreLikeThis.setStyle(TAB_INACTIVE_FIRST);
+        tabEpisodes.setStyle(TAB_INACTIVE);
         tabComments.setStyle(TAB_ACTIVE);
         panelMoreLikeThis.setVisible(false); panelMoreLikeThis.setManaged(false);
+        panelEpisodes.setVisible(false);     panelEpisodes.setManaged(false);
         panelComments.setVisible(true);      panelComments.setManaged(true);
     }
 
@@ -420,7 +414,6 @@ public class MediaDetailsController {
             }
         }
 
-        // Fallback: fill with any movies
         if (recommendations.isEmpty()) {
             for (Movie m : MovieDAO.getAllMovies()) {
                 if (m.getIdMedia() != media.getIdMedia()) recommendations.add(m);
@@ -477,7 +470,6 @@ public class MediaDetailsController {
             HBox header = new HBox(8);
             header.setAlignment(Pos.CENTER_LEFT);
 
-            // Avatar circle
             Label avatar = new Label(dto.username.isEmpty() ? "?"
                     : String.valueOf(dto.username.charAt(0)).toUpperCase());
             avatar.setStyle("-fx-background-color: #e50914; -fx-text-fill: white;" +
@@ -495,7 +487,6 @@ public class MediaDetailsController {
             Region spacer = new Region();
             HBox.setHgrow(spacer, Priority.ALWAYS);
 
-            // Report button
             boolean alreadyReported = dto.comment.getIs_reported() == 1;
             Button reportBtn = new Button(alreadyReported ? "🚨 Reported" : "🚩 Report");
             reportBtn.setStyle(alreadyReported
@@ -512,7 +503,6 @@ public class MediaDetailsController {
 
             header.getChildren().addAll(avatar, userLbl, dateLbl, spacer, reportBtn);
 
-            // Delete for owner or admin
             if (currentUser != null &&
                     ("ADMIN".equalsIgnoreCase(currentUser.getRole()) ||
                             currentUser.getId() == dto.comment.getId_User())) {
@@ -553,17 +543,11 @@ public class MediaDetailsController {
         SceneSwitcher.goTo(e, "/org/Views/main.fxml");
     }
 
-    /**
-     * Play button:
-     * - For series: launches the smart resume episode directly.
-     * - For movies: launches the video player normally.
-     */
     @FXML
     private void handlePlay(ActionEvent e) {
         if (smartResumeEpisode != null) {
             TransferData.setEpisode(smartResumeEpisode);
         } else {
-            // Clear any stale episode in TransferData for movies
             TransferData.setEpisode(null);
         }
         SceneSwitcher.goTo(e, "/org/Views/VideoPlayer.fxml");

@@ -46,7 +46,7 @@ public class ConxDB {
         return connexion;
     }
     public static Connection getConnection() throws SQLException {
-        String URL      = "jdbc:mysql://localhost:3306/netflix";
+        String URL      = "jdbc:mysql://localhost:3307/netflix";
         String USER     = "root";
         String PASSWORD = "";
 
