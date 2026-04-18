@@ -3,6 +3,7 @@
 <?import javafx.scene.layout.*?>
 <?import javafx.scene.control.*?>
 
+<?import javafx.scene.shape.Rectangle?>
 <BorderPane xmlns="http://javafx.com/javafx"
             xmlns:fx="http://javafx.com/fxml"
             fx:controller="org.netflix.Controllers.AdminCommentController"
@@ -13,28 +14,13 @@
         <HBox alignment="CENTER_LEFT" spacing="24"
               style="-fx-background-color: #000000; -fx-padding: 0 32 0 32; -fx-min-height: 64; -fx-effect: dropshadow(gaussian, rgba(0,0,0,0.8), 10, 0, 0, 4);">
 
-            <Label text="N"
-                   style="-fx-text-fill: #e50914; -fx-font-size: 38px; -fx-font-weight: bold; -fx-font-family: 'Georgia';"/>
-
-            <Label text="ADMIN"
-                   style="-fx-text-fill: #aaaaaa; -fx-font-size: 13px; -fx-letter-spacing: 3px; -fx-font-family: 'Georgia';"/>
 
             <Region HBox.hgrow="ALWAYS"/>
 
-            <Button text="Dashboard"
-                    style="-fx-background-color: transparent; -fx-text-fill: #aaa; -fx-font-size: 13px; -fx-cursor: hand; -fx-border-color: transparent;"/>
-            <Button text="Users"
-                    style="-fx-background-color: transparent; -fx-text-fill: #aaa; -fx-font-size: 13px; -fx-cursor: hand; -fx-border-color: transparent;"/>
-            <Button text="Media"
-                    style="-fx-background-color: transparent; -fx-text-fill: #aaa; -fx-font-size: 13px; -fx-cursor: hand; -fx-border-color: transparent;"/>
-            <Button text="Comments"
-                    style="-fx-background-color: transparent; -fx-text-fill: white; -fx-font-size: 13px; -fx-font-weight: bold; -fx-cursor: hand;
-                           -fx-border-color: #e50914; -fx-border-width: 0 0 2 0; -fx-padding: 4 0 4 0;"/>
 
             <Region HBox.hgrow="ALWAYS"/>
 
-            <Label fx:id="adminNameLabel"
-                   style="-fx-text-fill: #aaa; -fx-font-size: 13px;"/>
+
         </HBox>
     </top>
 

@@ -5,13 +5,14 @@
 <?import javafx.geometry.Insets?>
 <?import javafx.scene.text.Text?>
 
+<?import javafx.scene.shape.Rectangle?>
 <VBox spacing="20" style="-fx-background-color: #141414;" xmlns="http://javafx.com/javafx/17" xmlns:fx="http://javafx.com/fxml/1" fx:controller="org.netflix.Controllers.CategoryController">
     <padding>
         <Insets bottom="30" left="30" right="30" top="30" />
     </padding>
 
     <VBox spacing="5">
-        <Text style="-fx-fill: white; -fx-font-size: 24; -fx-font-weight: bold;" text="Category Management" />
+        <Text style="-fx-fill: white; -fx-font-size: 24;-fx-font-weight: bold; -fx-font-family: 'Georgia'" text="Category Management" />
         <Text style="-fx-fill: #888; -fx-font-size: 14;" text="Manage the genres used in your catalog." />
     </VBox>
 

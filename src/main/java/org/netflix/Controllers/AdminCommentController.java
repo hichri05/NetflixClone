@@ -34,8 +34,8 @@ public class AdminCommentController {
 
     @FXML
     public void initialize() {
-        if (Session.getUser() != null)
-            adminNameLabel.setText(Session.getUser().getUsername());
+        /*if (Session.getUser() != null)
+            adminNameLabel.setText(Session.getUser().getUsername());*/
         loadData();
         renderRows(allComments);
     }

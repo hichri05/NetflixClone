@@ -47,6 +47,13 @@ public class SignInController {
                     "-fx-border-width: 0 0 2 0;" +
                     "-fx-text-fill: white;" +
                     "-fx-prompt-text-fill: #8c8c8c;";
+    private static final String STYLE_Banned =
+            "-fx-background-color: none;" +
+                    "-fx-border-color: #FF0000;" +
+                    "-fx-border-radius: 3px;" +
+                    "-fx-border-width: 0 0 2 0;" +
+                    "-fx-text-fill: white;" +
+                    "-fx-prompt-text-fill: #8c8c8c;";
 
     @FXML
     public void initialize() {
@@ -107,7 +114,7 @@ public class SignInController {
 
     private void makeWhite(ImageView iv) {
         ColorAdjust ca = new ColorAdjust();
-        ca.setBrightness(1.0);  // noir → blanc
+        ca.setBrightness(1.0);
         iv.setEffect(ca);
     }
 
@@ -182,10 +189,19 @@ public class SignInController {
             emailField.selectAll();
             return;
         }
+        if ("BANNED".equalsIgnoreCase(user.getRole())) {
+            emailField.setStyle(STYLE_Banned);
+            passwordField.setStyle(STYLE_Banned);
+            passwordVisible.setStyle(STYLE_Banned);
+            showError1("Votre compte a été suspendu. Veuillez contacter le support.");
+            emailField.requestFocus();
+            return;
+        }
 
         if (!AuthService.login(email, password)) {
             passwordField.setStyle(STYLE_ERROR);
             passwordVisible.setStyle(STYLE_ERROR);
+
             showError("Mot de passe incorrect. Veuillez réessayer.");
             if (isPasswordVisible) { passwordVisible.requestFocus(); passwordVisible.clear(); }
             else                   { passwordField.requestFocus();   passwordField.clear();   }
@@ -203,6 +219,11 @@ public class SignInController {
     }
 
     private void showError(String message) {
+        errorLabel.setText(message);
+        errorLabel.setVisible(true);
+        errorLabel.setManaged(true);
+    }
+    private void showError1(String message) {
         errorLabel.setText(message);
         errorLabel.setVisible(true);
         errorLabel.setManaged(true);

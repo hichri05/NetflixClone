@@ -13,7 +13,7 @@
     <HBox alignment="CENTER_LEFT" spacing="16"
           style="-fx-background-color: #0a0a0a; -fx-padding: 18 30 18 30; -fx-border-color: #2a2a2a; -fx-border-width: 0 0 1 0;">
 
-        <Rectangle width="4" height="28" fill="#e50914" arcWidth="2" arcHeight="2"/>
+
 
         <Label text="User Moderation"
                style="-fx-text-fill: white; -fx-font-size: 22px; -fx-font-weight: bold; -fx-font-family: 'Georgia';"/>
