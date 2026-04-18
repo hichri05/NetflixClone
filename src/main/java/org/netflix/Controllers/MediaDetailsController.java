@@ -20,31 +20,27 @@ import java.util.*;
 
 public class MediaDetailsController {
 
-    // ── Hero ──────────────────────────────────────────────────────────────────
     @FXML private ImageView  backgroundImage;
-    @FXML private Label      titleLabel, descriptionLabel, ratingLabel;
-    @FXML private Label      typeBadgeLabel, yearLabel, ratingAvgLabel, durationLabel;
+    @FXML private Label      titleLabel, descriptionLabel;
+    @FXML private Label      typeBadgeLabel, yearLabel, ratingAvgLabel;
     @FXML private Label      star1, star2, star3, star4, star5;
     @FXML private ScrollPane mainScroll;
-    @FXML private Button     mylistbtn, playbtn;
+    @FXML private Button     mylistbtn;
 
-    // ── Cast ──────────────────────────────────────────────────────────────────
     @FXML private HBox castingContainer;
 
-    // ── Season / Episode ──────────────────────────────────────────────────────
+
     @FXML private ComboBox<String> seasonComboBox;
     @FXML private VBox             episodesContainer;
 
-    // ── Tabs ──────────────────────────────────────────────────────────────────
+
     @FXML private Button   tabMoreLikeThis, tabEpisodes, tabComments;
     @FXML private VBox     panelMoreLikeThis, panelEpisodes, panelComments;
     @FXML private FlowPane relatedGrid;
 
-    // ── Comments ──────────────────────────────────────────────────────────────
     @FXML private VBox     commentsListContainer;
     @FXML private TextArea newCommentField;
 
-    // ── State ─────────────────────────────────────────────────────────────────
     private List<Label> stars;
     private int   currentRating = 0;
     private Media media;
@@ -56,7 +52,6 @@ public class MediaDetailsController {
     private Episode smartResumeEpisode     = null;
     private int     smartResumeSeasonIndex = 0;
 
-    // Tab style constants
     private static final String TAB_ACTIVE_FIRST =
             "-fx-background-color: transparent; -fx-text-fill: white;" +
                     "-fx-font-size: 15px; -fx-font-weight: bold; -fx-cursor: hand;" +
@@ -74,7 +69,6 @@ public class MediaDetailsController {
                     "-fx-font-size: 15px; -fx-font-weight: bold; -fx-cursor: hand;" +
                     "-fx-border-color: transparent; -fx-border-width: 0 0 3 0; -fx-padding: 10 20 10 20;";
 
-    // ─────────────────────────────────────────────────────────────────────────
     @FXML
     public void initialize() {
         media = TransferData.getMedia();
@@ -91,9 +85,6 @@ public class MediaDetailsController {
         loadComments();
     }
 
-    // ══════════════════════════════════════════════════════════════════════════
-    //  WATCH HISTORY MAPS
-    // ══════════════════════════════════════════════════════════════════════════
 
     private void buildWatchMaps(User user) {
         if (user == null) return;
@@ -121,9 +112,6 @@ public class MediaDetailsController {
         }
     }
 
-    // ══════════════════════════════════════════════════════════════════════════
-    //  HERO UI
-    // ══════════════════════════════════════════════════════════════════════════
 
     private void setupHeroUI(User user) {
         titleLabel.setText(media.getTitle());
@@ -157,10 +145,6 @@ public class MediaDetailsController {
         setupStarHover();
     }
 
-    // ══════════════════════════════════════════════════════════════════════════
-    //  CAST
-    // ══════════════════════════════════════════════════════════════════════════
-
     private void loadCast() {
         castingContainer.getChildren().clear();
         List<Acteur> acteurs = ActeurDAO.getActeursByMedia(media.getIdMedia());
@@ -187,10 +171,6 @@ public class MediaDetailsController {
         }
     }
 
-    // ══════════════════════════════════════════════════════════════════════════
-    //  SEASON / EPISODE BAR
-    // ══════════════════════════════════════════════════════════════════════════
-
     private void loadSeasonEpisodeBar() {
         boolean isSerie = (media instanceof Serie) ||
                 "serie".equalsIgnoreCase(media.getType()) ||
@@ -200,7 +180,7 @@ public class MediaDetailsController {
         seasons = SeasonDAO.getSeasonsBySerie(media.getIdMedia());
         if (seasons == null || seasons.isEmpty()) return;
 
-        // Show the Episodes tab only for series
+
         tabEpisodes.setVisible(true);
         tabEpisodes.setManaged(true);
 
@@ -224,9 +204,6 @@ public class MediaDetailsController {
         }
     }
 
-    // ══════════════════════════════════════════════════════════════════════════
-    //  EPISODE CARDS
-    // ══════════════════════════════════════════════════════════════════════════
 
     private void loadEpisodes(int seasonId) {
         episodesContainer.getChildren().clear();
@@ -358,10 +335,6 @@ public class MediaDetailsController {
         }
     }
 
-    // ══════════════════════════════════════════════════════════════════════════
-    //  TABS
-    // ══════════════════════════════════════════════════════════════════════════
-
     @FXML
     private void handleTabMoreLikeThis(ActionEvent event) {
         tabMoreLikeThis.setStyle(TAB_ACTIVE_FIRST);
@@ -391,10 +364,6 @@ public class MediaDetailsController {
         panelEpisodes.setVisible(false);     panelEpisodes.setManaged(false);
         panelComments.setVisible(true);      panelComments.setManaged(true);
     }
-
-    // ══════════════════════════════════════════════════════════════════════════
-    //  MORE LIKE THIS
-    // ══════════════════════════════════════════════════════════════════════════
 
     private void loadRelatedMedia() {
         relatedGrid.getChildren().clear();
@@ -453,10 +422,6 @@ public class MediaDetailsController {
         }
     }
 
-    // ══════════════════════════════════════════════════════════════════════════
-    //  COMMENTS
-    // ══════════════════════════════════════════════════════════════════════════
-
 
     private void loadComments() {
         commentsListContainer.getChildren().clear();
@@ -507,7 +472,7 @@ public class MediaDetailsController {
 
             header.getChildren().addAll(avatar, userLbl, dateLbl, spacer, reportBtn);
 
-            // --- Option: Delete (Admin ou Propriétaire) ---
+
             if (currentUser != null && ("ADMIN".equalsIgnoreCase(currentUser.getRole()) || currentUser.getId() == dto.comment.getId_User())) {
                 Button delBtn = new Button("🗑");
                 delBtn.setStyle("-fx-background-color: transparent; -fx-text-fill: #555; -fx-font-size: 12px; -fx-cursor: hand;");
@@ -522,7 +487,7 @@ public class MediaDetailsController {
 
             bubble.getChildren().addAll(header, content);
             commentsListContainer.getChildren().add(bubble);
-        }//
+        }
     }
     @FXML
     public void handlePublishComment(ActionEvent event) {
@@ -536,9 +501,7 @@ public class MediaDetailsController {
         }
     }
 
-    // ══════════════════════════════════════════════════════════════════════════
-    //  NAVIGATION & ACTIONS
-    // ══════════════════════════════════════════════════════════════════════════
+
 
     @FXML
     private void handleBack(ActionEvent e) {
@@ -555,7 +518,7 @@ public class MediaDetailsController {
         SceneSwitcher.goTo(e, "/org/Views/VideoPlayer.fxml");
     }
 
-    // ── Rating ────────────────────────────────────────────────────────────────
+
     @FXML
     private void handleRate(MouseEvent event) {
         int rating = Integer.parseInt((String) ((Label) event.getSource()).getUserData());
@@ -577,7 +540,7 @@ public class MediaDetailsController {
         }
     }
 
-    // ── My List ───────────────────────────────────────────────────────────────
+
     private void updateMyListButton(User u, Media m) {
         if (u == null) return;
         mylistbtn.setText(UserDAO.isFavorite(u.getId(), m.getIdMedia())

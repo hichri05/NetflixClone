@@ -35,7 +35,6 @@ public class WatchHistoryController {
 
         List<WatchHistory> history = new WatchHistoryDAO().findByUser(user.getId());
 
-        // Separate in-progress from completed, keyed by mediaId/episodeId
         Map<Integer, WatchHistory> inProgressMap  = new LinkedHashMap<>();
         Map<Integer, WatchHistory> completedMap   = new LinkedHashMap<>();
 
@@ -48,7 +47,6 @@ public class WatchHistoryController {
             }
         }
 
-        // Remove from completed if also in progress (in-progress is more recent)
         for (int key : inProgressMap.keySet()) completedMap.remove(key);
 
         boolean hasAnything = !inProgressMap.isEmpty() || !completedMap.isEmpty();
@@ -57,7 +55,6 @@ public class WatchHistoryController {
 
         if (!hasAnything) return;
 
-        // ── In-Progress cards ──────────────────────────────────────────────
         inProgressSection.setVisible(!inProgressMap.isEmpty());
         inProgressSection.setManaged(!inProgressMap.isEmpty());
 
@@ -66,12 +63,12 @@ public class WatchHistoryController {
             Media media = resolveMedia(wh.getMediaId());
             if (media == null) continue;
 
-            // For episodes, try to find episode duration
+
             double totalSecs = 0;
             String progressText = "";
 
             if (wh.getEpisodeId() != null) {
-                // Find episode for duration info
+
                 List<Episode> allEps = findEpisodesForMedia(media);
                 for (Episode ep : allEps) {
                     if (ep.getId() == wh.getEpisodeId()) {
@@ -93,7 +90,7 @@ public class WatchHistoryController {
             inProgressRow.getChildren().add(card);
         }
 
-        // ── Completed cards ───────────────────────────────────────────────
+
         subtitleLabel.setText(inProgressMap.size() + " in progress · " +
                 completedMap.size() + " watched");
 
@@ -105,7 +102,7 @@ public class WatchHistoryController {
         }
     }
 
-    // ── In-Progress card (larger, with progress bar) ──────────────────────────
+
     private VBox buildInProgressCard(Media media, double ratio, String progressText,
                                      WatchHistory wh) {
         VBox card = new VBox(0);
@@ -113,7 +110,7 @@ public class WatchHistoryController {
         card.setCursor(Cursor.HAND);
         card.setStyle("-fx-background-color: #1a1a1a; -fx-background-radius: 8;");
 
-        // Thumbnail
+
         StackPane thumbBox = new StackPane();
         ImageView poster = new ImageView();
         poster.setFitWidth(210); poster.setFitHeight(118);
@@ -128,13 +125,13 @@ public class WatchHistoryController {
         clip.setArcWidth(8); clip.setArcHeight(8);
         poster.setClip(clip);
 
-        // Progress bar overlay
+
         ProgressBar bar = new ProgressBar(ratio);
         bar.setPrefWidth(210); bar.setPrefHeight(4);
         bar.setStyle("-fx-accent: #e50914; -fx-background-color: rgba(0,0,0,0.6);");
         StackPane.setAlignment(bar, Pos.BOTTOM_CENTER);
 
-        // Play icon overlay
+
         Label playIcon = new Label("▶");
         playIcon.setStyle("-fx-text-fill: white; -fx-font-size: 28px;" +
                 "-fx-background-color: rgba(0,0,0,0.55); -fx-background-radius: 24;" +
@@ -143,11 +140,11 @@ public class WatchHistoryController {
 
         thumbBox.getChildren().addAll(poster, bar, playIcon);
 
-        // Hover effects
+
         card.setOnMouseEntered(e -> { playIcon.setOpacity(1); poster.setOpacity(0.75); });
         card.setOnMouseExited(e  -> { playIcon.setOpacity(0); poster.setOpacity(1.0);  });
 
-        // Info
+
         VBox info = new VBox(4);
         info.setStyle("-fx-padding: 10 12 12 12;");
 
@@ -167,11 +164,11 @@ public class WatchHistoryController {
         info.getChildren().addAll(titleLbl, progLbl, bottomRow);
         card.getChildren().addAll(thumbBox, info);
 
-        // Click: resume episode if known, else go to detail
+
         card.setOnMouseClicked(e -> {
             TransferData.setMedia(media);
             if (wh.getEpisodeId() != null) {
-                // Find and set episode
+
                 for (Episode ep : findEpisodesForMedia(media)) {
                     if (ep.getId() == wh.getEpisodeId()) {
                         TransferData.setEpisode(ep);
@@ -187,7 +184,6 @@ public class WatchHistoryController {
         return card;
     }
 
-    // ── Completed card (smaller, with ✓ badge) ────────────────────────────────
     private VBox buildCompletedCard(Media media) {
         VBox card = new VBox(0);
         card.setPrefWidth(145);
@@ -206,7 +202,6 @@ public class WatchHistoryController {
         clip.setArcWidth(6); clip.setArcHeight(6);
         poster.setClip(clip);
 
-        // ✓ badge
         Label vuBadge = new Label("✓");
         vuBadge.setStyle("-fx-background-color: rgba(70,211,105,0.85); -fx-text-fill: white;" +
                 "-fx-font-size: 13px; -fx-font-weight: bold;" +
@@ -231,8 +226,6 @@ public class WatchHistoryController {
 
         return card;
     }
-
-    // ── Helpers ───────────────────────────────────────────────────────────────
 
     private Media resolveMedia(int mediaId) {
         try {

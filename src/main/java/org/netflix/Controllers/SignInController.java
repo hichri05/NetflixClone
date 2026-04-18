@@ -67,7 +67,6 @@ public class SignInController {
         imgEyeOpen   = new Image(getClass().getResourceAsStream("/org/Images/oeil__fermé.png"));
         imgEyeClosed = new Image(getClass().getResourceAsStream("/org/Images/oeil_ouvert.png"));
 
-        // ✅ FIXED: don't reassign eyeIcon, just configure the one injected by FXML
         eyeIcon.setImage(imgEyeOpen);
         eyeIcon.setFitWidth(22);
         eyeIcon.setFitHeight(22);

@@ -171,7 +171,6 @@ public class UserManagementController {
 
 
     private void handlePromote(User user) {
-        // Toggle: ADMIN → user, anything else → ADMIN
         String newRole = ROLE_ADMIN.equalsIgnoreCase(user.getRole()) ? ROLE_USER : ROLE_ADMIN;
         String label   = ROLE_ADMIN.equalsIgnoreCase(user.getRole()) ? "demote to User" : "promote to Admin";
 

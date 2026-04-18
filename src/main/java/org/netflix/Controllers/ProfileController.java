@@ -4,14 +4,12 @@ import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.geometry.Pos;
 import javafx.scene.Cursor;
-import javafx.scene.Parent;
-import javafx.scene.Scene;
 import javafx.scene.control.*;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.layout.*;
 import javafx.scene.shape.Rectangle;
-import javafx.stage.Stage;
+
 import org.mindrot.jbcrypt.BCrypt;
 import org.netflix.DAO.MediaDAO;
 import org.netflix.DAO.UserDAO;
@@ -23,37 +21,30 @@ import org.netflix.Utils.SceneSwitcher;
 import org.netflix.Utils.Session;
 import org.netflix.Utils.TransferData;
 
-import java.io.IOException;
 import java.util.List;
 import java.util.Set;
 import java.util.HashSet;
 
 public class ProfileController {
 
-    // ── Hero ──────────────────────────────────────────────────────────────────
     @FXML private Label avatarLabel;
     @FXML private Label usernameLabel;
     @FXML private Label emailLabel;
     @FXML private Label roleLabel;
     @FXML private Label memberSinceLabel;
 
-    // ── Stats ─────────────────────────────────────────────────────────────────
     @FXML private Label watchedCountLabel;
     @FXML private Label favoritesCountLabel;
-    @FXML private Label ratingsCountLabel;
 
-    // ── Password ──────────────────────────────────────────────────────────────
     @FXML private PasswordField currentPwdField;
     @FXML private PasswordField newPwdField;
     @FXML private PasswordField confirmPwdField;
     @FXML private Label         pwdStatusLabel;
 
-    // ── Favorites ─────────────────────────────────────────────────────────────
     @FXML private FlowPane favoritesGrid;
     @FXML private Label    favCountChip;
     @FXML private VBox     emptyFavorites;
 
-    // ─────────────────────────────────────────────────────────────────────────
     @FXML
     public void initialize() {
         User user = Session.getUser();
@@ -64,9 +55,6 @@ public class ProfileController {
         loadFavorites(user);
     }
 
-    // ══════════════════════════════════════════════════════════════════════════
-    //  USER INFO
-    // ══════════════════════════════════════════════════════════════════════════
 
     private void loadUserInfo(User user) {
         String name = user.getUsername() != null ? user.getUsername() : "?";
@@ -74,7 +62,7 @@ public class ProfileController {
         emailLabel.setText(user.getEmail() != null ? user.getEmail() : "");
         avatarLabel.setText(name.isEmpty() ? "?" : String.valueOf(name.charAt(0)).toUpperCase());
 
-        // Role badge
+
         String role = user.getRole() != null ? user.getRole().toUpperCase() : "USER";
         roleLabel.setText(role);
         if ("ADMIN".equals(role)) {
@@ -89,12 +77,9 @@ public class ProfileController {
         }
     }
 
-    // ══════════════════════════════════════════════════════════════════════════
-    //  STATS
-    // ══════════════════════════════════════════════════════════════════════════
 
     private void loadStats(User user) {
-        // Watch count: unique media watched
+
         List<WatchHistory> history = new WatchHistoryDAO().findByUser(user.getId());
         Set<Integer> watchedMediaIds = new HashSet<>();
         int ratingCount = 0;
@@ -105,17 +90,11 @@ public class ProfileController {
 
         watchedCountLabel.setText(String.valueOf(watchedMediaIds.size()));
 
-        // Favorites count
         List<Media> favorites = UserDAO.getUserFavorites(user.getId());
         favoritesCountLabel.setText(String.valueOf(favorites != null ? favorites.size() : 0));
 
-        // Rating count (approximate from MediaDAO)
-        ratingsCountLabel.setText("—");
     }
 
-    // ══════════════════════════════════════════════════════════════════════════
-    //  FAVORITES GRID
-    // ══════════════════════════════════════════════════════════════════════════
 
     private void loadFavorites(User user) {
         favoritesGrid.getChildren().clear();
@@ -156,7 +135,6 @@ public class ProfileController {
         clip.setArcWidth(6); clip.setArcHeight(6);
         poster.setClip(clip);
 
-        // Remove (×) button overlay
         Button removeBtn = new Button("✕");
         removeBtn.setStyle("-fx-background-color: rgba(0,0,0,0.7); -fx-text-fill: white;" +
                 "-fx-font-size: 11px; -fx-cursor: hand; -fx-padding: 3 6;" +
@@ -169,7 +147,7 @@ public class ProfileController {
 
         removeBtn.setOnAction(e -> {
             MediaDAO.removeFromFavorites(user.getId(), media.getIdMedia());
-            loadFavorites(user); // refresh grid
+            loadFavorites(user);
         });
 
         thumbBox.getChildren().addAll(poster, removeBtn);
@@ -189,10 +167,6 @@ public class ProfileController {
         return card;
     }
 
-    // ══════════════════════════════════════════════════════════════════════════
-    //  PASSWORD CHANGE
-    // ══════════════════════════════════════════════════════════════════════════
-
     @FXML
     public void handleChangePassword(ActionEvent event) {
         User user = Session.getUser();
@@ -202,20 +176,19 @@ public class ProfileController {
         String newPwd  = newPwdField.getText();
         String confirm = confirmPwdField.getText();
 
-        // Validate fields
         if (current.isBlank() || newPwd.isBlank() || confirm.isBlank()) {
             showPwdStatus("Please fill in all fields.", false);
             return;
         }
 
-        // Verify current password against DB hash
+
         String storedHash = UserDAO.getHashedPass(user.getEmail());
         if (storedHash == null || !BCrypt.checkpw(current, storedHash)) {
             showPwdStatus("Current password is incorrect.", false);
             return;
         }
 
-        // Validate new password strength
+
         if (newPwd.length() < 8) {
             showPwdStatus("New password must be at least 8 characters.", false);
             return;
@@ -229,7 +202,6 @@ public class ProfileController {
             return;
         }
 
-        // Hash and update
         String newHash = BCrypt.hashpw(newPwd, BCrypt.gensalt(12));
         boolean updated = updatePasswordInDB(user.getId(), newHash);
 
@@ -264,9 +236,7 @@ public class ProfileController {
         pwdStatusLabel.setManaged(true);
     }
 
-    // ══════════════════════════════════════════════════════════════════════════
-    //  NAVIGATION
-    // ══════════════════════════════════════════════════════════════════════════
+
 
     @FXML private void handleBack(ActionEvent event) {
         SceneSwitcher.goTo(event, "/org/Views/main.fxml");

@@ -5,42 +5,25 @@
 <?import javafx.scene.control.Label?>
 <?import javafx.scene.control.PasswordField?>
 <?import javafx.scene.control.ScrollPane?>
-<?import javafx.scene.control.Separator?>
-<?import javafx.scene.control.TextField?>
 <?import javafx.scene.layout.AnchorPane?>
 <?import javafx.scene.layout.FlowPane?>
-<?import javafx.scene.layout.GridPane?>
 <?import javafx.scene.layout.HBox?>
 <?import javafx.scene.layout.Region?>
 <?import javafx.scene.layout.StackPane?>
 <?import javafx.scene.layout.VBox?>
-<?import javafx.scene.layout.ColumnConstraints?>
 
-<AnchorPane prefHeight="720.0" prefWidth="1200.0"
-            style="-fx-background-color: #0d0d0d;"
-            stylesheets="@../Styles/style.css"
-            xmlns="http://javafx.com/javafx/25"
-            xmlns:fx="http://javafx.com/fxml/1"
-            fx:controller="org.netflix.Controllers.ProfileController">
+<AnchorPane prefHeight="720.0" prefWidth="1200.0" style="-fx-background-color: #0d0d0d;" stylesheets="@../Styles/style.css" xmlns="http://javafx.com/javafx/25" xmlns:fx="http://javafx.com/fxml/1" fx:controller="org.netflix.Controllers.ProfileController">
 
     <!-- ── NAVBAR ── -->
-    <HBox alignment="CENTER_LEFT" prefHeight="65.0" spacing="20.0"
-          style="-fx-background-color: rgba(0,0,0,0.95); -fx-border-color: #1a1a1a; -fx-border-width: 0 0 1 0;"
-          AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
+    <HBox alignment="CENTER_LEFT" prefHeight="65.0" spacing="20.0" style="-fx-background-color: rgba(0,0,0,0.95); -fx-border-color: #1a1a1a; -fx-border-width: 0 0 1 0;" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
         <padding><Insets left="40.0" right="40.0" /></padding>
-        <Label text="NETFLIX" style="-fx-text-fill: #e50914; -fx-font-size: 28px; -fx-font-weight: bold;"/>
-        <Region HBox.hgrow="ALWAYS"/>
-        <Button onAction="#handleBack" text="← Home"
-                style="-fx-background-color: transparent; -fx-text-fill: #aaa;
-                       -fx-border-color: #444; -fx-border-radius: 4; -fx-background-radius: 4;
-                       -fx-cursor: hand; -fx-padding: 7 16;"/>
+        <Label style="-fx-text-fill: #e50914; -fx-font-size: 28px; -fx-font-weight: bold;" text="NETFLIX" />
+        <Region HBox.hgrow="ALWAYS" />
+        <Button onAction="#handleBack" style="-fx-background-color: transparent; -fx-text-fill: #aaa;                        -fx-border-color: #444; -fx-border-radius: 4; -fx-background-radius: 4;                        -fx-cursor: hand; -fx-padding: 7 16;" text="← Home" />
     </HBox>
 
     <!-- ── MAIN SCROLL ── -->
-    <ScrollPane fitToWidth="true" hbarPolicy="NEVER" vbarPolicy="AS_NEEDED"
-                style="-fx-background-color: transparent; -fx-background: #0d0d0d;"
-                AnchorPane.topAnchor="65.0" AnchorPane.bottomAnchor="0.0"
-                AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0">
+    <ScrollPane fitToWidth="true" hbarPolicy="NEVER" style="-fx-background-color: transparent; -fx-background: #0d0d0d;" vbarPolicy="AS_NEEDED" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="65.0">
         <content>
             <VBox spacing="0" style="-fx-background-color: #0d0d0d;">
                 <padding><Insets bottom="80.0" left="0.0" right="0.0" top="0.0" /></padding>
@@ -48,164 +31,86 @@
                 <!-- ══════════════════════════════════════════════ -->
                 <!--  PROFILE HERO BANNER                          -->
                 <!-- ══════════════════════════════════════════════ -->
-                <StackPane prefHeight="220"
-                           style="-fx-background-color: linear-gradient(to bottom right, #1a0000, #0d0d0d);
-                                  -fx-border-color: #1f1f1f; -fx-border-width: 0 0 1 0;">
+                <StackPane prefHeight="220" style="-fx-background-color: linear-gradient(to bottom right, #1a0000, #0d0d0d);                                   -fx-border-color: #1f1f1f; -fx-border-width: 0 0 1 0;">
 
-                    <HBox alignment="BOTTOM_LEFT" spacing="30"
-                          style="-fx-padding: 0 60 36 60;">
+                    <HBox alignment="BOTTOM_LEFT" spacing="30" style="-fx-padding: 0 60 36 60;" StackPane.alignment="CENTER">
 
                         <!-- Avatar circle (large) -->
-                        <StackPane>
-                            <StackPane fx:id="avatarCircle"
-                                       prefWidth="110" prefHeight="110"
-                                       style="-fx-background-color: #e50914;
-                                              -fx-background-radius: 55;
-                                              -fx-border-color: #333; -fx-border-width: 3; -fx-border-radius: 55;
-                                              -fx-effect: dropshadow(gaussian, rgba(229,9,20,0.4), 20, 0.3, 0, 0);">
-                                <Label fx:id="avatarLabel" text="?"
-                                       style="-fx-text-fill: white; -fx-font-size: 42px; -fx-font-weight: bold;"/>
+                        <StackPane prefHeight="150.0" prefWidth="110.0">
+                            <StackPane fx:id="avatarCircle" prefHeight="103.0" prefWidth="110.0" style="-fx-background-color: #e50914; -fx-background-radius: 55; -fx-border-color: #333; -fx-border-width: 0.5; -fx-border-radius: 55; -fx-effect: dropshadow(gaussian, rgba(229,9,20,0.4), 20, 0.3, 0, 0);">
+                                <Label fx:id="avatarLabel" style="-fx-text-fill: white; -fx-font-size: 42px; -fx-font-weight: bold;" text="?" />
                             </StackPane>
                         </StackPane>
 
                         <!-- User info -->
-                        <VBox spacing="6" alignment="BOTTOM_LEFT">
-                            <Label fx:id="usernameLabel" text="Username"
-                                   style="-fx-text-fill: white; -fx-font-size: 30px; -fx-font-weight: bold;"/>
-                            <Label fx:id="emailLabel" text="email@example.com"
-                                   style="-fx-text-fill: #777; -fx-font-size: 14px;"/>
-                            <HBox spacing="8" alignment="CENTER_LEFT">
-                                <Label fx:id="roleLabel" text="USER"
-                                       style="-fx-background-color: #2a2a2a; -fx-text-fill: #aaa;
-                                              -fx-font-size: 10px; -fx-font-weight: bold;
-                                              -fx-padding: 3 10 3 10; -fx-background-radius: 12;"/>
-                                <Label fx:id="memberSinceLabel" text=""
-                                       style="-fx-text-fill: #555; -fx-font-size: 12px;"/>
+                        <VBox alignment="BOTTOM_LEFT" spacing="6">
+                            <Label fx:id="usernameLabel" style="-fx-text-fill: white; -fx-font-size: 30px; -fx-font-weight: bold;" text="Username" />
+                            <Label fx:id="emailLabel" style="-fx-text-fill: #777; -fx-font-size: 14px;" text="email@example.com" />
+                            <HBox alignment="CENTER_LEFT" spacing="8">
+                                <Label fx:id="roleLabel" style="-fx-background-color: #2a2a2a; -fx-text-fill: #aaa;                                               -fx-font-size: 10px; -fx-font-weight: bold;                                               -fx-padding: 3 10 3 10; -fx-background-radius: 12;" text="USER" />
+                                <Label fx:id="memberSinceLabel" style="-fx-text-fill: #555; -fx-font-size: 12px;" text="" />
                             </HBox>
                         </VBox>
 
-                        <Region HBox.hgrow="ALWAYS"/>
+                        <Region HBox.hgrow="ALWAYS" />
 
                         <!-- Stat chips -->
-                        <HBox spacing="16" alignment="BOTTOM_CENTER">
-                            <VBox alignment="CENTER" spacing="3"
-                                  style="-fx-background-color: #1a1a1a; -fx-padding: 14 24;
-                                         -fx-background-radius: 8; -fx-border-color: #2a2a2a;
-                                         -fx-border-radius: 8;">
-                                <Label fx:id="watchedCountLabel" text="0"
-                                       style="-fx-text-fill: white; -fx-font-size: 26px; -fx-font-weight: bold;"/>
-                                <Label text="WATCHED"
-                                       style="-fx-text-fill: #555; -fx-font-size: 9px; -fx-font-weight: bold;"/>
+                        <HBox alignment="BOTTOM_CENTER" spacing="16">
+                            <VBox alignment="CENTER" spacing="3" style="-fx-background-color: #1a1a1a; -fx-padding: 14 24;                                          -fx-background-radius: 8; -fx-border-color: #2a2a2a;                                          -fx-border-radius: 8;">
+                                <Label fx:id="watchedCountLabel" style="-fx-text-fill: white; -fx-font-size: 26px; -fx-font-weight: bold;" text="0" />
+                                <Label style="-fx-text-fill: #555; -fx-font-size: 9px; -fx-font-weight: bold;" text="WATCHED" />
                             </VBox>
-                            <VBox alignment="CENTER" spacing="3"
-                                  style="-fx-background-color: #1a1a1a; -fx-padding: 14 24;
-                                         -fx-background-radius: 8; -fx-border-color: #2a2a2a;
-                                         -fx-border-radius: 8;">
-                                <Label fx:id="favoritesCountLabel" text="0"
-                                       style="-fx-text-fill: #e50914; -fx-font-size: 26px; -fx-font-weight: bold;"/>
-                                <Label text="FAVORITES"
-                                       style="-fx-text-fill: #555; -fx-font-size: 9px; -fx-font-weight: bold;"/>
-                            </VBox>
-                            <VBox alignment="CENTER" spacing="3"
-                                  style="-fx-background-color: #1a1a1a; -fx-padding: 14 24;
-                                         -fx-background-radius: 8; -fx-border-color: #2a2a2a;
-                                         -fx-border-radius: 8;">
-                                <Label fx:id="ratingsCountLabel" text="0"
-                                       style="-fx-text-fill: #f5a623; -fx-font-size: 26px; -fx-font-weight: bold;"/>
-                                <Label text="RATINGS"
-                                       style="-fx-text-fill: #555; -fx-font-size: 9px; -fx-font-weight: bold;"/>
+                            <VBox alignment="CENTER" spacing="3" style="-fx-background-color: #1a1a1a; -fx-padding: 14 24;                                          -fx-background-radius: 8; -fx-border-color: #2a2a2a;                                          -fx-border-radius: 8;">
+                                <Label fx:id="favoritesCountLabel" style="-fx-text-fill: #e50914; -fx-font-size: 26px; -fx-font-weight: bold;" text="0" />
+                                <Label style="-fx-text-fill: #555; -fx-font-size: 9px; -fx-font-weight: bold;" text="FAVORITES" />
                             </VBox>
                         </HBox>
 
                     </HBox>
+               <padding>
+                  <Insets bottom="5.0" left="5.0" right="5.0" top="5.0" />
+               </padding>
                 </StackPane>
 
                 <!-- ══════════════════════════════════════════════ -->
                 <!--  BODY  (two columns)                          -->
                 <!-- ══════════════════════════════════════════════ -->
-                <HBox spacing="0" style="-fx-padding: 40 60 0 60;" alignment="TOP_LEFT">
+                <HBox alignment="TOP_LEFT" spacing="0" style="-fx-padding: 40 60 0 60;">
 
                     <!-- LEFT COLUMN: Settings panels -->
-                    <VBox spacing="24" prefWidth="380" minWidth="320">
+                    <VBox minWidth="320" prefWidth="380" spacing="24">
 
                         <!-- Quick actions -->
-                        <VBox spacing="12"
-                              style="-fx-background-color: #151515; -fx-padding: 24;
-                                     -fx-background-radius: 10; -fx-border-color: #222; -fx-border-radius: 10;">
-                            <Label text="QUICK ACTIONS"
-                                   style="-fx-text-fill: #555; -fx-font-size: 10px; -fx-font-weight: bold;"/>
+                        <VBox spacing="12" style="-fx-background-color: #151515; -fx-padding: 24;                                      -fx-background-radius: 10; -fx-border-color: #222; -fx-border-radius: 10;">
+                            <Label style="-fx-text-fill: #555; -fx-font-size: 10px; -fx-font-weight: bold;" text="QUICK ACTIONS" />
 
-                            <Button onAction="#handleViewHistory" maxWidth="Infinity"
-                                    text="🕐  Watch History"
-                                    style="-fx-background-color: #1e1e1e; -fx-text-fill: white;
-                                           -fx-font-size: 13px; -fx-padding: 12 16; -fx-cursor: hand;
-                                           -fx-border-radius: 6; -fx-background-radius: 6;
-                                           -fx-alignment: CENTER_LEFT; -fx-border-color: #2a2a2a;"/>
+                            <Button maxWidth="Infinity" onAction="#handleViewHistory" style="-fx-background-color: #1e1e1e; -fx-text-fill: white;                                            -fx-font-size: 13px; -fx-padding: 12 16; -fx-cursor: hand;                                            -fx-border-radius: 6; -fx-background-radius: 6;                                            -fx-alignment: CENTER_LEFT; -fx-border-color: #2a2a2a;" text="🕐  Watch History" />
 
-                            <Button onAction="#handleViewMyList" maxWidth="Infinity"
-                                    text="📋  My List"
-                                    style="-fx-background-color: #1e1e1e; -fx-text-fill: white;
-                                           -fx-font-size: 13px; -fx-padding: 12 16; -fx-cursor: hand;
-                                           -fx-border-radius: 6; -fx-background-radius: 6;
-                                           -fx-alignment: CENTER_LEFT; -fx-border-color: #2a2a2a;"/>
-
-                            <Button onAction="#handleLogout" maxWidth="Infinity"
-                                    text="⎋  Sign Out"
-                                    style="-fx-background-color: transparent; -fx-text-fill: #e50914;
-                                           -fx-font-size: 13px; -fx-padding: 12 16; -fx-cursor: hand;
-                                           -fx-border-radius: 6; -fx-background-radius: 6;
-                                           -fx-alignment: CENTER_LEFT; -fx-border-color: #3a1010;"/>
+                            <Button maxWidth="Infinity" onAction="#handleLogout" style="-fx-background-color: transparent; -fx-text-fill: #e50914;                                            -fx-font-size: 13px; -fx-padding: 12 16; -fx-cursor: hand;                                            -fx-border-radius: 6; -fx-background-radius: 6;                                            -fx-alignment: CENTER_LEFT; -fx-border-color: #3a1010;" text="⎋  Sign Out" />
                         </VBox>
 
                         <!-- Change password -->
-                        <VBox spacing="16"
-                              style="-fx-background-color: #151515; -fx-padding: 24;
-                                     -fx-background-radius: 10; -fx-border-color: #222; -fx-border-radius: 10;">
-                            <Label text="CHANGE PASSWORD"
-                                   style="-fx-text-fill: #555; -fx-font-size: 10px; -fx-font-weight: bold;"/>
+                        <VBox spacing="16" style="-fx-background-color: #151515; -fx-padding: 24;                                      -fx-background-radius: 10; -fx-border-color: #222; -fx-border-radius: 10;">
+                            <Label style="-fx-text-fill: #555; -fx-font-size: 10px; -fx-font-weight: bold;" text="CHANGE PASSWORD" />
 
                             <VBox spacing="8">
-                                <Label text="Current Password"
-                                       style="-fx-text-fill: #888; -fx-font-size: 12px;"/>
-                                <PasswordField fx:id="currentPwdField"
-                                               promptText="Enter current password"
-                                               style="-fx-background-color: #1e1e1e; -fx-text-fill: white;
-                                                      -fx-prompt-text-fill: #444; -fx-border-color: #2a2a2a;
-                                                      -fx-border-radius: 6; -fx-background-radius: 6;
-                                                      -fx-padding: 10 12;"/>
+                                <Label style="-fx-text-fill: #888; -fx-font-size: 12px;" text="Current Password" />
+                                <PasswordField fx:id="currentPwdField" promptText="Enter current password" style="-fx-background-color: #1e1e1e; -fx-text-fill: white;                                                       -fx-prompt-text-fill: #444; -fx-border-color: #2a2a2a;                                                       -fx-border-radius: 6; -fx-background-radius: 6;                                                       -fx-padding: 10 12;" />
                             </VBox>
 
                             <VBox spacing="8">
-                                <Label text="New Password"
-                                       style="-fx-text-fill: #888; -fx-font-size: 12px;"/>
-                                <PasswordField fx:id="newPwdField"
-                                               promptText="Enter new password"
-                                               style="-fx-background-color: #1e1e1e; -fx-text-fill: white;
-                                                      -fx-prompt-text-fill: #444; -fx-border-color: #2a2a2a;
-                                                      -fx-border-radius: 6; -fx-background-radius: 6;
-                                                      -fx-padding: 10 12;"/>
+                                <Label style="-fx-text-fill: #888; -fx-font-size: 12px;" text="New Password" />
+                                <PasswordField fx:id="newPwdField" promptText="Enter new password" style="-fx-background-color: #1e1e1e; -fx-text-fill: white;                                                       -fx-prompt-text-fill: #444; -fx-border-color: #2a2a2a;                                                       -fx-border-radius: 6; -fx-background-radius: 6;                                                       -fx-padding: 10 12;" />
                             </VBox>
 
                             <VBox spacing="8">
-                                <Label text="Confirm New Password"
-                                       style="-fx-text-fill: #888; -fx-font-size: 12px;"/>
-                                <PasswordField fx:id="confirmPwdField"
-                                               promptText="Confirm new password"
-                                               style="-fx-background-color: #1e1e1e; -fx-text-fill: white;
-                                                      -fx-prompt-text-fill: #444; -fx-border-color: #2a2a2a;
-                                                      -fx-border-radius: 6; -fx-background-radius: 6;
-                                                      -fx-padding: 10 12;"/>
+                                <Label style="-fx-text-fill: #888; -fx-font-size: 12px;" text="Confirm New Password" />
+                                <PasswordField fx:id="confirmPwdField" promptText="Confirm new password" style="-fx-background-color: #1e1e1e; -fx-text-fill: white;                                                       -fx-prompt-text-fill: #444; -fx-border-color: #2a2a2a;                                                       -fx-border-radius: 6; -fx-background-radius: 6;                                                       -fx-padding: 10 12;" />
                             </VBox>
 
-                            <Label fx:id="pwdStatusLabel" text="" wrapText="true"
-                                   style="-fx-font-size: 12px;" managed="false" visible="false"/>
+                            <Label fx:id="pwdStatusLabel" managed="false" style="-fx-font-size: 12px;" text="" visible="false" wrapText="true" />
 
-                            <Button onAction="#handleChangePassword" maxWidth="Infinity"
-                                    text="Update Password"
-                                    style="-fx-background-color: #e50914; -fx-text-fill: white;
-                                           -fx-font-weight: bold; -fx-font-size: 13px;
-                                           -fx-padding: 11 0; -fx-cursor: hand;
-                                           -fx-border-radius: 6; -fx-background-radius: 6;"/>
+                            <Button maxWidth="Infinity" onAction="#handleChangePassword" style="-fx-background-color: #e50914; -fx-text-fill: white;                                            -fx-font-weight: bold; -fx-font-size: 13px;                                            -fx-padding: 11 0; -fx-cursor: hand;                                            -fx-border-radius: 6; -fx-background-radius: 6;" text="Update Password" />
                         </VBox>
 
                     </VBox>
@@ -216,24 +121,18 @@
                     <VBox spacing="20" HBox.hgrow="ALWAYS">
 
                         <HBox alignment="CENTER_LEFT" spacing="16">
-                            <Label text="MY FAVORITES"
-                                   style="-fx-text-fill: white; -fx-font-size: 18px; -fx-font-weight: bold;"/>
-                            <Region HBox.hgrow="ALWAYS"/>
-                            <Label fx:id="favCountChip" text=""
-                                   style="-fx-background-color: #222; -fx-text-fill: #888;
-                                          -fx-font-size: 11px; -fx-padding: 3 12; -fx-background-radius: 12;"/>
+                            <Label style="-fx-text-fill: white; -fx-font-size: 18px; -fx-font-weight: bold;" text="MY FAVORITES" />
+                            <Region HBox.hgrow="ALWAYS" />
+                            <Label fx:id="favCountChip" style="-fx-background-color: #222; -fx-text-fill: #888;                                           -fx-font-size: 11px; -fx-padding: 3 12; -fx-background-radius: 12;" text="" />
                         </HBox>
 
                         <!-- Favorites poster grid -->
                         <FlowPane fx:id="favoritesGrid" hgap="14" vgap="18" />
 
                         <!-- Empty favorites state -->
-                        <VBox fx:id="emptyFavorites" alignment="CENTER" spacing="10"
-                              style="-fx-padding: 40 0;" visible="false" managed="false">
-                            <Label text="Your favorites list is empty."
-                                   style="-fx-text-fill: #444; -fx-font-size: 15px;"/>
-                            <Label text="Browse movies and series and add them to your list."
-                                   style="-fx-text-fill: #333; -fx-font-size: 12px;"/>
+                        <VBox fx:id="emptyFavorites" alignment="CENTER" managed="false" spacing="10" style="-fx-padding: 40 0;" visible="false">
+                            <Label style="-fx-text-fill: #444; -fx-font-size: 15px;" text="Your favorites list is empty." />
+                            <Label style="-fx-text-fill: #333; -fx-font-size: 12px;" text="Browse movies and series and add them to your list." />
                         </VBox>
 
                     </VBox>

@@ -153,7 +153,6 @@ public class VideoPlayerController implements Initializable {
                     && wh.getEpisodeId() == currentEpisode.getId()
                     && wh.getCompleted() == 0
                     && wh.getStoppedAtTime() > 5) {
-                // Wait for player ready, then seek
                 mediaPlayer.setOnReady(() -> {
                     timeSlider.setMax(mediaPlayer.getTotalDuration().toSeconds());
                     mediaPlayer.volumeProperty().bind(volumeSlider.valueProperty().divide(100));

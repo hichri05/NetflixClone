@@ -541,7 +541,7 @@ public class MainController implements Initializable {
         mainScroll.setVisible(true);
     }
 
-    private void hideAll() {
+    public void hideAll() {
         mainScroll.setVisible(false);
         searchContent.setVisible(false);
         mainScrollList.setVisible(false);
@@ -583,9 +583,6 @@ public class MainController implements Initializable {
         }
     }
 
-    // ══════════════════════════════════════════════════════════════════════════
-    //  MOVIES VIEW
-    // ══════════════════════════════════════════════════════════════════════════
 
     private void addMovieGenreRow(String title, List<Movie> movies) {
         Label label = new Label(title);
@@ -705,9 +702,6 @@ public class MainController implements Initializable {
         return preview;
     }
 
-    // ══════════════════════════════════════════════════════════════════════════
-    //  SERIES VIEW
-    // ══════════════════════════════════════════════════════════════════════════
 
     private void addSerieGenreRow(String title, List<Serie> series) {
         Label label = new Label(title);
@@ -827,9 +821,6 @@ public class MainController implements Initializable {
         return preview;
     }
 
-    // ══════════════════════════════════════════════════════════════════════════
-    //  SHARED HELPERS
-    // ══════════════════════════════════════════════════════════════════════════
 
     private void openMediaDetails(Media media) {
         TransferData.setMedia(media);
@@ -859,9 +850,6 @@ public class MainController implements Initializable {
         }
     }
 
-    // ══════════════════════════════════════════════════════════════════════════
-    //  CONTINUE WATCHING
-    // ══════════════════════════════════════════════════════════════════════════
 
     private void loadContinueWatching() {
         if (user == null) return;
@@ -960,9 +948,6 @@ public class MainController implements Initializable {
         return card;
     }
 
-    // ══════════════════════════════════════════════════════════════════════════
-    //  FXML HANDLERS
-    // ══════════════════════════════════════════════════════════════════════════
 
     @FXML private void handleHomeClick(MouseEvent event)   { showHomeView(); }
     @FXML private void handleMoviesClick(MouseEvent event)  { showMoviesView(); }
