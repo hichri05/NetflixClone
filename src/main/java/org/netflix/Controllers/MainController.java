@@ -840,4 +840,12 @@ public class MainController implements Initializable {
     public void handleOpenDashboard(ActionEvent event) {
         SceneSwitcher.goTo(event, "/org/Views/MainDashboard.fxml");
     }
+    @FXML
+    public void handleProfileClick(javafx.scene.input.MouseEvent event) {
+        SceneSwitcher.goTo(event, "/org/Views/Profile.fxml");
+    }
+    @FXML
+    public void handleViewHistory(ActionEvent event) {
+        SceneSwitcher.goTo(event, "/org/Views/WatchHistory.fxml");
+    }
 }

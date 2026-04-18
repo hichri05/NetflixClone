@@ -1,8 +1,6 @@
 package org.netflix.Controllers;
 
-import javafx.animation.Animation;
 import javafx.animation.KeyFrame;
-import javafx.animation.KeyValue;
 import javafx.animation.Timeline;
 import javafx.application.Platform;
 import javafx.event.ActionEvent;
@@ -18,15 +16,12 @@ import javafx.scene.layout.VBox;
 import javafx.scene.media.Media;
 import javafx.scene.media.MediaPlayer;
 import javafx.scene.media.MediaView;
+import javafx.stage.Stage;
 import javafx.util.Duration;
 import org.netflix.DAO.EpisodeDAO;
 import org.netflix.DAO.SeasonDAO;
 import org.netflix.DAO.WatchHistoryDAO;
-import org.netflix.Models.Episode;
-import org.netflix.Models.Movie;
-import org.netflix.Models.Season;
-import org.netflix.Models.User;
-import org.netflix.Models.WatchHistory;
+import org.netflix.Models.*;
 import org.netflix.Utils.SceneSwitcher;
 import org.netflix.Utils.Session;
 import org.netflix.Utils.TransferData;
@@ -39,35 +34,34 @@ import java.util.ResourceBundle;
 
 public class VideoPlayerController implements Initializable {
 
+    // ── Standard controls ─────────────────────────────────────────────────────
+    @FXML private Label       timeLabel;
+    @FXML private MediaView   mediaView;
+    @FXML private Button      playBtn;
+    @FXML private Button      fullscreenBtn;
+    @FXML private Slider      timeSlider;
+    @FXML private Slider      volumeSlider;
+    @FXML private Label       videoTitle;
+    @FXML private Label       episodeSubtitle;
 
-    @FXML private Label      timeLabel;
-    @FXML private MediaView  mediaView;
-    @FXML private Button     playBtn;
-    @FXML private Slider     timeSlider;
-    @FXML private Slider     volumeSlider;
-    @FXML private Label      videoTitle;
-    @FXML private Label      episodeSubtitle;
-
-
-    @FXML private Button     nextEpisodeBtn;
-    @FXML private VBox       nextEpisodeOverlay;
-    @FXML private Label      countdownLabel;
+    // ── Next episode overlay ───────────────────────────────────────────────────
+    @FXML private Button      nextEpisodeBtn;
+    @FXML private VBox        nextEpisodeOverlay;
+    @FXML private Label       countdownLabel;
     @FXML private ProgressBar countdownBar;
-    @FXML private Label      nextEpTitle;
-    @FXML private Label      nextEpDesc;
-    @FXML private ImageView  nextEpThumbnail;
+    @FXML private Label       nextEpTitle;
+    @FXML private Label       nextEpDesc;
+    @FXML private ImageView   nextEpThumbnail;
 
-
+    // ── State ─────────────────────────────────────────────────────────────────
     private MediaPlayer mediaPlayer;
     private org.netflix.Models.Media currentMedia;
     private Episode     currentEpisode;
     private Episode     nextEpisode;
-
     private Timeline    countdownTimeline;
-    private int         countdownSeconds = 10;
+    private boolean     isFullscreen = false;
 
-    private static final int COUNTDOWN_DURATION = 10; // seconds before auto-play
-
+    private static final int COUNTDOWN_DURATION = 10;
 
     @Override
     public void initialize(URL url, ResourceBundle resourceBundle) {
@@ -79,7 +73,6 @@ public class VideoPlayerController implements Initializable {
         setupTitle();
     }
 
-
     private void setupPlayer() {
         String videoSource = resolveVideoSource();
 
@@ -90,15 +83,16 @@ public class VideoPlayerController implements Initializable {
         } catch (Exception e) {
             System.err.println("Could not load video: " + videoSource);
             try {
-                String fallback = getClass().getResource("/org/Videos/WAR_MACHINE.mp4").toExternalForm();
-                mediaPlayer = new MediaPlayer(new Media(fallback));
-                mediaView.setMediaPlayer(mediaPlayer);
+                URL fallback = getClass().getResource("/org/Videos/WAR_MACHINE.mp4");
+                if (fallback != null) {
+                    mediaPlayer = new MediaPlayer(new Media(fallback.toExternalForm()));
+                    mediaView.setMediaPlayer(mediaPlayer);
+                } else return;
             } catch (Exception ex) {
                 ex.printStackTrace();
                 return;
             }
         }
-
 
         Platform.runLater(() -> {
             if (mediaView.getScene() != null) {
@@ -115,7 +109,7 @@ public class VideoPlayerController implements Initializable {
             timeLabel.setText(formatTime(newTime, mediaPlayer.getTotalDuration()));
         });
 
-
+        // On ready
         mediaPlayer.setOnReady(() -> {
             timeSlider.setMax(mediaPlayer.getTotalDuration().toSeconds());
             mediaPlayer.volumeProperty().bind(volumeSlider.valueProperty().divide(100));
@@ -123,26 +117,27 @@ public class VideoPlayerController implements Initializable {
             playBtn.setText("⏸");
         });
 
-
+        // Seek on slider drag
         timeSlider.valueProperty().addListener((obs, oldVal, newVal) -> {
             if (timeSlider.isValueChanging()) {
                 mediaPlayer.seek(Duration.seconds(newVal.doubleValue()));
             }
         });
-        timeSlider.setOnMouseClicked(e -> mediaPlayer.seek(Duration.seconds(timeSlider.getValue())));
+        timeSlider.setOnMouseClicked(e ->
+                mediaPlayer.seek(Duration.seconds(timeSlider.getValue())));
 
+        // End of media → binge-watch overlay
         mediaPlayer.setOnEndOfMedia(() -> {
             saveWatchHistory(true);
             playBtn.setText("▶");
-            if (nextEpisode != null) {
-                showNextEpisodeOverlay();
-            }
+            if (nextEpisode != null) showNextEpisodeOverlay();
         });
 
-
+        // Smart resume: seek to saved position
         seekToSavedPosition();
     }
 
+    // ── Smart resume seek ────────────────────────────────────────────────────
     private void seekToSavedPosition() {
         User user = Session.getUser();
         if (user == null || currentEpisode == null) return;
@@ -153,11 +148,11 @@ public class VideoPlayerController implements Initializable {
                     && wh.getEpisodeId() == currentEpisode.getId()
                     && wh.getCompleted() == 0
                     && wh.getStoppedAtTime() > 5) {
-                // Wait for player ready, then seek
+                double resumeAt = wh.getStoppedAtTime();
                 mediaPlayer.setOnReady(() -> {
                     timeSlider.setMax(mediaPlayer.getTotalDuration().toSeconds());
                     mediaPlayer.volumeProperty().bind(volumeSlider.valueProperty().divide(100));
-                    mediaPlayer.seek(Duration.seconds(wh.getStoppedAtTime()));
+                    mediaPlayer.seek(Duration.seconds(resumeAt));
                     mediaPlayer.play();
                     playBtn.setText("⏸");
                 });
@@ -166,12 +161,14 @@ public class VideoPlayerController implements Initializable {
         }
     }
 
+    // ══════════════════════════════════════════════════════════════════════════
+    //  NEXT EPISODE RESOLUTION
+    // ══════════════════════════════════════════════════════════════════════════
 
     private void resolveNextEpisode() {
         nextEpisode = null;
-
         if (currentEpisode == null || currentMedia == null) {
-            setupNextEpisodeButton();
+            updateNextBtn();
             return;
         }
 
@@ -180,85 +177,69 @@ public class VideoPlayerController implements Initializable {
 
         boolean foundCurrent = false;
         for (Episode ep : episodes) {
-            if (foundCurrent) {
-                nextEpisode = ep;
-                break;
-            }
-            if (ep.getId() == currentEpisode.getId()) {
-                foundCurrent = true;
-            }
+            if (foundCurrent) { nextEpisode = ep; break; }
+            if (ep.getId() == currentEpisode.getId()) foundCurrent = true;
         }
+
 
         if (nextEpisode == null) {
             List<Season> seasons = SeasonDAO.getSeasonsBySerie(currentMedia.getIdMedia());
-            boolean foundCurrentSeason = false;
+            boolean foundSeason = false;
             for (Season season : seasons) {
-                if (foundCurrentSeason) {
-                    List<Episode> nextSeasonEps = EpisodeDAO.getEpisodesBySeason(season.getIdSeason());
-                    if (!nextSeasonEps.isEmpty()) {
-                        nextEpisode = nextSeasonEps.get(0);
-                    }
+                if (foundSeason) {
+                    List<Episode> nextEps = EpisodeDAO.getEpisodesBySeason(season.getIdSeason());
+                    if (!nextEps.isEmpty()) nextEpisode = nextEps.get(0);
                     break;
                 }
-                if (season.getIdSeason() == seasonId) {
-                    foundCurrentSeason = true;
-                }
+                if (season.getIdSeason() == seasonId) foundSeason = true;
             }
         }
-
-        setupNextEpisodeButton();
+        updateNextBtn();
     }
 
-    private void setupNextEpisodeButton() {
+    private void updateNextBtn() {
         if (nextEpisode != null) {
             nextEpisodeBtn.setVisible(true);
             nextEpisodeBtn.setManaged(true);
         }
     }
 
+
+
     private void setupTitle() {
-        if (currentMedia != null) {
-            videoTitle.setText(currentMedia.getTitle());
-        }
+        if (currentMedia != null) videoTitle.setText(currentMedia.getTitle());
+
         if (currentEpisode != null) {
-            episodeSubtitle.setText(
-                    "S" + resolveSeasonNumber(currentEpisode.getSeasonId())
-                            + " · E" + currentEpisode.getEpisodeNumber()
-                            + " — " + currentEpisode.getTitle()
-            );
+            int seasonNum = resolveSeasonNumber(currentEpisode.getSeasonId());
+            episodeSubtitle.setText("S" + seasonNum +
+                    " · E" + currentEpisode.getEpisodeNumber() +
+                    " — " + currentEpisode.getTitle());
         }
     }
 
     private int resolveSeasonNumber(int seasonId) {
         if (currentMedia == null) return 1;
-        List<Season> seasons = SeasonDAO.getSeasonsBySerie(currentMedia.getIdMedia());
-        for (Season s : seasons) {
+        for (Season s : SeasonDAO.getSeasonsBySerie(currentMedia.getIdMedia()))
             if (s.getIdSeason() == seasonId) return s.getSeasonNumber();
-        }
-        return seasonId;
+        return 1;
     }
-
 
 
     private void showNextEpisodeOverlay() {
         if (nextEpisode == null) return;
 
-        nextEpTitle.setText(
-                "E" + nextEpisode.getEpisodeNumber() + " — " + nextEpisode.getTitle()
-        );
-        nextEpDesc.setText(
-                nextEpisode.getDescription() != null ? nextEpisode.getDescription() : ""
-        );
+        nextEpTitle.setText("E" + nextEpisode.getEpisodeNumber() + " — " + nextEpisode.getTitle());
+        nextEpDesc.setText(nextEpisode.getDescription() != null ? nextEpisode.getDescription() : "");
 
         if (nextEpisode.getThumbnailPath() != null && !nextEpisode.getThumbnailPath().isBlank()) {
-            nextEpThumbnail.setImage(new Image(nextEpisode.getThumbnailPath(), true));
+            try { nextEpThumbnail.setImage(new Image(nextEpisode.getThumbnailPath(), true)); }
+            catch (Exception ignored) {}
         }
 
         nextEpisodeOverlay.setVisible(true);
         nextEpisodeOverlay.setManaged(true);
 
-        countdownSeconds = COUNTDOWN_DURATION;
-        countdownLabel.setText(String.valueOf(countdownSeconds));
+        countdownLabel.setText(String.valueOf(COUNTDOWN_DURATION));
         countdownBar.setProgress(1.0);
 
         countdownTimeline = new Timeline();
@@ -269,9 +250,7 @@ public class VideoPlayerController implements Initializable {
                     new KeyFrame(Duration.seconds(i), ev -> {
                         countdownLabel.setText(String.valueOf(remaining));
                         countdownBar.setProgress(progress);
-                        if (remaining == 0) {
-                            playNextEpisode();
-                        }
+                        if (remaining == 0) playNextEpisode();
                     })
             );
         }
@@ -284,19 +263,16 @@ public class VideoPlayerController implements Initializable {
         nextEpisodeOverlay.setManaged(false);
     }
 
-    @FXML
-    public void handlePlayNext(ActionEvent event) {
+    @FXML public void handlePlayNext(ActionEvent event) {
         hideNextEpisodeOverlay();
         playNextEpisode();
     }
 
-    @FXML
-    public void handleCancelNext(ActionEvent event) {
+    @FXML public void handleCancelNext(ActionEvent event) {
         hideNextEpisodeOverlay();
     }
 
-    @FXML
-    public void handleNextEpisode(ActionEvent event) {
+    @FXML public void handleNextEpisode(ActionEvent event) {
         if (nextEpisode == null) return;
         saveWatchHistory(false);
         if (mediaPlayer != null) mediaPlayer.stop();
@@ -308,19 +284,19 @@ public class VideoPlayerController implements Initializable {
     private void playNextEpisode() {
         if (nextEpisode == null) return;
         if (mediaPlayer != null) mediaPlayer.stop();
-
-        // Navigate: set next episode in TransferData then reload
         TransferData.setEpisode(nextEpisode);
         try {
             javafx.fxml.FXMLLoader loader = new javafx.fxml.FXMLLoader(
                     getClass().getResource("/org/Views/VideoPlayer.fxml"));
             javafx.scene.Parent root = loader.load();
-            javafx.stage.Stage stage = (javafx.stage.Stage) mediaView.getScene().getWindow();
+            Stage stage = (Stage) mediaView.getScene().getWindow();
             stage.getScene().setRoot(root);
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
+        } catch (Exception e) { e.printStackTrace(); }
     }
+
+    // ══════════════════════════════════════════════════════════════════════════
+    //  VIDEO SOURCE RESOLUTION
+    // ══════════════════════════════════════════════════════════════════════════
 
     private String resolveVideoSource() {
         if (currentEpisode != null) {
@@ -333,7 +309,6 @@ public class VideoPlayerController implements Initializable {
                 return path;
             }
         }
-
         if (currentMedia instanceof Movie) {
             String url = ((Movie) currentMedia).getVideoUrl();
             if (url != null && !url.isBlank()) {
@@ -344,55 +319,51 @@ public class VideoPlayerController implements Initializable {
                 return url;
             }
         }
-
         URL res = getClass().getResource("/org/Videos/WAR_MACHINE.mp4");
-        if (res != null) return res.toExternalForm();
-        return "";
+        return res != null ? res.toExternalForm() : "";
     }
+
+    // ══════════════════════════════════════════════════════════════════════════
+    //  WATCH HISTORY
+    // ══════════════════════════════════════════════════════════════════════════
 
     private void saveWatchHistory(boolean completed) {
         User user = Session.getUser();
         if (user == null || currentMedia == null) return;
+
         double stoppedAt = mediaPlayer != null
                 ? mediaPlayer.getCurrentTime().toSeconds() : 0.0;
-
         Integer episodeId = (currentEpisode != null) ? currentEpisode.getId() : null;
 
         WatchHistory wh = new WatchHistory(
-                user.getId(),
-                currentMedia.getIdMedia(),
-                episodeId,
-                stoppedAt,
-                Timestamp.from(Instant.now()),
-                completed ? 1 : 0
-        );
+                user.getId(), currentMedia.getIdMedia(), episodeId,
+                stoppedAt, Timestamp.from(Instant.now()), completed ? 1 : 0);
         WatchHistoryDAO.addToHistory(wh);
     }
 
+
+
     @FXML
     public void handleBack(ActionEvent event) {
-        if (mediaPlayer != null) {
-            saveWatchHistory(false);
-            mediaPlayer.stop();
-        }
+        if (mediaPlayer != null) { saveWatchHistory(false); mediaPlayer.stop(); }
         if (countdownTimeline != null) countdownTimeline.stop();
         SceneSwitcher.goTo(event, "/org/Views/MediaDetails.fxml");
     }
 
     @FXML
-    public void handleRewind(ActionEvent actionEvent) {
+    public void handleRewind(ActionEvent event) {
         if (mediaPlayer != null)
             mediaPlayer.seek(mediaPlayer.getCurrentTime().subtract(Duration.seconds(10)));
     }
 
     @FXML
-    public void handleForward(ActionEvent actionEvent) {
+    public void handleForward(ActionEvent event) {
         if (mediaPlayer != null)
             mediaPlayer.seek(mediaPlayer.getCurrentTime().add(Duration.seconds(10)));
     }
 
     @FXML
-    public void togglePlay(ActionEvent actionEvent) {
+    public void togglePlay(ActionEvent event) {
         if (mediaPlayer == null) return;
         if (mediaPlayer.getStatus() == MediaPlayer.Status.PLAYING) {
             mediaPlayer.pause();
@@ -403,24 +374,27 @@ public class VideoPlayerController implements Initializable {
         }
     }
 
+
+
+    @FXML
+    public void handleFullscreen(ActionEvent event) {
+        Stage stage = (Stage) mediaView.getScene().getWindow();
+        isFullscreen = !isFullscreen;
+        stage.setFullScreen(isFullscreen);
+        fullscreenBtn.setText(isFullscreen ? "⊠" : "⛶");
+    }
+
+    // ── Time formatter ────────────────────────────────────────────────────────
     private String formatTime(Duration elapsed, Duration total) {
         int intElapsed = (int) Math.floor(elapsed.toSeconds());
-        int elapsedHours   = intElapsed / 3600;
-        int elapsedMinutes = (intElapsed % 3600) / 60;
-        int elapsedSeconds = intElapsed % 60;
+        int intTotal   = (int) Math.floor(total.toSeconds());
 
-        int intTotal = (int) Math.floor(total.toSeconds());
-        int totalHours   = intTotal / 3600;
-        int totalMinutes = (intTotal % 3600) / 60;
-        int totalSeconds = intTotal % 60;
+        int eH = intElapsed / 3600, eM = (intElapsed % 3600) / 60, eS = intElapsed % 60;
+        int tH = intTotal   / 3600, tM = (intTotal   % 3600) / 60, tS = intTotal   % 60;
 
-        if (totalHours > 0) {
-            return String.format("%d:%02d:%02d / %d:%02d:%02d",
-                    elapsedHours, elapsedMinutes, elapsedSeconds,
-                    totalHours, totalMinutes, totalSeconds);
-        } else {
-            return String.format("%02d:%02d / %02d:%02d",
-                    elapsedMinutes, elapsedSeconds, totalMinutes, totalSeconds);
-        }
+        if (tH > 0)
+            return String.format("%d:%02d:%02d / %d:%02d:%02d", eH, eM, eS, tH, tM, tS);
+        else
+            return String.format("%02d:%02d / %02d:%02d", eM, eS, tM, tS);
     }
 }
