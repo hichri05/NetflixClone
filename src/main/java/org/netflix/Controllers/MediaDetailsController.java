@@ -23,7 +23,7 @@ public class MediaDetailsController {
     @FXML private ImageView  backgroundImage;
     @FXML private Label      titleLabel, descriptionLabel;
     @FXML private Label      typeBadgeLabel, yearLabel, ratingAvgLabel;
-    @FXML private Label      star1, star2, star3, star4, star5;
+    @FXML private Label      star1, star2, star3, star4, star5, ratingLabel;
     @FXML private ScrollPane mainScroll;
     @FXML private Button     mylistbtn;
 
@@ -73,8 +73,6 @@ public class MediaDetailsController {
     public void initialize() {
         media = TransferData.getMedia();
         User user = Session.getUser();
-        stars = List.of(star1, star2, star3, star4, star5);
-
         mainScroll.setVbarPolicy(ScrollPane.ScrollBarPolicy.NEVER);
 
         buildWatchMaps(user);
@@ -136,10 +134,18 @@ public class MediaDetailsController {
         if (avg > 0)
             ratingAvgLabel.setText(String.format("★ %.1f", avg));
 
-        if (user != null) {
-            int saved = MediaDAO.getRating(user.getId(), media.getIdMedia());
-            if (saved > 0) { currentRating = saved; fillStars(saved); }
+        stars = List.of(star1, star2, star3, star4, star5);
+        setupStarHover();
+        int saved = MediaDAO.getRating(user.getId(), media.getIdMedia());
+        System.out.println("rating = " + saved);
+        if (saved > 0) {
+            currentRating = saved;
+            fillStars(saved);
+            ratingLabel.setText("Your rating: " + saved + "/5");
+
         }
+
+
 
         updateMyListButton(user, media);
         setupStarHover();
@@ -521,15 +527,25 @@ public class MediaDetailsController {
 
     @FXML
     private void handleRate(MouseEvent event) {
-        int rating = Integer.parseInt((String) ((Label) event.getSource()).getUserData());
+        Label clicked = (Label) event.getSource();
+        int rating = Integer.parseInt((String) clicked.getUserData());
         currentRating = rating;
         fillStars(rating);
-        MediaDAO.saveRating(Session.getUser().getId(), media.getIdMedia(), rating);
+        ratingLabel.setText("Your rating: " + rating + "/5");
+
+        User user = Session.getUser();
+        if (user != null) {
+            MediaDAO.saveRating(user.getId(), media.getIdMedia(), rating);
+        }
     }
 
     private void fillStars(int count) {
-        for (int i = 0; i < stars.size(); i++)
-            stars.get(i).setStyle(i < count ? "-fx-text-fill: #e50914;" : "-fx-text-fill: #555;");
+        for (int i = 0; i < stars.size(); i++) {
+            stars.get(i).getStyleClass().remove("star-filled");
+            if (i < count) {
+                stars.get(i).getStyleClass().add("star-filled");
+            }
+        }
     }
 
     private void setupStarHover() {

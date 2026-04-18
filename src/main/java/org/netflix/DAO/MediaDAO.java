@@ -280,9 +280,9 @@ public class MediaDAO {
         }
     }
     public static int getRating(int userId, int idMedia) {
-        String sql = "SELECT score FROM rating WHERE id_user = ? AND id_media = ?";
-        try (Connection conn = ConxDB.getConnection();
-             PreparedStatement ps = conn.prepareStatement(sql)) {
+        System.out.println("Connecting to DB...");
+        String sql = "SELECT score FROM rating WHERE id_User = ? AND id_Media = ?";
+        try (PreparedStatement ps = conn.prepareStatement(sql)) {
 
             ps.setInt(1, userId);
             ps.setInt(2, idMedia);
