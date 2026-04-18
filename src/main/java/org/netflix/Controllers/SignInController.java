@@ -47,6 +47,7 @@ public class SignInController {
                     "-fx-border-width: 0 0 2 0;" +
                     "-fx-text-fill: white;" +
                     "-fx-prompt-text-fill: #8c8c8c;";
+
     private static final String STYLE_Banned =
             "-fx-background-color: none;" +
                     "-fx-border-color: #FF0000;" +
@@ -66,11 +67,13 @@ public class SignInController {
         imgEyeOpen   = new Image(getClass().getResourceAsStream("/org/Images/oeil__fermé.png"));
         imgEyeClosed = new Image(getClass().getResourceAsStream("/org/Images/oeil_ouvert.png"));
 
-        eyeIcon = new ImageView(imgEyeOpen);
+        // ✅ FIXED: don't reassign eyeIcon, just configure the one injected by FXML
+        eyeIcon.setImage(imgEyeOpen);
         eyeIcon.setFitWidth(22);
         eyeIcon.setFitHeight(22);
         eyeIcon.setPreserveRatio(true);
-        makeWhite(eyeIcon);          togglePassword.setGraphic(eyeIcon);
+        makeWhite(eyeIcon);
+
         togglePassword.setText(null);
         togglePassword.setStyle(
                 "-fx-background-color: transparent;" +
@@ -189,6 +192,7 @@ public class SignInController {
             emailField.selectAll();
             return;
         }
+
         if ("BANNED".equalsIgnoreCase(user.getRole())) {
             emailField.setStyle(STYLE_Banned);
             passwordField.setStyle(STYLE_Banned);
@@ -200,8 +204,7 @@ public class SignInController {
 
         if (!AuthService.login(email, password)) {
             passwordField.setStyle(STYLE_ERROR);
-            passwordVisible.setStyle(STYLE_ERROR);//
-//
+            passwordVisible.setStyle(STYLE_ERROR);
             showError("Mot de passe incorrect. Veuillez réessayer.");
             if (isPasswordVisible) { passwordVisible.requestFocus(); passwordVisible.clear(); }
             else                   { passwordField.requestFocus();   passwordField.clear();   }
@@ -223,6 +226,7 @@ public class SignInController {
         errorLabel.setVisible(true);
         errorLabel.setManaged(true);
     }
+
     private void showError1(String message) {
         errorLabel.setText(message);
         errorLabel.setVisible(true);
