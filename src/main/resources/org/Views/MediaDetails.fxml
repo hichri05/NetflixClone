@@ -86,7 +86,7 @@
             <!-- TABS: More Like This / Episodes / Comments -->
             <VBox spacing="0" style="-fx-padding: 30 50 0 50;">
 
-                <!-- Tab header -->
+              
                 <HBox fx:id="tabHeader" spacing="0"
                       style="-fx-border-color: #333; -fx-border-width: 0 0 2 0;">
                     <Button fx:id="tabMoreLikeThis" onAction="#handleTabMoreLikeThis"
