@@ -11,10 +11,7 @@ import org.netflix.Models.Genre;
 import org.netflix.Models.Media;
 import org.netflix.Models.User;
 
-import java.sql.Timestamp;
-import java.text.SimpleDateFormat;
 import java.util.*;
-import java.util.stream.Collectors;
 
 public class DashboardController {
 

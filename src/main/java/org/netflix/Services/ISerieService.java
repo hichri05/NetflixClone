@@ -15,6 +15,6 @@ public interface ISerieService {
     boolean updateEpisode(Episode episode);
     boolean deleteEpisode(int episodeId);
 
-    Episode getNextEpisode(int currentEpisodeId, int seasonId); // Binge-watching
-    Episode getFirstUnwatchedEpisode(int serieId, int userId);  // Reprise intelligente
+    Episode getNextEpisode(int currentEpisodeId, int seasonId);
+    Episode getFirstUnwatchedEpisode(int serieId, int userId);
 }

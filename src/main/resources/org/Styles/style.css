@@ -103,7 +103,6 @@
     -fx-background-color: rgba(109,109,110,0.4);
 }
 
-/* ✅ MODIFICATION : Bouton Back → fond blanc, texte noir gras */
 .btn-back {
     -fx-background-color: white;
     -fx-text-fill: black;
@@ -248,17 +247,16 @@
     -fx-font-weight: bold;
 }
 
-/* ✅ MODIFICATION : Étoiles → couleur jaune (au lieu de rouge) */
 .star-btn {
     -fx-font-size: 28px;
     -fx-text-fill: #555;
     -fx-cursor: hand;
 }
 .star-filled {
-    -fx-text-fill: #f5c518; /* Jaune doré */
+    -fx-text-fill: #f5c518;
 }
 .star-btn:hover {
-    -fx-text-fill: #f5c518; /* Jaune doré au hover */
+    -fx-text-fill: #f5c518;
 }
 
 .chart-bar {
@@ -308,7 +306,6 @@
     -fx-border-width: 0 0 1 0;
 }
 
-/* ✅ MODIFICATION : Bouton Publier → rouge */
 .publish-btn {
     -fx-background-color: #e50914;
     -fx-text-fill: white;
@@ -321,7 +318,6 @@
     -fx-background-color: #c40812;
 }
 
-/* ✅ AJOUT : Bouton Modifier un commentaire */
 .btn-edit {
     -fx-background-color: transparent;
     -fx-text-fill: #f5c518;
@@ -339,7 +335,6 @@
     -fx-text-fill: black;
 }
 
-/* ✅ AJOUT : Bouton Supprimer un commentaire */
 .btn-delete {
     -fx-background-color: transparent;
     -fx-text-fill: #e50914;

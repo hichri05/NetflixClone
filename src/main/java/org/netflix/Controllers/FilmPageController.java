@@ -28,12 +28,10 @@ import java.util.ResourceBundle;
 public class FilmPageController implements Initializable {
 
     @FXML private VBox      categoryContainer;
-    @FXML private TextField searchField;
 
     private Popup             sharedPreviewPopup;
     private PauseTransition   showDelay;
     private PauseTransition   hideDelay;
-    @FXML private VBox mediaRows;
 
     @Override
     public void initialize(URL url, ResourceBundle rb) {

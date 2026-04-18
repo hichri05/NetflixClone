@@ -20,14 +20,12 @@ import javafx.stage.Popup;
 import javafx.stage.Stage;
 import javafx.util.Duration;
 import org.netflix.DAO.MediaDAO;
-import org.netflix.DAO.UserDAO;
 import org.netflix.Models.Media;
 import org.netflix.Models.User;
 import org.netflix.Utils.Session;
 import org.netflix.Utils.TransferData;
 
 import java.io.IOException;
-import java.util.List;
 
 public class MediaPosterController {
 
