@@ -180,7 +180,7 @@
                     <HBox alignment="CENTER_LEFT" spacing="10.0" styleClass="search-container">
                         <children>
                             <Label style="-fx-text-fill: white; -fx-font-size: 18px;" text="🔍" />
-                            <TextField fx:id="searchField" promptText="Titles, people, genres" styleClass="search-input" />
+                            <TextField fx:id="searchField" promptText="Title" styleClass="search-input" />
                             <Label fx:id="userinf" text="Label"
                                    style="-fx-text-fill: white; -fx-font-size: 14px; -fx-font-weight: bold; -fx-cursor: hand;" />
                             <Button fx:id="adminBtn" onAction="#handleOpenDashboard" styleClass="btn-play" text="Admin Dashboard" />

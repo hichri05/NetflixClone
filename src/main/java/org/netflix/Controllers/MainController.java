@@ -48,7 +48,7 @@ public class MainController implements Initializable {
 
     @FXML private ComboBox<String> genreFilterCombo;
     @FXML private ComboBox<String> yearFilterCombo;
-    @FXML private HBox activeFilter;
+    @FXML private HBox activeFilter, filterBar;
     @FXML private Label filterHeadingLabel;
 
     @FXML private VBox continueWatchingSection;
@@ -77,6 +77,7 @@ public class MainController implements Initializable {
 
     @Override
     public void initialize(URL url, ResourceBundle resourceBundle) {
+        filterBar.setVisible(false);
         searchField.setFocusTraversable(false);
         user = Session.getUser();
 
@@ -96,6 +97,7 @@ public class MainController implements Initializable {
         seriesPopup.addEventFilter(MouseEvent.MOUSE_ENTERED, e -> seriesHideDelay.stop());
         seriesPopup.addEventFilter(MouseEvent.MOUSE_EXITED,  e -> seriesHideDelay.playFromStart());
 
+
         setupHeroSize();
         loadMediaRows();
         loadContinueWatching();
@@ -114,9 +116,6 @@ public class MainController implements Initializable {
         return popup;
     }
 
-    // ══════════════════════════════════════════════════════════════════════════
-    //  USER POPUP  (hover on username → Profile + Sign out)
-    // ══════════════════════════════════════════════════════════════════════════
 
     private void setupUserPopup() {
         userPopup = new Popup();
@@ -128,7 +127,6 @@ public class MainController implements Initializable {
 
         userShowDelay = new PauseTransition(Duration.millis(180));
 
-        // ── Avatar + name ─────────────────────────────────────────────────────
         Label avatar = new Label(user != null
                 ? String.valueOf(user.getUsername().charAt(0)).toUpperCase() : "?");
         avatar.setStyle(
@@ -157,7 +155,6 @@ public class MainController implements Initializable {
         divider1.setPrefHeight(1);
         divider1.setStyle("-fx-background-color: #333;");
 
-        // ── Profile button ────────────────────────────────────────────────────
         Button profileBtn = new Button("👤  My Profile");
         profileBtn.setStyle(
                 "-fx-background-color: transparent; -fx-text-fill: #e5e5e5;" +
@@ -186,7 +183,6 @@ public class MainController implements Initializable {
         divider2.setPrefHeight(1);
         divider2.setStyle("-fx-background-color: #222;");
 
-        // ── Logout button ─────────────────────────────────────────────────────
         Button logoutBtn = new Button("Sign out of Netflix");
         logoutBtn.setStyle(
                 "-fx-background-color: transparent;" +
@@ -218,7 +214,6 @@ public class MainController implements Initializable {
         ));
         logoutBtn.setOnAction(e -> handleLogout());
 
-        // ── Caret ─────────────────────────────────────────────────────────────
         Label caret = new Label("▲");
         caret.setStyle(
                 "-fx-text-fill: #333;" +
@@ -227,7 +222,6 @@ public class MainController implements Initializable {
         );
         caret.setAlignment(Pos.CENTER);
 
-        // ── Card ──────────────────────────────────────────────────────────────
         VBox card = new VBox(topRow, divider1, profileBtn, divider2, logoutBtn);
         card.setStyle(
                 "-fx-background-color: #141414;" +
@@ -248,7 +242,6 @@ public class MainController implements Initializable {
         wrapper.addEventFilter(MouseEvent.MOUSE_ENTERED, e -> userHideDelay.stop());
         wrapper.addEventFilter(MouseEvent.MOUSE_EXITED,  e -> userHideDelay.playFromStart());
 
-        // ── Trigger on username label ─────────────────────────────────────────
         userinf.setCursor(Cursor.HAND);
         userinf.setOnMouseEntered(e -> {
             userHideDelay.stop();
@@ -281,10 +274,6 @@ public class MainController implements Initializable {
             e.printStackTrace();
         }
     }
-
-    // ══════════════════════════════════════════════════════════════════════════
-    //  FILTER BAR
-    // ══════════════════════════════════════════════════════════════════════════
 
     private void setupFilterBar() {
         List<String> genres = new ArrayList<>();
@@ -400,10 +389,6 @@ public class MainController implements Initializable {
         showHomeView();
     }
 
-    // ══════════════════════════════════════════════════════════════════════════
-    //  HERO
-    // ══════════════════════════════════════════════════════════════════════════
-
     private void setupHeroSize() {
         heroStack.sceneProperty().addListener((obs, oldScene, newScene) -> {
             if (newScene != null) {
@@ -455,9 +440,6 @@ public class MainController implements Initializable {
                 ? "✓ In My List" : "+ My List");
     }
 
-    // ══════════════════════════════════════════════════════════════════════════
-    //  MEDIA ROWS
-    // ══════════════════════════════════════════════════════════════════════════
 
     private void loadMediaRows() {
         loadRow("Top 10 Views on Netflix", MediaDAO.getTopViews());
@@ -484,9 +466,6 @@ public class MainController implements Initializable {
         }
     }
 
-    // ══════════════════════════════════════════════════════════════════════════
-    //  SEARCH
-    // ══════════════════════════════════════════════════════════════════════════
 
     private void setupSearch() {
         searchField.textProperty().addListener((obs, oldVal, newVal) -> {
@@ -524,9 +503,6 @@ public class MainController implements Initializable {
         }
     }
 
-    // ══════════════════════════════════════════════════════════════════════════
-    //  VIEW SWITCHING
-    // ══════════════════════════════════════════════════════════════════════════
 
     private void setupUser() {
         if (user != null) userinf.setText(user.getUsername());
@@ -548,10 +524,11 @@ public class MainController implements Initializable {
         moviesScroll.setVisible(false);
         seriesScroll.setVisible(false);
         filterContent.setVisible(false);
+        filterBar.setVisible(false);
     }
 
     private void showHomeView()   { hideAll(); mainScroll.setVisible(true); }
-    private void showSearchView() { hideAll(); searchContent.setVisible(true); }
+    private void showSearchView() { hideAll(); searchContent.setVisible(true); filterBar.setVisible(true);}
     private void showMyListView() { hideAll(); mainScrollList.setVisible(true); }
     private void showFilterView() { hideAll(); filterContent.setVisible(true); }
 
