@@ -46,7 +46,6 @@ public class MainController implements Initializable {
     @FXML private VBox       mediaRows;
     @FXML private Button     playbtn, mylistbtn, adminBtn;
 
-
     @FXML private ComboBox<String> genreFilterCombo;
     @FXML private ComboBox<String> yearFilterCombo;
     @FXML private HBox activeFilter;
@@ -72,7 +71,6 @@ public class MainController implements Initializable {
     private PauseTransition seriesShowDelay;
     private PauseTransition seriesHideDelay;
 
-
     private Popup           userPopup;
     private PauseTransition userShowDelay;
     private PauseTransition userHideDelay;
@@ -85,7 +83,6 @@ public class MainController implements Initializable {
         boolean isAdmin = "ADMIN".equalsIgnoreCase(user.getRole());
         adminBtn.setVisible(isAdmin);
         adminBtn.setManaged(isAdmin);
-
 
         moviesPopup = buildSharedPopup(moviesHideDelay = new PauseTransition(Duration.millis(200)));
         moviesShowDelay = new PauseTransition(Duration.millis(300));
@@ -117,7 +114,9 @@ public class MainController implements Initializable {
         return popup;
     }
 
-
+    // ══════════════════════════════════════════════════════════════════════════
+    //  USER POPUP  (hover on username → Profile + Sign out)
+    // ══════════════════════════════════════════════════════════════════════════
 
     private void setupUserPopup() {
         userPopup = new Popup();
@@ -129,7 +128,7 @@ public class MainController implements Initializable {
 
         userShowDelay = new PauseTransition(Duration.millis(180));
 
-
+        // ── Avatar + name ─────────────────────────────────────────────────────
         Label avatar = new Label(user != null
                 ? String.valueOf(user.getUsername().charAt(0)).toUpperCase() : "?");
         avatar.setStyle(
@@ -154,10 +153,40 @@ public class MainController implements Initializable {
         topRow.setAlignment(Pos.CENTER);
         topRow.setPadding(new Insets(14, 16, 12, 16));
 
-        Pane divider = new Pane();
-        divider.setPrefHeight(1);
-        divider.setStyle("-fx-background-color: #333;");
+        Pane divider1 = new Pane();
+        divider1.setPrefHeight(1);
+        divider1.setStyle("-fx-background-color: #333;");
 
+        // ── Profile button ────────────────────────────────────────────────────
+        Button profileBtn = new Button("👤  My Profile");
+        profileBtn.setStyle(
+                "-fx-background-color: transparent; -fx-text-fill: #e5e5e5;" +
+                        "-fx-font-size: 13px; -fx-cursor: hand; -fx-padding: 10 16;" +
+                        "-fx-alignment: CENTER_LEFT; -fx-border-width: 0;"
+        );
+        profileBtn.setMaxWidth(Double.MAX_VALUE);
+        profileBtn.setOnMouseEntered(e -> profileBtn.setStyle(
+                "-fx-background-color: #1a1a1a; -fx-text-fill: white; -fx-font-size: 13px;" +
+                        "-fx-cursor: hand; -fx-padding: 10 16; -fx-alignment: CENTER_LEFT; -fx-border-width: 0;"));
+        profileBtn.setOnMouseExited(e -> profileBtn.setStyle(
+                "-fx-background-color: transparent; -fx-text-fill: #e5e5e5; -fx-font-size: 13px;" +
+                        "-fx-cursor: hand; -fx-padding: 10 16; -fx-alignment: CENTER_LEFT; -fx-border-width: 0;"));
+        profileBtn.setOnAction(e -> {
+            userPopup.hide();
+            try {
+                Parent root = FXMLLoader.load(getClass().getResource("/org/Views/Profile.fxml"));
+                Stage stage = (Stage) mediaRows.getScene().getWindow();
+                stage.getScene().setRoot(root);
+            } catch (IOException ex) {
+                ex.printStackTrace();
+            }
+        });
+
+        Pane divider2 = new Pane();
+        divider2.setPrefHeight(1);
+        divider2.setStyle("-fx-background-color: #222;");
+
+        // ── Logout button ─────────────────────────────────────────────────────
         Button logoutBtn = new Button("Sign out of Netflix");
         logoutBtn.setStyle(
                 "-fx-background-color: transparent;" +
@@ -189,16 +218,17 @@ public class MainController implements Initializable {
         ));
         logoutBtn.setOnAction(e -> handleLogout());
 
-
+        // ── Caret ─────────────────────────────────────────────────────────────
         Label caret = new Label("▲");
         caret.setStyle(
                 "-fx-text-fill: #333;" +
                         "-fx-font-size: 12px;" +
-                        "-fx-padding: 0 0 0 0;"
+                        "-fx-padding: 0;"
         );
         caret.setAlignment(Pos.CENTER);
 
-        VBox card = new VBox(topRow, divider, logoutBtn);
+        // ── Card ──────────────────────────────────────────────────────────────
+        VBox card = new VBox(topRow, divider1, profileBtn, divider2, logoutBtn);
         card.setStyle(
                 "-fx-background-color: #141414;" +
                         "-fx-border-color: #333;" +
@@ -218,7 +248,7 @@ public class MainController implements Initializable {
         wrapper.addEventFilter(MouseEvent.MOUSE_ENTERED, e -> userHideDelay.stop());
         wrapper.addEventFilter(MouseEvent.MOUSE_EXITED,  e -> userHideDelay.playFromStart());
 
-
+        // ── Trigger on username label ─────────────────────────────────────────
         userinf.setCursor(Cursor.HAND);
         userinf.setOnMouseEntered(e -> {
             userHideDelay.stop();
@@ -252,7 +282,9 @@ public class MainController implements Initializable {
         }
     }
 
-
+    // ══════════════════════════════════════════════════════════════════════════
+    //  FILTER BAR
+    // ══════════════════════════════════════════════════════════════════════════
 
     private void setupFilterBar() {
         List<String> genres = new ArrayList<>();
@@ -300,7 +332,7 @@ public class MainController implements Initializable {
             heading = new StringBuilder(selectedYear);
         filterHeadingLabel.setText(heading.toString());
 
-        List<Media> results = List.of();
+        List<Media> results = new ArrayList<>();
         if (genreActive) {
             String genreKey = selectedGenre.replace(" ", "_");
             results = MediaDAO.getMediasByGenre(genreKey);
@@ -308,6 +340,8 @@ public class MainController implements Initializable {
                     .filter(m -> m.getGenres() != null && m.getGenres().stream()
                             .anyMatch(g -> g.toString().equalsIgnoreCase(genreKey)))
                     .collect(Collectors.toList());
+        } else {
+            results = MediaDAO.getAllMedia();
         }
 
         if (yearActive) {
@@ -366,6 +400,9 @@ public class MainController implements Initializable {
         showHomeView();
     }
 
+    // ══════════════════════════════════════════════════════════════════════════
+    //  HERO
+    // ══════════════════════════════════════════════════════════════════════════
 
     private void setupHeroSize() {
         heroStack.sceneProperty().addListener((obs, oldScene, newScene) -> {
@@ -374,6 +411,53 @@ public class MainController implements Initializable {
             }
         });
     }
+
+    public void getTrendMovie() {
+        heroMedias = MediaDAO.getTopViews();
+        if (heroMedias == null || heroMedias.isEmpty()) return;
+
+        updateHero(heroMedias.get(0));
+
+        heroTimeline = new Timeline(new KeyFrame(Duration.seconds(6), e -> {
+            currentHeroIndex = (currentHeroIndex + 1) % heroMedias.size();
+            updateHero(heroMedias.get(currentHeroIndex));
+        }));
+        heroTimeline.setCycleCount(Timeline.INDEFINITE);
+        heroTimeline.play();
+    }
+
+    private void updateHero(Media media) {
+        currentHeroMedia = media;
+        mvTrendName.setText(media.getTitle());
+
+        String desc = media.getDescription();
+        mvTrendDesc.setText(desc != null && desc.length() > 120
+                ? desc.substring(0, 120) + "..." : desc);
+
+        heroStack.prefWidthProperty().bind(mediaRows.widthProperty());
+
+        String url = media.getBackdropImageUrl();
+        if (url != null && !url.isEmpty()) {
+            url = url.replace("\\", "/");
+            heroStack.setStyle(
+                    "-fx-background-image: url('" + url + "');" +
+                            "-fx-background-size: 110%;" +
+                            "-fx-background-position: center;"
+            );
+        }
+
+        updateButtonUI(user, media);
+    }
+
+    private void updateButtonUI(User u, Media m) {
+        if (u == null) { mylistbtn.setText("+ My List"); return; }
+        mylistbtn.setText(UserDAO.isFavorite(u.getId(), m.getIdMedia())
+                ? "✓ In My List" : "+ My List");
+    }
+
+    // ══════════════════════════════════════════════════════════════════════════
+    //  MEDIA ROWS
+    // ══════════════════════════════════════════════════════════════════════════
 
     private void loadMediaRows() {
         loadRow("Top 10 Views on Netflix", MediaDAO.getTopViews());
@@ -387,6 +471,23 @@ public class MainController implements Initializable {
         loadRow("Crime",       MediaDAO.getMediasByGenre("Crime"));
     }
 
+    private void loadRow(String title, List<Media> medias) {
+        if (medias == null || medias.isEmpty()) return;
+        try {
+            FXMLLoader loader = new FXMLLoader(getClass().getResource("/org/Views/MediaRow.fxml"));
+            Parent row = loader.load();
+            MediaRowController controller = loader.getController();
+            controller.setData(title, medias);
+            mediaRows.getChildren().add(row);
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
+
+    // ══════════════════════════════════════════════════════════════════════════
+    //  SEARCH
+    // ══════════════════════════════════════════════════════════════════════════
+
     private void setupSearch() {
         searchField.textProperty().addListener((obs, oldVal, newVal) -> {
             if (newVal.length() >= 2) {
@@ -397,6 +498,35 @@ public class MainController implements Initializable {
             }
         });
     }
+
+    private void performSearch(String search) {
+        List<Media> results = MediaDAO.searchMedia(search);
+        searchGrid.getChildren().clear();
+
+        if (results.isEmpty()) {
+            Label noResults = new Label("No results for '" + search + "'");
+            noResults.setStyle("-fx-text-fill: #999; -fx-font-size: 16px;");
+            searchGrid.getChildren().add(noResults);
+            return;
+        }
+        results.forEach(this::loadMovieCard);
+    }
+
+    private void loadMovieCard(Media media) {
+        try {
+            FXMLLoader loader = new FXMLLoader(getClass().getResource("/org/Views/MediaPoster.fxml"));
+            Parent card = loader.load();
+            MediaPosterController controller = loader.getController();
+            controller.setData(media);
+            searchGrid.getChildren().add(card);
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
+
+    // ══════════════════════════════════════════════════════════════════════════
+    //  VIEW SWITCHING
+    // ══════════════════════════════════════════════════════════════════════════
 
     private void setupUser() {
         if (user != null) userinf.setText(user.getUsername());
@@ -410,7 +540,6 @@ public class MainController implements Initializable {
         filterContent.setVisible(false);
         mainScroll.setVisible(true);
     }
-
 
     private void hideAll() {
         mainScroll.setVisible(false);
@@ -454,6 +583,9 @@ public class MainController implements Initializable {
         }
     }
 
+    // ══════════════════════════════════════════════════════════════════════════
+    //  MOVIES VIEW
+    // ══════════════════════════════════════════════════════════════════════════
 
     private void addMovieGenreRow(String title, List<Movie> movies) {
         Label label = new Label(title);
@@ -573,7 +705,9 @@ public class MainController implements Initializable {
         return preview;
     }
 
-
+    // ══════════════════════════════════════════════════════════════════════════
+    //  SERIES VIEW
+    // ══════════════════════════════════════════════════════════════════════════
 
     private void addSerieGenreRow(String title, List<Serie> series) {
         Label label = new Label(title);
@@ -693,7 +827,9 @@ public class MainController implements Initializable {
         return preview;
     }
 
-
+    // ══════════════════════════════════════════════════════════════════════════
+    //  SHARED HELPERS
+    // ══════════════════════════════════════════════════════════════════════════
 
     private void openMediaDetails(Media media) {
         TransferData.setMedia(media);
@@ -705,94 +841,6 @@ public class MainController implements Initializable {
             e.printStackTrace();
         }
     }
-
-
-    private void loadRow(String title, List<Media> medias) {
-        if (medias == null || medias.isEmpty()) return;
-        try {
-            FXMLLoader loader = new FXMLLoader(getClass().getResource("/org/Views/MediaRow.fxml"));
-            Parent row = loader.load();
-            MediaRowController controller = loader.getController();
-            controller.setData(title, medias);
-            mediaRows.getChildren().add(row);
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-    }
-
-
-
-    public void getTrendMovie() {
-        heroMedias = MediaDAO.getTopViews();
-        if (heroMedias == null || heroMedias.isEmpty()) return;
-
-        updateHero(heroMedias.get(0));
-
-        heroTimeline = new Timeline(new KeyFrame(Duration.seconds(6), e -> {
-            currentHeroIndex = (currentHeroIndex + 1) % heroMedias.size();
-            updateHero(heroMedias.get(currentHeroIndex));
-        }));
-        heroTimeline.setCycleCount(Timeline.INDEFINITE);
-        heroTimeline.play();
-    }
-
-    private void updateHero(Media media) {
-        currentHeroMedia = media;
-        mvTrendName.setText(media.getTitle());
-
-        String desc = media.getDescription();
-        mvTrendDesc.setText(desc != null && desc.length() > 120
-                ? desc.substring(0, 120) + "..." : desc);
-
-        heroStack.prefWidthProperty().bind(mediaRows.widthProperty());
-
-        String url = media.getBackdropImageUrl();
-        if (url != null && !url.isEmpty()) {
-            url = url.replace("\\", "/");
-            heroStack.setStyle(
-                    "-fx-background-image: url('" + url + "');" +
-                            "-fx-background-size: 110%;" +
-                            "-fx-background-position: center;"
-            );
-        }
-
-        updateButtonUI(user, media);
-    }
-
-    private void updateButtonUI(User u, Media m) {
-        if (u == null) { mylistbtn.setText("+ My List"); return; }
-        mylistbtn.setText(UserDAO.isFavorite(u.getId(), m.getIdMedia())
-                ? "✓ In My List" : "+ My List");
-    }
-
-
-
-    private void performSearch(String search) {
-        List<Media> results = MediaDAO.searchMedia(search);
-        searchGrid.getChildren().clear();
-
-        if (results.isEmpty()) {
-            Label noResults = new Label("No results for '" + search + "'");
-            noResults.setStyle("-fx-text-fill: #999; -fx-font-size: 16px;");
-            searchGrid.getChildren().add(noResults);
-            return;
-        }
-        results.forEach(this::loadMovieCard);
-    }
-
-    private void loadMovieCard(Media media) {
-        try {
-            FXMLLoader loader = new FXMLLoader(getClass().getResource("/org/Views/MediaPoster.fxml"));
-            Parent card = loader.load();
-            MediaPosterController controller = loader.getController();
-            controller.setData(media);
-            searchGrid.getChildren().add(card);
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-    }
-
-
 
     public void displayMyList(List<Media> favorites) {
         listGrid.getChildren().clear();
@@ -811,49 +859,9 @@ public class MainController implements Initializable {
         }
     }
 
-
-
-    @FXML private void handleHomeClick(MouseEvent event)  { showHomeView(); }
-    @FXML private void handleMoviesClick(MouseEvent event) { showMoviesView(); }
-    @FXML private void handleSerieClick(MouseEvent event)  { showSeriesView(); }
-
-    @FXML
-    private void handleMyListClick(MouseEvent event) {
-        showMyListView();
-        if (user != null) {
-            List<Media> favorites = UserDAO.getUserFavorites(user.getId());
-            displayMyList(favorites);
-        }
-    }
-
-    @FXML
-    public void handlePlay(ActionEvent event) {
-        SceneSwitcher.goTo(event, "/org/Views/VideoPlayer.fxml");
-    }
-
-    @FXML
-    public void handleAddToMyList(ActionEvent event) {
-        if (user == null || currentHeroMedia == null) return;
-        if (UserDAO.isFavorite(user.getId(), currentHeroMedia.getIdMedia())) {
-            MediaDAO.removeFromFavorites(user.getId(), currentHeroMedia.getIdMedia());
-        } else {
-            MediaDAO.addToFavorites(user.getId(), currentHeroMedia.getIdMedia());
-        }
-        updateButtonUI(user, currentHeroMedia);
-    }
-
-    @FXML
-    public void handleOpenDashboard(ActionEvent event) {
-        SceneSwitcher.goTo(event, "/org/Views/MainDashboard.fxml");
-    }
-    @FXML
-    public void handleProfileClick(javafx.scene.input.MouseEvent event) {
-        SceneSwitcher.goTo(event, "/org/Views/Profile.fxml");
-    }
-    @FXML
-    public void handleViewHistory(ActionEvent event) {
-        SceneSwitcher.goTo(event, "/org/Views/WatchHistory.fxml");
-    }
+    // ══════════════════════════════════════════════════════════════════════════
+    //  CONTINUE WATCHING
+    // ══════════════════════════════════════════════════════════════════════════
 
     private void loadContinueWatching() {
         if (user == null) return;
@@ -875,7 +883,6 @@ public class MainController implements Initializable {
                     .findFirst().orElse(null);
             if (media == null) continue;
 
-            // Fetch duration for progress ratio
             double[] pd = WatchHistoryDAO.getProgressAndDuration(user.getId(), wh.getMediaId());
             double ratio = pd[1] > 0 ? Math.min(pd[0] / pd[1], 1.0) : 0.5;
 
@@ -892,7 +899,6 @@ public class MainController implements Initializable {
         card.setCursor(javafx.scene.Cursor.HAND);
         card.setStyle("-fx-background-color: #1a1a1a; -fx-background-radius: 8;");
 
-
         javafx.scene.layout.StackPane thumbBox = new javafx.scene.layout.StackPane();
         ImageView poster = new ImageView();
         poster.setFitWidth(210); poster.setFitHeight(118);
@@ -907,12 +913,10 @@ public class MainController implements Initializable {
         clip.setArcWidth(8); clip.setArcHeight(8);
         poster.setClip(clip);
 
-
         javafx.scene.control.ProgressBar bar = new javafx.scene.control.ProgressBar(ratio);
         bar.setPrefWidth(210); bar.setPrefHeight(4);
         bar.setStyle("-fx-accent: #e50914; -fx-background-color: rgba(0,0,0,0.55);");
         javafx.scene.layout.StackPane.setAlignment(bar, javafx.geometry.Pos.BOTTOM_CENTER);
-
 
         Label playIcon = new Label("▶");
         playIcon.setStyle("-fx-text-fill: white; -fx-font-size: 26px;" +
@@ -924,7 +928,6 @@ public class MainController implements Initializable {
 
         card.setOnMouseEntered(e -> { playIcon.setOpacity(1); poster.setOpacity(0.75); });
         card.setOnMouseExited(e  -> { playIcon.setOpacity(0); poster.setOpacity(1.0);  });
-
 
         VBox info = new VBox(4);
         info.setStyle("-fx-padding: 10 12 12 12;");
@@ -955,5 +958,54 @@ public class MainController implements Initializable {
         });
 
         return card;
+    }
+
+    // ══════════════════════════════════════════════════════════════════════════
+    //  FXML HANDLERS
+    // ══════════════════════════════════════════════════════════════════════════
+
+    @FXML private void handleHomeClick(MouseEvent event)   { showHomeView(); }
+    @FXML private void handleMoviesClick(MouseEvent event)  { showMoviesView(); }
+    @FXML private void handleSerieClick(MouseEvent event)   { showSeriesView(); }
+
+    @FXML
+    private void handleMyListClick(MouseEvent event) {
+        showMyListView();
+        if (user != null) {
+            List<Media> favorites = UserDAO.getUserFavorites(user.getId());
+            displayMyList(favorites);
+        }
+    }
+
+    @FXML
+    public void handlePlay(ActionEvent event) {
+        if (currentHeroMedia != null) TransferData.setMedia(currentHeroMedia);
+        SceneSwitcher.goTo(event, "/org/Views/VideoPlayer.fxml");
+    }
+
+    @FXML
+    public void handleAddToMyList(ActionEvent event) {
+        if (user == null || currentHeroMedia == null) return;
+        if (UserDAO.isFavorite(user.getId(), currentHeroMedia.getIdMedia())) {
+            MediaDAO.removeFromFavorites(user.getId(), currentHeroMedia.getIdMedia());
+        } else {
+            MediaDAO.addToFavorites(user.getId(), currentHeroMedia.getIdMedia());
+        }
+        updateButtonUI(user, currentHeroMedia);
+    }
+
+    @FXML
+    public void handleOpenDashboard(ActionEvent event) {
+        SceneSwitcher.goTo(event, "/org/Views/MainDashboard.fxml");
+    }
+
+    @FXML
+    public void handleProfileClick(javafx.scene.input.MouseEvent event) {
+        SceneSwitcher.goTo(event, "/org/Views/Profile.fxml");
+    }
+
+    @FXML
+    public void handleViewHistory(ActionEvent event) {
+        SceneSwitcher.goTo(event, "/org/Views/WatchHistory.fxml");
     }
 }
