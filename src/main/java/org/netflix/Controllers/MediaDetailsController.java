@@ -457,6 +457,7 @@ public class MediaDetailsController {
     //  COMMENTS
     // ══════════════════════════════════════════════════════════════════════════
 
+
     private void loadComments() {
         commentsListContainer.getChildren().clear();
         List<CommentDAO.CommentDTO> comments = CommentDAO.getCommentsByMedia(media.getIdMedia());
@@ -464,54 +465,56 @@ public class MediaDetailsController {
 
         for (CommentDAO.CommentDTO dto : comments) {
             VBox bubble = new VBox(5);
-            bubble.setStyle("-fx-background-color: #1e1e1e; -fx-padding: 12;" +
-                    "-fx-background-radius: 8;");
+            bubble.setStyle("-fx-background-color: #1e1e1e; -fx-padding: 12; -fx-background-radius: 8;");
 
             HBox header = new HBox(8);
             header.setAlignment(Pos.CENTER_LEFT);
 
-            Label avatar = new Label(dto.username.isEmpty() ? "?"
-                    : String.valueOf(dto.username.charAt(0)).toUpperCase());
-            avatar.setStyle("-fx-background-color: #e50914; -fx-text-fill: white;" +
-                    "-fx-font-size: 12px; -fx-font-weight: bold;" +
-                    "-fx-min-width: 28; -fx-min-height: 28; -fx-max-width: 28; -fx-max-height: 28;" +
-                    "-fx-background-radius: 14; -fx-alignment: center;");
+
+            Label avatar = new Label(dto.username.isEmpty() ? "?" : String.valueOf(dto.username.charAt(0)).toUpperCase());
+            avatar.setStyle("-fx-background-color: #e50914; -fx-text-fill: white; -fx-font-size: 12px; -fx-font-weight: bold; " +
+                    "-fx-min-width: 28; -fx-min-height: 28; -fx-background-radius: 14; -fx-alignment: center;");
 
             Label userLbl = new Label(dto.username);
             userLbl.setStyle("-fx-text-fill: #e50914; -fx-font-weight: bold;");
 
-            Label dateLbl = new Label(dto.comment.getCreated_at() != null
-                    ? " · " + dto.comment.getCreated_at() : "");
+            Label dateLbl = new Label(dto.comment.getCreated_at() != null ? " · " + dto.comment.getCreated_at() : "");
             dateLbl.setStyle("-fx-text-fill: #555; -fx-font-size: 11px;");
 
             Region spacer = new Region();
             HBox.setHgrow(spacer, Priority.ALWAYS);
 
+
             boolean alreadyReported = dto.comment.getIs_reported() == 1;
-            Button reportBtn = new Button(alreadyReported ? "🚨 Reported" : "🚩 Report");
+            Button reportBtn = new Button(alreadyReported ? "🚨 Unreport" : "🚩 Report");
+
+
             reportBtn.setStyle(alreadyReported
-                    ? "-fx-background-color: transparent; -fx-text-fill: #e50914; -fx-font-size: 10px;" +
-                    "-fx-border-color: transparent; -fx-cursor: default;"
-                    : "-fx-background-color: transparent; -fx-text-fill: #555; -fx-font-size: 10px;" +
-                    "-fx-border-color: #333; -fx-background-radius: 3; -fx-cursor: hand;");
-            reportBtn.setDisable(alreadyReported);
+                    ? "-fx-background-color: transparent; -fx-text-fill: #e50914; -fx-font-size: 10px; -fx-border-color: #e50914; -fx-background-radius: 3; -fx-cursor: hand;"
+                    : "-fx-background-color: transparent; -fx-text-fill: #555; -fx-font-size: 10px; -fx-border-color: #333; -fx-background-radius: 3; -fx-cursor: hand;");
 
             final int cId = dto.comment.getId_Comment();
+
             reportBtn.setOnAction(e -> {
-                if (CommentDAO.reportComment(cId)) loadComments();
+                if (alreadyReported) {
+
+                    if (CommentDAO.UnreportComment(cId)) loadComments();
+                } else {
+
+                    if (CommentDAO.reportComment(cId)) loadComments();
+                }
             });
 
             header.getChildren().addAll(avatar, userLbl, dateLbl, spacer, reportBtn);
 
-            if (currentUser != null &&
-                    ("ADMIN".equalsIgnoreCase(currentUser.getRole()) ||
-                            currentUser.getId() == dto.comment.getId_User())) {
+            // --- Option: Delete (Admin ou Propriétaire) ---
+            if (currentUser != null && ("ADMIN".equalsIgnoreCase(currentUser.getRole()) || currentUser.getId() == dto.comment.getId_User())) {
                 Button delBtn = new Button("🗑");
-                delBtn.setStyle("-fx-background-color: transparent; -fx-text-fill: #555;" +
-                        "-fx-font-size: 12px; -fx-cursor: hand; -fx-border-color: transparent;");
+                delBtn.setStyle("-fx-background-color: transparent; -fx-text-fill: #555; -fx-font-size: 12px; -fx-cursor: hand;");
                 delBtn.setOnAction(e -> { if (CommentDAO.deleteComment(cId)) loadComments(); });
                 header.getChildren().add(delBtn);
             }
+
 
             Label content = new Label(dto.comment.getContent());
             content.setStyle("-fx-text-fill: #e5e5e5; -fx-font-size: 13px;");
@@ -519,9 +522,8 @@ public class MediaDetailsController {
 
             bubble.getChildren().addAll(header, content);
             commentsListContainer.getChildren().add(bubble);
-        }
+        }//
     }
-
     @FXML
     public void handlePublishComment(ActionEvent event) {
         String txt = newCommentField.getText().trim();
