@@ -23,30 +23,21 @@
     <content>
         <VBox spacing="0" style="-fx-background-color: #141414;">
 
-            <!-- ══════════════════════════════════════════════ -->
-            <!--  HERO SECTION                                  -->
-            <!-- ══════════════════════════════════════════════ -->
+            <!-- HERO SECTION -->
             <StackPane fx:id="detailHero" prefHeight="480.0">
                 <ImageView fx:id="backgroundImage" pickOnBounds="true" preserveRatio="false" />
                 <VBox alignment="BOTTOM_LEFT" spacing="15.0"
                       style="-fx-background-color: linear-gradient(to top, #141414 0%, rgba(20,20,20,0.7) 50%, transparent 100%);">
                     <children>
-                        <!-- Back button -->
                         <Button fx:id="backButton" onAction="#handleBack" text="← Back"
                                 style="-fx-background-color: rgba(0,0,0,0.5); -fx-text-fill: white;
                                        -fx-font-weight: bold; -fx-padding: 8 15; -fx-background-radius: 4; -fx-cursor: hand;"/>
-
-                        <!-- Type badge -->
                         <Label fx:id="typeBadgeLabel" text="MOVIE"
                                style="-fx-background-color: #e50914; -fx-text-fill: white;
                                       -fx-font-size: 10px; -fx-font-weight: bold;
                                       -fx-padding: 3 8 3 8; -fx-background-radius: 3;"/>
-
-                        <!-- Title -->
                         <Label fx:id="titleLabel" styleClass="hero-title" text="TITLE"
                                wrapText="true" maxWidth="800"/>
-
-                        <!-- Meta row: year · rating · duration -->
                         <HBox fx:id="metaRow" spacing="15" alignment="CENTER_LEFT">
                             <Label fx:id="yearLabel"
                                    style="-fx-text-fill: #aaa; -fx-font-size: 14px;"/>
@@ -55,12 +46,8 @@
                             <Label fx:id="durationLabel"
                                    style="-fx-text-fill: #aaa; -fx-font-size: 14px;"/>
                         </HBox>
-
-                        <!-- Description -->
                         <Label fx:id="descriptionLabel" maxWidth="600.0"
                                styleClass="hero-description" wrapText="true" />
-
-                        <!-- Action buttons -->
                         <HBox spacing="15.0" alignment="CENTER_LEFT">
                             <Button fx:id="playbtn" onAction="#handlePlay" text="▶ Play"
                                     style="-fx-background-color: white; -fx-text-fill: black;
@@ -71,8 +58,6 @@
                                            -fx-font-size: 16px; -fx-font-weight: bold;
                                            -fx-padding: 10 25; -fx-background-radius: 4; -fx-cursor: hand;" />
                         </HBox>
-
-                        <!-- Star rating -->
                         <HBox fx:id="ratingBox" alignment="CENTER_LEFT" spacing="5.0">
                             <Label fx:id="star1" onMouseClicked="#handleRate" styleClass="star-btn" text="★" userData="1" />
                             <Label fx:id="star2" onMouseClicked="#handleRate" styleClass="star-btn" text="★" userData="2" />
@@ -86,9 +71,7 @@
                 </VBox>
             </StackPane>
 
-            <!-- ══════════════════════════════════════════════ -->
-            <!--  CAST ROW                                      -->
-            <!-- ══════════════════════════════════════════════ -->
+            <!-- CAST ROW -->
             <VBox spacing="10.0" style="-fx-padding: 30 50 0 50;">
                 <Label styleClass="genre-title" text="Cast"
                        style="-fx-text-fill: white; -fx-font-size: 18px; -fx-font-weight: bold; -fx-padding: 0;"/>
@@ -100,27 +83,7 @@
                 </ScrollPane>
             </VBox>
 
-            <!-- ══════════════════════════════════════════════ -->
-            <!--  SEASON / EPISODE BAR  (series only)          -->
-            <!-- ══════════════════════════════════════════════ -->
-            <VBox fx:id="seasonEpisodeBar" spacing="15" visible="false" managed="false"
-                  style="-fx-padding: 30 50 0 50;">
-
-                <HBox alignment="CENTER_LEFT" spacing="20">
-                    <Label text="EPISODES"
-                           style="-fx-text-fill: white; -fx-font-size: 18px; -fx-font-weight: bold;"/>
-                    <ComboBox fx:id="seasonComboBox" onAction="#handleSeasonChange"
-                              prefWidth="170"
-                              style="-fx-background-color: #333; -fx-text-fill: white; -fx-border-color: #555;"/>
-                </HBox>
-
-                <!-- Episode list — populated dynamically as VBox rows -->
-                <VBox fx:id="episodesContainer" spacing="12" />
-            </VBox>
-
-            <!-- ══════════════════════════════════════════════ -->
-            <!--  TABS: More Like This / Comments               -->
-            <!-- ══════════════════════════════════════════════ -->
+            <!-- TABS: More Like This / Episodes / Comments -->
             <VBox spacing="0" style="-fx-padding: 30 50 0 50;">
 
                 <!-- Tab header -->
@@ -132,6 +95,12 @@
                                    -fx-font-size: 15px; -fx-font-weight: bold; -fx-cursor: hand;
                                    -fx-border-color: #e50914; -fx-border-width: 0 0 3 0;
                                    -fx-padding: 10 20 10 0;" />
+                    <Button fx:id="tabEpisodes" onAction="#handleTabEpisodes"
+                            text="Episodes" visible="false" managed="false"
+                            style="-fx-background-color: transparent; -fx-text-fill: #aaa;
+                                   -fx-font-size: 15px; -fx-font-weight: bold; -fx-cursor: hand;
+                                   -fx-border-color: transparent; -fx-border-width: 0 0 3 0;
+                                   -fx-padding: 10 20 10 20;" />
                     <Button fx:id="tabComments" onAction="#handleTabComments"
                             text="Comments"
                             style="-fx-background-color: transparent; -fx-text-fill: #aaa;
@@ -146,12 +115,23 @@
                     <FlowPane fx:id="relatedGrid" hgap="15.0" vgap="15.0" />
                 </VBox>
 
+                <!-- Episodes panel -->
+                <VBox fx:id="panelEpisodes" managed="false" spacing="15"
+                      style="-fx-padding: 20 0 20 0;" visible="false">
+                    <HBox alignment="CENTER_LEFT" spacing="20">
+                        <Label text="Season:"
+                               style="-fx-text-fill: #aaa; -fx-font-size: 14px;"/>
+                        <ComboBox fx:id="seasonComboBox" onAction="#handleSeasonChange"
+                                  prefWidth="170"
+                                  style="-fx-background-color: #333; -fx-text-fill: white; -fx-border-color: #555;"/>
+                    </HBox>
+                    <VBox fx:id="episodesContainer" spacing="12" />
+                </VBox>
+
                 <!-- Comments panel -->
                 <VBox fx:id="panelComments" managed="false" spacing="15.0"
                       style="-fx-padding: 20 0 50 0;" visible="false">
-
                     <VBox fx:id="commentsListContainer" spacing="15.0" />
-
                     <VBox spacing="10.0">
                         <TextArea fx:id="newCommentField" prefRowCount="3"
                                   promptText="Write a comment..."

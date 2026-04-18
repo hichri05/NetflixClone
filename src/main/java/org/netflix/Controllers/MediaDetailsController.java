@@ -125,7 +125,9 @@ public class MediaDetailsController {
         }
     }
 
-
+    // ══════════════════════════════════════════════════════════════════════════
+    //  HERO UI
+    // ══════════════════════════════════════════════════════════════════════════
 
     private void setupHeroUI(User user) {
         titleLabel.setText(media.getTitle());
@@ -138,23 +140,23 @@ public class MediaDetailsController {
         }
         backgroundImage.fitWidthProperty().bind(mainScroll.widthProperty().multiply(0.99));
 
-
+        // Type badge
         boolean isSerie = "serie".equalsIgnoreCase(media.getType()) ||
                 "series".equalsIgnoreCase(media.getType());
         typeBadgeLabel.setText(isSerie ? "SERIES" : "MOVIE");
         typeBadgeLabel.setStyle(typeBadgeLabel.getStyle() +
                 (isSerie ? "-fx-background-color: #1a76d2;" : "-fx-background-color: #e50914;"));
 
-
+        // Year
         if (media.getReleaseYear() > 0)
             yearLabel.setText(String.valueOf(media.getReleaseYear()));
 
-
+        // Avg rating
         double avg = media.getAverageRating();
         if (avg > 0)
             ratingAvgLabel.setText(String.format("★ %.1f", avg));
 
-
+        // User rating
         if (user != null) {
             int saved = MediaDAO.getRating(user.getId(), media.getIdMedia());
             if (saved > 0) { currentRating = saved; fillStars(saved); }
@@ -164,6 +166,9 @@ public class MediaDetailsController {
         setupStarHover();
     }
 
+    // ══════════════════════════════════════════════════════════════════════════
+    //  CAST
+    // ══════════════════════════════════════════════════════════════════════════
 
     private void loadCast() {
         castingContainer.getChildren().clear();
@@ -191,7 +196,9 @@ public class MediaDetailsController {
         }
     }
 
-
+    // ══════════════════════════════════════════════════════════════════════════
+    //  SEASON / EPISODE BAR
+    // ══════════════════════════════════════════════════════════════════════════
 
     private void loadSeasonEpisodeBar() {
         boolean isSerie = (media instanceof Serie) ||
@@ -225,7 +232,9 @@ public class MediaDetailsController {
         }
     }
 
-
+    // ══════════════════════════════════════════════════════════════════════════
+    //  EPISODE CARDS — Titre + Durée + Résumé + Miniature + Progress badge
+    // ══════════════════════════════════════════════════════════════════════════
 
     private void loadEpisodes(int seasonId) {
         episodesContainer.getChildren().clear();

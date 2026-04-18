@@ -8,10 +8,8 @@ import javafx.geometry.Pos;
 import javafx.scene.control.*;
 import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.scene.layout.HBox;
-import javafx.scene.layout.StackPane;
 import javafx.scene.shape.Circle;
 import javafx.scene.paint.Color;
-import javafx.scene.text.Text;
 import org.netflix.DAO.UserDAO;
 import org.netflix.Models.User;
 

@@ -6,7 +6,6 @@ import javafx.geometry.Pos;
 import javafx.scene.control.*;
 import javafx.scene.layout.*;
 import org.netflix.DAO.CommentDAO;
-import org.netflix.Models.Comment;
 import org.netflix.Utils.Session;
 
 import java.util.List;

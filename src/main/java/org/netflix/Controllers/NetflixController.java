@@ -32,8 +32,7 @@ public class NetflixController implements Initializable {
 
     @Override
     public void initialize(URL location, ResourceBundle resources) {
-        // Nothing to do — setMovie() is called right after load()
-    }
+          }
 
 
     public void setMovie(Movie movie) {

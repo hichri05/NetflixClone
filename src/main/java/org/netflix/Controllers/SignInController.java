@@ -21,16 +21,14 @@ public class SignInController {
     @FXML private PasswordField passwordField;
     @FXML private TextField     passwordVisible;
     @FXML private Button        togglePassword;
-    @FXML private Button        loginButton;
     @FXML private Label         errorLabel;
     @FXML private ImageView     background;
     @FXML private StackPane     root;
-    @FXML private VBox          container;
 
     private boolean   isPasswordVisible = false;
+    @FXML
     private ImageView eyeIcon;
 
-    // Images chargées une seule fois
     private Image imgEyeOpen;
     private Image imgEyeClosed;
 
@@ -53,25 +51,19 @@ public class SignInController {
     @FXML
     public void initialize() {
 
-        // ── Background responsive ──────────────────────────────────────────
         background.setManaged(false);
         background.fitWidthProperty().bind(root.widthProperty());
         background.fitHeightProperty().bind(root.heightProperty());
         background.setPreserveRatio(false);
 
-        // ── Charger les deux images ────────────────────────────────────────
         imgEyeOpen   = new Image(getClass().getResourceAsStream("/org/Images/oeil__fermé.png"));
         imgEyeClosed = new Image(getClass().getResourceAsStream("/org/Images/oeil_ouvert.png"));
 
-        // ── Créer l'ImageView avec effet blanc (image noire → blanche) ─────
         eyeIcon = new ImageView(imgEyeOpen);
         eyeIcon.setFitWidth(22);
         eyeIcon.setFitHeight(22);
         eyeIcon.setPreserveRatio(true);
-        makeWhite(eyeIcon);  // rendre l'icône blanche
-
-        // ── Configurer le bouton ───────────────────────────────────────────
-        togglePassword.setGraphic(eyeIcon);
+        makeWhite(eyeIcon);          togglePassword.setGraphic(eyeIcon);
         togglePassword.setText(null);
         togglePassword.setStyle(
                 "-fx-background-color: transparent;" +
@@ -80,20 +72,16 @@ public class SignInController {
                         "-fx-padding: 5px;"
         );
 
-        // ── Erreur cachée au départ ────────────────────────────────────────
         errorLabel.setVisible(false);
         errorLabel.setManaged(false);
 
-        // ── Styles normaux ─────────────────────────────────────────────────
         emailField.setStyle(STYLE_NORMAL);
         passwordField.setStyle(STYLE_NORMAL);
         passwordVisible.setStyle(STYLE_NORMAL);
 
-        // ── passwordVisible caché ──────────────────────────────────────────
         passwordVisible.setVisible(false);
         passwordVisible.setManaged(false);
 
-        // ── Synchronisation bidirectionnelle ───────────────────────────────
         passwordField.textProperty().addListener((obs, o, n) -> {
             if (!n.equals(passwordVisible.getText())) passwordVisible.setText(n);
         });
@@ -101,7 +89,6 @@ public class SignInController {
             if (!n.equals(passwordField.getText())) passwordField.setText(n);
         });
 
-        // ── Reset styles au changement ─────────────────────────────────────
         emailField.textProperty().addListener((obs, o, n) -> {
             emailField.setStyle(STYLE_NORMAL);
             hideError();
@@ -118,20 +105,17 @@ public class SignInController {
         });
     }
 
-    // ── Rendre une ImageView blanche (image noire sur transparent) ─────────
     private void makeWhite(ImageView iv) {
         ColorAdjust ca = new ColorAdjust();
         ca.setBrightness(1.0);  // noir → blanc
         iv.setEffect(ca);
     }
 
-    // ── Toggle visibilité mot de passe ─────────────────────────────────────
     @FXML
     public void togglePasswordVisibility(ActionEvent event) {
         isPasswordVisible = !isPasswordVisible;
 
         if (isPasswordVisible) {
-            // Afficher en clair
             passwordVisible.setText(passwordField.getText());
             passwordVisible.setVisible(true);
             passwordVisible.setManaged(true);
@@ -139,12 +123,10 @@ public class SignInController {
             passwordField.setManaged(false);
             passwordVisible.requestFocus();
             passwordVisible.positionCaret(passwordVisible.getText().length());
-            // → œil fermé
             eyeIcon.setImage(imgEyeClosed);
             makeWhite(eyeIcon);
 
         } else {
-            // Masquer
             passwordField.setText(passwordVisible.getText());
             passwordField.setVisible(true);
             passwordField.setManaged(true);
@@ -152,7 +134,6 @@ public class SignInController {
             passwordVisible.setManaged(false);
             passwordField.requestFocus();
             passwordField.positionCaret(passwordField.getText().length());
-            // → œil ouvert
             eyeIcon.setImage(imgEyeOpen);
             makeWhite(eyeIcon);
         }

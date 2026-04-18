@@ -14,7 +14,7 @@ public class FavoriteServiceImpl implements IFavoriteService {
 
     @Override
     public boolean addToFavorites(int userId, int mediaId) {
-        if (isFavorite(userId, mediaId)) return false; // déjà dans favoris
+        if (isFavorite(userId, mediaId)) return false;
         return favoriteDAO.insert(userId, mediaId);
     }
 

@@ -16,5 +16,5 @@ public interface IUserService {
     boolean deleteUser(int id);
     String hashPassword(String rawPassword);
     boolean checkPassword(String rawPassword, String hashedPassword);
-    Map<String, Long> countNewUsersPerDay(); // Dashboard analytique
+    Map<String, Long> countNewUsersPerDay();
 }
