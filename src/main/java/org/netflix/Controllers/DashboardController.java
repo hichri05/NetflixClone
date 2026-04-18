@@ -162,8 +162,11 @@ public class DashboardController {
         series.setName("Registrations");
 
         regsByDay.entrySet().stream()
+                .filter(e -> e.getKey() != null)
                 .sorted(Map.Entry.comparingByKey())
-                .forEach(e -> series.getData().add(new XYChart.Data<>(e.getKey(), e.getValue())));
+                .forEach(e -> series.getData().add(
+                        new XYChart.Data<>(e.getKey(), e.getValue())
+                ));
 
         registrationsChart.getData().add(series);
     }

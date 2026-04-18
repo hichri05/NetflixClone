@@ -169,10 +169,10 @@ public class UserDAO {
     }
     public static Map<String, Long> getUsersGroupedByDate() {
         Map<String, Long> result = new LinkedHashMap<>();
-        String sql = "SELECT DATE(createdAt) AS reg_date, COUNT(*) AS cnt " +
+        String sql = "SELECT DATE(registerDate) AS reg_date, COUNT(*) AS cnt " +
                 "FROM user " +
-                "WHERE createdAt IS NOT NULL " +
-                "GROUP BY DATE(createdAt) " +
+                "WHERE registerDate IS NOT NULL " +
+                "GROUP BY DATE(registerDate) " +
                 "ORDER BY reg_date ASC";
 
         try (Statement stmt = conn.createStatement();
