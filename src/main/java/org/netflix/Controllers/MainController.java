@@ -23,6 +23,8 @@ import javafx.util.Duration;
 import org.netflix.DAO.*;
 import org.netflix.Models.*;
 import org.netflix.Utils.*;
+import org.netflix.DAO.WatchHistoryDAO;
+import org.netflix.Models.WatchHistory;
 
 import java.io.IOException;
 import java.net.URL;
@@ -47,8 +49,11 @@ public class MainController implements Initializable {
 
     @FXML private ComboBox<String> genreFilterCombo;
     @FXML private ComboBox<String> yearFilterCombo;
-    @FXML private HBox             activeFilterChips;
-    @FXML private Label            filterHeadingLabel;
+    @FXML private HBox activeFilter;
+    @FXML private Label filterHeadingLabel;
+
+    @FXML private VBox continueWatchingSection;
+    @FXML private HBox continueWatchingRow;
 
     private User user;
 
@@ -96,6 +101,7 @@ public class MainController implements Initializable {
 
         setupHeroSize();
         loadMediaRows();
+        loadContinueWatching();
         setupSearch();
         setupUser();
         setupUserPopup();
@@ -326,9 +332,9 @@ public class MainController implements Initializable {
     }
 
     private void renderFilterChips(String genre, String year) {
-        activeFilterChips.getChildren().clear();
-        if (genre != null) activeFilterChips.getChildren().add(buildChip("🎭 " + genre));
-        if (year  != null) activeFilterChips.getChildren().add(buildChip("📅 " + year));
+        activeFilter.getChildren().clear();
+        if (genre != null) activeFilter.getChildren().add(buildChip("🎭 " + genre));
+        if (year  != null) activeFilter.getChildren().add(buildChip("📅 " + year));
     }
 
     private Label buildChip(String text) {
@@ -356,7 +362,7 @@ public class MainController implements Initializable {
     public void handleClearFilter(ActionEvent event) {
         genreFilterCombo.setValue("All Genres");
         yearFilterCombo.setValue("All Years");
-        activeFilterChips.getChildren().clear();
+        activeFilter.getChildren().clear();
         showHomeView();
     }
 
@@ -847,5 +853,107 @@ public class MainController implements Initializable {
     @FXML
     public void handleViewHistory(ActionEvent event) {
         SceneSwitcher.goTo(event, "/org/Views/WatchHistory.fxml");
+    }
+
+    private void loadContinueWatching() {
+        if (user == null) return;
+        List<WatchHistory> history = new WatchHistoryDAO().findByUser(user.getId());
+
+        java.util.LinkedHashMap<Integer, WatchHistory> inProgressMap = new java.util.LinkedHashMap<>();
+        for (WatchHistory wh : history) {
+            if (wh.getMediaId() == null) continue;
+            if (wh.getCompleted() == 0 && wh.getStoppedAtTime() > 5.0) {
+                inProgressMap.putIfAbsent(wh.getMediaId(), wh);
+            }
+        }
+
+        if (inProgressMap.isEmpty()) return;
+
+        for (WatchHistory wh : inProgressMap.values()) {
+            Media media = MediaDAO.getAllMedia().stream()
+                    .filter(m -> m.getIdMedia() == wh.getMediaId())
+                    .findFirst().orElse(null);
+            if (media == null) continue;
+
+            // Fetch duration for progress ratio
+            double[] pd = WatchHistoryDAO.getProgressAndDuration(user.getId(), wh.getMediaId());
+            double ratio = pd[1] > 0 ? Math.min(pd[0] / pd[1], 1.0) : 0.5;
+
+            continueWatchingRow.getChildren().add(buildContinueCard(media, ratio, wh));
+        }
+
+        continueWatchingSection.setVisible(true);
+        continueWatchingSection.setManaged(true);
+    }
+
+    private VBox buildContinueCard(Media media, double ratio, WatchHistory wh) {
+        VBox card = new VBox(0);
+        card.setPrefWidth(210);
+        card.setCursor(javafx.scene.Cursor.HAND);
+        card.setStyle("-fx-background-color: #1a1a1a; -fx-background-radius: 8;");
+
+
+        javafx.scene.layout.StackPane thumbBox = new javafx.scene.layout.StackPane();
+        ImageView poster = new ImageView();
+        poster.setFitWidth(210); poster.setFitHeight(118);
+        poster.setPreserveRatio(false);
+        try {
+            String url = media.getBackdropImageUrl() != null
+                    ? media.getBackdropImageUrl() : media.getCoverImageUrl();
+            if (url != null) poster.setImage(new Image(url, true));
+        } catch (Exception ignored) {}
+
+        javafx.scene.shape.Rectangle clip = new javafx.scene.shape.Rectangle(210, 118);
+        clip.setArcWidth(8); clip.setArcHeight(8);
+        poster.setClip(clip);
+
+
+        javafx.scene.control.ProgressBar bar = new javafx.scene.control.ProgressBar(ratio);
+        bar.setPrefWidth(210); bar.setPrefHeight(4);
+        bar.setStyle("-fx-accent: #e50914; -fx-background-color: rgba(0,0,0,0.55);");
+        javafx.scene.layout.StackPane.setAlignment(bar, javafx.geometry.Pos.BOTTOM_CENTER);
+
+
+        Label playIcon = new Label("▶");
+        playIcon.setStyle("-fx-text-fill: white; -fx-font-size: 26px;" +
+                "-fx-background-color: rgba(0,0,0,0.55); -fx-background-radius: 22;" +
+                "-fx-padding: 8 12;");
+        playIcon.setOpacity(0);
+
+        thumbBox.getChildren().addAll(poster, bar, playIcon);
+
+        card.setOnMouseEntered(e -> { playIcon.setOpacity(1); poster.setOpacity(0.75); });
+        card.setOnMouseExited(e  -> { playIcon.setOpacity(0); poster.setOpacity(1.0);  });
+
+
+        VBox info = new VBox(4);
+        info.setStyle("-fx-padding: 10 12 12 12;");
+
+        Label titleLbl = new Label(media.getTitle());
+        titleLbl.setStyle("-fx-text-fill: white; -fx-font-size: 13px; -fx-font-weight: bold;");
+        titleLbl.setMaxWidth(186); titleLbl.setWrapText(false);
+
+        int mins = (int)(wh.getStoppedAtTime() / 60);
+        Label progLbl = new Label(mins + " min watched");
+        progLbl.setStyle("-fx-text-fill: #888; -fx-font-size: 11px;");
+
+        Label resumeLbl = new Label("▶ Continue");
+        resumeLbl.setStyle("-fx-text-fill: #e50914; -fx-font-size: 11px; -fx-font-weight: bold;");
+
+        info.getChildren().addAll(titleLbl, progLbl, resumeLbl);
+        card.getChildren().addAll(thumbBox, info);
+
+        final Media chosen = media;
+        card.setOnMouseClicked(e -> {
+            TransferData.setMedia(chosen);
+            try {
+                javafx.scene.Parent root = javafx.fxml.FXMLLoader.load(
+                        getClass().getResource("/org/Views/MediaDetails.fxml"));
+                javafx.stage.Stage stage = (javafx.stage.Stage) mediaRows.getScene().getWindow();
+                stage.getScene().setRoot(root);
+            } catch (Exception ex) { ex.printStackTrace(); }
+        });
+
+        return card;
     }
 }
