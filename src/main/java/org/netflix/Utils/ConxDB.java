@@ -26,7 +26,7 @@ public class ConxDB {
             }
             prop.load(input);
             String port = prop.getProperty("db.port");
-            String url = "jdbc:mysql://localhost:" + port + "/netflix";
+            String url = "jdbc:mysql://localhost:" + port + "/netflix2";
 
             connexion =  DriverManager.getConnection(url, prop.getProperty("db.user"), prop.getProperty("db.pass"));
 

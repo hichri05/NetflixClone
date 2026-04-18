@@ -120,6 +120,7 @@ public class MediaDetailsController {
             backgroundImage.setImage(new Image(bdUrl, true));
         }
         backgroundImage.fitWidthProperty().bind(mainScroll.widthProperty().multiply(0.99));
+        backgroundImage.fitHeightProperty().bind(mainScroll.heightProperty().multiply(0.99));
 
         boolean isSerie = "serie".equalsIgnoreCase(media.getType()) ||
                 "series".equalsIgnoreCase(media.getType());
